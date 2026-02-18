@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>AI–AR Sustainable Khon Mask Lab</title>
+
+<style>
+:root{
+  --queen-green:#2f6f55;
+  --queen-cream:#f3efe6;
+  --queen-gold:#caa44a;
+}
+
+body{
+  margin:0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background:var(--queen-cream);
+  color:#333;
+}
+
+header{
+  background:linear-gradient(135deg,#2f6f55,#6fa98b);
+  color:white;
+  padding:30px;
+  text-align:center;
+}
+
+section{
+  padding:30px;
+  max-width:1000px;
+  margin:auto;
+}
+
+.card{
+  background:white;
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:25px;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
+h2{
+  color:var(--queen-green);
+}
+
+button{
+  padding:10px 16px;
+  border:none;
+  border-radius:10px;
+  background:var(--queen-green);
+  color:white;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:.85;
+}
+
+select{
+  padding:8px;
+  border-radius:8px;
+}
+
+.badge{
+  display:inline-block;
+  background:var(--queen-gold);
+  color:white;
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:13px;
+  margin-bottom:8px;
+}
+
+.footer{
+  text-align:center;
+  padding:20px;
+  font-size:14px;
+  color:#666;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>AI–AR Sustainable Khon Mask Lab</h1>
+<p>
+สานศิลป์ ถิ่นศึกษา สานต่อพระราชปณิธานพระพันปีหลวง
+</p>
+</header>
+
+<section>
+
+<!-- ========== Feature 1 ========== -->
+<div class="card">
+<span class="badge">Interactive Knowledge</span>
+<h2>🎭 โครงสร้างหัวโขนและความหมาย</h2>
+
+<p>
+เลือกส่วนของหัวโขนเพื่อดูความหมายเชิงศิลปวัฒนธรรม
+</p>
+
+<select id="partSelect" onchange="showPartInfo()">
+<option value="">-- เลือกส่วน --</option>
+<option value="crown">ยอดหัว</option>
+<option value="eyes">ดวงตา</option>
+<option value="teeth">เขี้ยว</option>
+<option value="pattern">ลวดลายกรอบหน้า</option>
+</select>
+
+<div id="partInfo" style="margin-top:15px;"></div>
+</div>
+
+
+<!-- ========== Feature 2 ========== -->
+<div class="card">
+<span class="badge">AI Cultural Design Checker</span>
+<h2>🤖 ผู้ช่วยสะท้อนความสอดคล้องเชิงวัฒนธรรม</h2>
+
+<label>เลือกประเภทตัวละคร</label><br>
+<select id="role">
+<option value="yak">ยักษ์</option>
+<option value="thep">เทพ</option>
+<option value="monkey">วานร</option>
+</select>
+
+<br><br>
+
+<label>เลือกสีหลัก</label><br>
+<select id="color">
+<option value="green">เขียว</option>
+<option value="gold">ทอง</option>
+<option value="white">ขาว</option>
+<option value="red">แดง</option>
+</select>
+
+<br><br>
+
+<label>เลือกลวดลาย</label><br>
+<select id="pattern">
+<option value="flame">ลายกระหนก</option>
+<option value="soft">ลายอ่อนโค้ง</option>
+<option value="sharp">ลายเหลี่ยมแข็ง</option>
+</select>
+
+<br><br>
+<button onclick="checkDesign()">ตรวจความสอดคล้อง</button>
+
+<div id="aiResult" style="margin-top:15px;"></div>
+</div>
+
+
+<!-- ========== Feature 3 ========== -->
+<div class="card">
+<span class="badge">Sustainability Lens</span>
+<h2>🌱 ระบบสะท้อนผลกระทบด้านสิ่งแวดล้อม</h2>
+
+<label>เลือกวัสดุสำหรับสร้างหัวโขนจริง</label><br>
+
+<select id="material" onchange="checkMaterial()">
+<option value="">-- เลือกวัสดุ --</option>
+<option value="paper">กระดาษเหลือใช้</option>
+<option value="plastic">พลาสติก</option>
+<option value="cloth">เศษผ้า</option>
+<option value="natural">วัสดุธรรมชาติ</option>
+</select>
+
+<div id="ecoResult" style="margin-top:15px;"></div>
+</div>
+
+
+<!-- ========== AR ========= -->
+<div class="card">
+<span class="badge">AR Lab</span>
+<h2>🎥 ทดลองสวมผ่าน AR</h2>
+
+<p>
+เปิดกล้องหน้าเพื่อทดลองสวมหัวโขนดิจิทัล
+</p>
+
+<button onclick="openAR()">เปิดหน้าทดลอง AR</button>
+
+<p style="font-size:14px;color:#777;margin-top:10px;">
+(หน้า AR จะเปิดเป็นอีกหน้า เพื่อใช้งาน Face Tracking)
+</p>
+</div>
+
+</section>
+
+<div class="footer">
+ต้นแบบนวัตกรรมเพื่อการเรียนรู้ศิลปวัฒนธรรมและความยั่งยืน<br>
+ตามแนวคิดการเรียนรู้จากประสบการณ์
+</div>
+
+<script>
+function showPartInfo(){
+  const part = document.getElementById("partSelect").value;
+  const box = document.getElementById("partInfo");
+
+  let text="";
+
+  if(part==="crown"){
+    text="ยอดหัว แสดงฐานะและพลังอำนาจของตัวละคร";
+  }
+  if(part==="eyes"){
+    text="ดวงตา สื่อถึงอุปนิสัย ความดุ อ่อนโยน หรือสง่างาม";
+  }
+  if(part==="teeth"){
+    text="เขี้ยว เป็นสัญลักษณ์ของพลังและความแข็งแกร่ง";
+  }
+  if(part==="pattern"){
+    text="ลวดลายกรอบหน้า สื่อถึงอัตลักษณ์และระดับของตัวละคร";
+  }
+
+  box.innerHTML = text;
+}
+
+/* ---- AI Cultural Design Checker (Prototype) ---- */
+function checkDesign(){
+  const role = document.getElementById("role").value;
+  const color = document.getElementById("color").value;
+  const pattern = document.getElementById("pattern").value;
+
+  let feedback = "";
+
+  if(role==="yak" && color==="white"){
+    feedback += "สีขาวมักใช้กับตัวละครที่มีความบริสุทธิ์มากกว่ายักษ์<br>";
+  }
+
+  if(role==="thep" && pattern==="sharp"){
+    feedback += "ลวดลายเหลี่ยมแข็งอาจไม่สอดคล้องกับภาพลักษณ์เทพที่อ่อนโยน<br>";
+  }
+
+  if(role==="monkey" && color==="gold"){
+    feedback += "สีทองอาจทำให้ภาพลักษณ์วานรดูเป็นทางการมากเกินไป<br>";
+  }
+
+  if(feedback===""){
+    feedback = "รูปแบบโดยรวมมีความสอดคล้องในเชิงอัตลักษณ์ทางศิลปวัฒนธรรม<br>";
+  }
+
+  feedback += "<br><b>คำถามสะท้อนคิดจาก AI</b><br>";
+  feedback += "ถ้าปรับสีหรือลวดลายอีกแบบหนึ่ง จะช่วยสื่อบุคลิกตัวละครได้ชัดขึ้นหรือไม่";
+
+  document.getElementById("aiResult").innerHTML = feedback;
+}
+
+/* ---- Sustainability Lens ---- */
+function checkMaterial(){
+  const m = document.getElementById("material").value;
+  let text="";
+
+  if(m==="paper"){
+    text="ใช้ซ้ำได้สูง ย่อยสลายง่าย เหมาะกับแนวคิด Zero Waste";
+  }
+  if(m==="plastic"){
+    text="มีความทนทาน แต่ก่อขยะสูง ควรพิจารณาการนำกลับมาใช้ซ้ำ";
+  }
+  if(m==="cloth"){
+    text="สามารถนำเศษผ้ามาใช้ซ้ำ ลดของเสียจากอุตสาหกรรมสิ่งทอ";
+  }
+  if(m==="natural"){
+    text="เป็นมิตรต่อสิ่งแวดล้อม แต่ควรใช้ในปริมาณเหมาะสม";
+  }
+
+  document.getElementById("ecoResult").innerHTML =
+    text +
+    "<br><br><b>คำถามสะท้อนคิด</b><br>วัสดุนี้สอดคล้องกับการสืบสานพระราชปณิธานด้านสิ่งแวดล้อมหรือไม่";
+}
+
+/* ---- AR page ---- */
+function openAR(){
+  window.open("ar.html","_blank");
+}
+</script>
+
+</body>
+</html>
