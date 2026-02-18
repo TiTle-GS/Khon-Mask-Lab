@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Khon Mask Face AR</title>
+
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face.prod.js"></script>
+<script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-aframe.prod.js"></script>
+
+<style>
+html,body{margin:0;width:100%;height:100%;}
+</style>
+</head>
+
+<body>
+
+<a-scene
+mindar-face
+embedded
+color-space="sRGB"
+renderer="colorManagement: true, physicallyCorrectLights"
+vr-mode-ui="enabled: false"
+device-orientation-permission-ui="enabled: false">
+
+<a-camera active="false"></a-camera>
+
+<!-- จุดยึดศีรษะ -->
+<a-entity mindar-face-target="anchorIndex: 168">
+
+<!-- ตัวอย่างกล่องแทนหัวโขน (เปลี่ยนเป็นโมเดลหัวโขนจริงภายหลัง) -->
+<a-box position="0 0.1 0"
+       depth="0.25"
+       height="0.25"
+       width="0.25"
+       color="#caa44a">
+</a-box>
+
+</a-entity>
+
+</a-scene>
+
+</body>
+</html>
