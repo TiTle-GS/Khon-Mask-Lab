@@ -6,121 +6,174 @@
     <title>AI–AR Sustainable Khon Mask Lab</title>
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.1/dist/mindar-face-aframe.prod.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Noto+Serif+Thai:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --gold: #C9922A; --blk: #0A0806; --cream: #F7F0E0; }
-        body { margin: 0; background: var(--blk); color: var(--cream); font-family: 'Noto Serif Thai', serif; overflow: hidden; }
+        :root { --gold: #C9922A; --red: #8B1A1A; --blk: #0A0806; --cream: #F7F0E0; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--blk); color: var(--cream); font-family: 'Noto Serif Thai', serif; overflow-x: hidden; }
         
-        /* Bubble Wall Style */
-        .bubble-wall { position: fixed; inset: 0; z-index: 2000; display: none; background: radial-gradient(circle, #1a1a1a, #000); }
-        
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
+        /* Navigation */
+        .tnav { position: fixed; top: 0; width: 100%; padding: 1rem; z-index: 1000; display: flex; justify-content: space-between; background: rgba(10,8,6,0.9); border-bottom: 1px solid rgba(201,146,42,0.2); }
+        .nav-link { color: var(--gold); text-decoration: none; font-size: 0.8rem; cursor: pointer; margin-left: 15px; }
+
+        /* Page Management */
+        .page { display: none; min-height: 100vh; padding-top: 80px; transition: opacity 0.5s; }
+        .page.active { display: block; }
+
+        /* Bubble Wall Logic */
+        .bubble-wall-bg { position: fixed; inset: 0; z-index: 2000; display: none; background: #000; overflow: hidden; }
+        .bubble { 
+            position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(201, 146, 42, 0.2));
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1), inset -5px -5px 12px rgba(255,255,255,0.5);
-            backdrop-filter: blur(4px);
-            display: flex; align-items: center; justify-content: center;
-            transition: transform 0.3s ease;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2); backdrop-filter: blur(4px);
         }
+        .bubble img { width: 85%; height: 85%; border-radius: 50%; object-fit: cover; }
 
-        .bubble img { width: 85%; height: 85%; border-radius: 50%; object-fit: cover; border: 2px solid white; }
-
-        .ui-panel { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 2100; display: flex; gap: 10px; }
-        button { padding: 10px 20px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 20px; }
+        /* UI Elements */
+        .btn-gold { padding: 10px 25px; background: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 30px; margin: 10px; }
+        .card { background: rgba(201,146,42,0.05); border: 1px solid rgba(201,146,42,0.2); padding: 20px; margin: 15px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="p0" style="text-align: center; padding-top: 20vh;">
-        <h1 style="font-family: 'Cinzel Decorative'; color: var(--gold); font-size: 3rem;">KHON LAB</h1>
-        <p>สืบสานพระราชปณิธานพระพันปีหลวง สู่โลก AR</p>
-        <button onclick="startAR()">เข้าสู่โหมด AR</button>
-        <button onclick="loadBubbleWall()">ดู Bubble Wall</button>
-    </div>
+    <nav class="tnav">
+        <div style="font-family: 'Cinzel Decorative'; color: var(--gold);">KHON LAB</div>
+        <div>
+            <span class="nav-link" onclick="showPage('p0')">หน้าแรก</span>
+            <span class="nav-link" onclick="showPage('p1')">ความรู้</span>
+            <span class="nav-link" onclick="showPage('p2')">AI ออกแบบ</span>
+            <span class="nav-link" onclick="showPage('p3')">Zero Waste</span>
+            <span class="nav-link" onclick="showPage('p4')">AR สวมหัวโขน</span>
+        </div>
+    </nav>
 
-    <div id="bubbleWall" class="bubble-wall">
+    <section id="p0" class="page active" style="text-align: center;">
+        <h1 style="font-family: 'Cinzel Decorative'; color: var(--gold); font-size: 2.5rem;">พระพันปีหลวงกับโขน</h1>
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง</p>
+            <p>ทรงมีพระราชปณิธานส่งเสริมช่างฝีมือไทยและการถ่ายทอดความรู้แก่เยาวชน เพื่ออนุรักษ์มรดกโลกให้ยั่งยืน</p>
+        </div>
+        <button class="btn-gold" onclick="showPage('p1')">เรียนรู้เรื่องโขน →</button>
+    </section>
+
+    <section id="p1" class="page" style="padding: 2rem;">
+        <h2 style="text-align: center; color: var(--gold);">ศูนย์เรียนรู้โขนไทย</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+            <div class="card"><h3>🎭 หัวโขน</h3><p>สัญลักษณ์บอกประเภทตัวละครและฐานะ</p></div>
+            <div class="card"><h3>👗 การแต่งกาย</h3><p>งานประณีตศิลป์ ปักสะดึงกรึงไหม</p></div>
+            <div class="card"><h3>🗣️ การพากย์</h3><p>ศิลปะการใช้เสียงและการพากย์เจรจา</p></div>
+        </div>
+    </section>
+
+    <section id="p2" class="page" style="text-align: center;">
+        <h2 style="color: var(--gold);">AI Design Studio</h2>
+        <div class="card">
+            <p>ทดลองปรับแต่งหัวโขนของคุณ AI จะช่วยวิเคราะห์ความหมายทางวัฒนธรรม</p>
+            <button class="btn-gold">AI วิเคราะห์การออกแบบ</button>
+        </div>
+    </section>
+
+    <section id="p3" class="page" style="text-align: center;">
+        <h2 style="color: var(--gold);">Sustainable Challenge</h2>
+        <div class="card">
+            <p>เลือกใช้วัสดุธรรมชาติในการทำหัวโขนเพื่อลดขยะ (Zero Waste)</p>
+            <div style="display: flex; justify-content: center; gap: 10px;">
+                <button class="btn-gold" style="background: green; color: white;">วัสดุธรรมชาติ (A)</button>
+                <button class="btn-gold" style="background: orange; color: white;">กระดาษ (B)</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="p4" class="page" style="text-align: center;">
+        <h2 style="color: var(--gold);">AR Experience</h2>
+        <p>สวมหัวโขนผ่านกล้อง และถ่ายรูปเพื่อสร้างฟองสบู่ความทรงจำ</p>
+        <button class="btn-gold" onclick="openAR()">เปิดกล้อง WebAR</button>
+        <button class="btn-gold" onclick="loadBubbleWall()">ดูภาพทั้งหมด (Bubble Wall)</button>
+    </section>
+
+    <div id="bubbleWallOverlay" class="bubble-wall-bg">
         <div id="bubble-container"></div>
-        <div class="ui-panel">
-            <button onclick="location.reload()">กลับหน้าแรก</button>
+        <div style="position: absolute; bottom: 20px; width: 100%; text-align: center;">
+            <button class="btn-gold" onclick="hideBubbleWall()">กลับ</button>
         </div>
     </div>
 
     <script>
         const GAS_URL = "https://script.google.com/macros/s/AKfycbzkfOo6lhKc_5no88YZgVtgtGRD09cR8JrDPEfYRQ0vaMYR7hNNRkZQIk0aaW_HyfhM/exec";
 
-        function startAR() {
-            alert("ระบบ WebAR กำลังเริ่มต้น...");
-            // เชื่อมต่อ MindAR ที่นี่
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0,0);
         }
 
+        // --- ระบบ Bubble Wall ---
         async function loadBubbleWall() {
-            document.getElementById('p0').style.display = 'none';
-            document.getElementById('bubbleWall').style.display = 'block';
-            
+            document.getElementById('bubbleWallOverlay').style.display = 'block';
             try {
-                // ดึงรายชื่อ ID รูปภาพจาก AppScript (doGet)
-                const response = await fetch(GAS_URL);
+                const response = await fetch(GAS_URL); // ดึง ID รูปจาก Google Drive
                 const fileIds = await response.json();
-                createBubbles(fileIds);
-                requestAnimationFrame(updateBubbles); // เริ่มระบบบีบตัว
-            } catch (e) {
-                console.error("Load error", e);
-            }
+                renderBubbles(fileIds);
+                requestAnimationFrame(animateBubbles); // เริ่มการบีบตัว
+            } catch (e) { alert("กำลังโหลดรูปภาพ..."); }
         }
 
-        function createBubbles(ids) {
+        function hideBubbleWall() {
+            document.getElementById('bubbleWallOverlay').style.display = 'none';
+        }
+
+        function renderBubbles(ids) {
             const container = document.getElementById('bubble-container');
+            container.innerHTML = '';
             ids.forEach(id => {
                 const b = document.createElement('div');
                 b.className = 'bubble';
-                const size = 80 + Math.random() * 40;
+                const size = 70 + Math.random() * 50;
                 b.style.width = b.style.height = `${size}px`;
-                
-                // กำหนดตำแหน่งสุ่มเริ่มต้น
-                const x = Math.random() * window.innerWidth;
-                const y = Math.random() * window.innerHeight;
-                b.dataset.x = x; b.dataset.y = y;
-                
-                // ใช้ URL แสดงรูปภาพจาก Google Drive Directly
-                b.innerHTML = `<img src="https://lh3.googleusercontent.com/u/0/d/${id}">`;
+                b.dataset.x = Math.random() * window.innerWidth;
+                b.dataset.y = Math.random() * window.innerHeight;
+                // แสดงผลรูปภาพจาก Drive
+                b.innerHTML = `<img src="https://lh3.googleusercontent.com/d/${id}">`;
                 container.appendChild(b);
             });
         }
 
-        function updateBubbles() {
+        function animateBubbles() {
             const bubbles = document.querySelectorAll('.bubble');
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
 
             bubbles.forEach((b1, i) => {
-                let x1 = parseFloat(b1.dataset.x);
-                let y1 = parseFloat(b1.dataset.y);
+                let x = parseFloat(b1.dataset.x);
+                let y = parseFloat(b1.dataset.y);
 
-                // ตรรกะการชนกัน (Circle Packing)
+                // แรงบีบเข้าหาศูนย์กลาง
+                x += (cx - x) * 0.01;
+                y += (cy - y) * 0.01;
+
+                // การชนกันไม่ให้ทับกัน
                 bubbles.forEach((b2, j) => {
                     if (i === j) return;
-                    let dx = x1 - parseFloat(b2.dataset.x);
-                    let dy = y1 - parseFloat(b2.dataset.y);
+                    let dx = x - parseFloat(b2.dataset.x);
+                    let dy = y - parseFloat(b2.dataset.y);
                     let dist = Math.sqrt(dx*dx + dy*dy);
-                    let minDist = (parseFloat(b1.style.width) + parseFloat(b2.style.width)) / 2 + 5;
-
-                    if (dist < minDist) {
-                        let force = (minDist - dist) / dist * 0.1;
-                        x1 += dx * force; y1 += dy * force;
+                    let min = (parseFloat(b1.style.width) + parseFloat(b2.style.width)) / 2 + 10;
+                    if (dist < min) {
+                        x += dx * 0.05; y += dy * 0.05;
                     }
                 });
 
-                // แรงดึงดูดเข้าสู่ศูนย์กลาง
-                x1 += (centerX - x1) * 0.01;
-                y1 += (centerY - y1) * 0.01;
-
-                b1.dataset.x = x1; b1.dataset.y = y1;
-                b1.style.left = `${x1 - parseFloat(b1.style.width)/2}px`;
-                b1.style.top = `${y1 - parseFloat(b1.style.height)/2}px`;
+                b1.dataset.x = x; b1.dataset.y = y;
+                b1.style.left = `${x - parseFloat(b1.style.width)/2}px`;
+                b1.style.top = `${y - parseFloat(b1.style.height)/2}px`;
             });
-            requestAnimationFrame(updateBubbles);
+            if(document.getElementById('bubbleWallOverlay').style.display === 'block') {
+                requestAnimationFrame(animateBubbles);
+            }
         }
+
+        function openAR() { alert("ระบบกำลังเชื่อมต่อกล้อง..."); }
     </script>
 </body>
 </html>
