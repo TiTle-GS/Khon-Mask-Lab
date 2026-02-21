@@ -19,53 +19,67 @@
         body { 
             background: var(--blk); color: var(--cream); 
             font-family: 'Noto Serif Thai', serif; overflow-x: hidden; line-height: 1.6;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* Navigation */
+        /* ── Navigation (จัดกึ่งกลางเมนู) ── */
         .tnav { 
-            position: fixed; top: 0; width: 100%; padding: 1rem 2rem; 
+            position: fixed; top: 0; width: 100%; padding: 1rem 5%; 
             z-index: 1000; display: flex; justify-content: space-between; align-items: center;
             background: rgba(10, 8, 6, 0.95); border-bottom: 1px solid rgba(201, 146, 42, 0.2);
             backdrop-filter: blur(10px);
         }
-        .n-logo { font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 1.2rem; letter-spacing: 2px; }
+        .n-logo { font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 1.2rem; }
         .n-links { display: flex; gap: 20px; }
         .n-link { color: var(--gold); text-decoration: none; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
-        .n-link:hover { color: var(--gl); text-shadow: 0 0 10px var(--gold); }
 
-        /* Page Layout */
-        .page { display: none; min-height: 100vh; padding: 100px 10% 60px; opacity: 0; transition: opacity 0.5s ease; }
-        .page.active { display: block; opacity: 1; }
-
-        h1, h2, h3 { font-family: 'Cinzel Decorative', cursive; color: var(--gold); text-align: center; margin-bottom: 1.5rem; }
-        .sub-t { font-size: 0.9rem; text-align: center; color: var(--gl); margin-bottom: 2rem; letter-spacing: 1px; }
-
-        .grid-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 2rem; }
-        .card { 
-            background: var(--glass); border: 1px solid rgba(201, 146, 42, 0.15); 
-            padding: 2rem; border-radius: 15px; transition: 0.4s;
-            backdrop-filter: blur(5px); cursor: pointer;
+        /* ── Page Layout (บังคับเนื้อหาให้อยู่กลาง) ── */
+        .page { 
+            display: none; width: 100%; min-height: 100vh; 
+            padding: 120px 10% 60px; opacity: 0; transition: opacity 0.5s ease;
+            flex-direction: column; align-items: center; text-align: center;
         }
-        .card:hover { transform: translateY(-10px); border-color: var(--gold); background: rgba(201, 146, 42, 0.05); }
+        .page.active { display: flex; opacity: 1; }
 
-        /* Photo Frame */
+        h1, h2 { font-family: 'Cinzel Decorative', cursive; color: var(--gold); margin-bottom: 1.5rem; width: 100%; }
+        .sub-t { font-size: 0.9rem; color: var(--gl); margin-bottom: 2rem; letter-spacing: 1px; width: 100%; }
+
+        /* ── Photo Frame (จัดกลางรูปภาพ) ── */
         .img-container {
-            width: 100%; max-width: 500px; margin: 20px auto;
+            width: 100%; max-width: 450px; margin: 0 auto 2rem;
             border-radius: 15px; overflow: hidden; border: 2px solid var(--gold);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(201, 146, 42, 0.2);
         }
         .img-container img { width: 100%; display: block; transition: 0.6s; }
         .img-container:hover img { transform: scale(1.05); }
-        .img-caption { background: rgba(10, 8, 6, 0.8); color: var(--gl); padding: 8px; font-size: 0.8rem; text-align: center; }
 
-        .detail-container { max-width: 900px; margin: 0 auto; text-align: left; }
-        .detail-body h4 { color: var(--gold); margin: 25px 0 10px; font-size: 1.2rem; border-left: 4px solid var(--gold); padding-left: 15px; }
+        /* ── Grid & Cards (จัดกึ่งกลางกลุ่ม Card) ── */
+        .grid-info { 
+            display: grid; width: 100%; max-width: 1000px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; margin-top: 2rem; justify-content: center;
+        }
+        .card { 
+            background: var(--glass); border: 1px solid rgba(201, 146, 42, 0.15); 
+            padding: 2rem; border-radius: 15px; transition: 0.4s;
+            backdrop-filter: blur(5px);
+        }
 
-        .btn-gold { padding: 12px 35px; background: linear-gradient(135deg, var(--gold), #8A641A); border: none; color: #000; font-weight: bold; border-radius: 50px; cursor: pointer; }
+        /* ── Center Buttons (บังคับปุ่มอยู่กลาง) ── */
+        .btn-wrap { 
+            display: flex; width: 100%; justify-content: center; 
+            margin-top: 3rem; gap: 20px;
+        }
+        .btn-gold { 
+            padding: 12px 40px; background: linear-gradient(135deg, var(--gold), #8A641A); 
+            border: none; color: #000; font-weight: 900; border-radius: 50px; 
+            cursor: pointer; transition: 0.3s;
+        }
+        .btn-gold:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--gold); }
 
-        #bubbleWallOverlay { position: fixed; inset: 0; z-index: 2000; display: none; background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); }
-        .bubble { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(201, 146, 42, 0.2)); }
-        .bubble img { width: 85%; height: 85%; border-radius: 50%; object-fit: cover; border: 2px solid white; }
+        /* Bubble Wall */
+        #bubbleWallOverlay { position: fixed; inset: 0; z-index: 2000; display: none; background: #000; }
+        .bubble { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(201,146,42,0.2)); }
     </style>
 </head>
 <body>
@@ -76,140 +90,51 @@
             <span class="n-link" onclick="showPage('p0')">หน้าแรก</span>
             <span class="n-link" onclick="showPage('p1')">ความรู้โขน</span>
             <span class="n-link" onclick="showPage('p2')">AI ออกแบบ</span>
-            <span class="n-link" onclick="showPage('p3')">Zero Waste</span>
             <span class="n-link" onclick="showPage('p4')">AR Experience</span>
         </div>
     </nav>
 
     <section id="p0" class="page active">
         <h1>THE ROYAL CONNECTION</h1>
-        <div class="sub-t">สายใยแห่งพระมหากรุณาธิคุณ: สมเด็จพระพันปีหลวงกับมรดกโขนไทย</div>
+        <div class="sub-t">สมเด็จพระพันปีหลวงกับมรดกโขนไทย</div>
         
         <div class="img-container">
-            <img src="queen.webp" alt="สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ">
-            <div class="img-caption">พระอัจฉริยภาพในการอนุรักษ์ศิลปวัฒนธรรมของชาติ</div>
+            <img src="queen.webp" alt="สมเด็จพระพันปีหลวง">
         </div>
 
-        <div class="card" style="max-width: 800px; margin: 2rem auto; text-align: center; cursor: default;">
+        <div class="card" style="max-width: 800px; cursor: default;">
             <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง</p>
         </div>
-        <div class="btn-wrap"><button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button></div>
+        
+        <div class="btn-wrap">
+            <button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button>
+        </div>
     </section>
 
     <section id="p1" class="page">
         <h1>KNOWLEDGE HUB</h1>
-        <div class="sub-t">คลิกที่หัวข้อเพื่อเจาะลึกรายละเอียด</div>
+        <div class="sub-t">เจาะลึกมรดกวัฒนธรรมไทย</div>
         <div class="grid-info">
-            <div class="card" onclick="showPage('detail-mask')">
-                <h3>🎭 หัวโขน (THE MASK)</h3>
-                <p>เรียนรู้รหัสลับสีหน้าและมงกุฎ</p>
+            <div class="card" onclick="alert('แสดงเนื้อหาหัวโขน')">
+                <h3>🎭 หัวโขน</h3>
+                <p>รหัสลับสีหน้าและมงกุฎบ่งบอกศักดิ์ศรี</p>
             </div>
-            <div class="card" onclick="showPage('detail-costume')">
-                <h3>👗 การแต่งกาย (COSTUME)</h3>
-                <p>เจาะลึกงานประณีตศิลป์การปักสะดึงกรึงไหม</p>
-            </div>
-            <div class="card" onclick="showPage('detail-voice')">
-                <h3>🗣️ การพากย์-เจรจา (VOICE)</h3>
-                <p>จิตวิญญาณแห่งเสียงพากย์และภาษาท่าทาง</p>
+            <div class="card" onclick="alert('แสดงเนื้อหาการแต่งกาย')">
+                <h3>👗 การแต่งกาย</h3>
+                <p>ความวิจิตรของงานปักสะดึงกรึงไหม</p>
             </div>
         </div>
-    </section>
-
-    <section id="detail-mask" class="page">
-        <div class="detail-container">
-            <h1>หัวโขน (THE MASK)</h1>
-            <div class="img-container"><img src="masks.jpg" alt="หัวโขน"><div class="img-caption">ความหลากหลายของหัวโขนตามประเภทตัวละคร</div></div>
-            <div class="detail-body">
-                <h4>• สัญลักษณ์และสีสัน</h4>
-                <p>สีเขียวแทนพระรามหรือทศกัณฐ์, สีทองแทนเทพเจ้า, สีขาวแทนหนุมาน</p>
-            </div>
-            <div class="btn-wrap"><button class="btn-gold" onclick="showPage('p1')">กลับ</button></div>
+        <div class="btn-wrap">
+            <button class="btn-gold" onclick="showPage('p0')">กลับหน้าแรก</button>
         </div>
     </section>
-
-    <section id="detail-costume" class="page">
-        <div class="detail-container">
-            <h1>การแต่งกาย (COSTUME)</h1>
-            <div class="img-container"><img src="costume.jpg" alt="การแต่งกาย"><div class="img-caption">ความวิจิตรของชุดโขนพระราชทาน</div></div>
-            <div class="detail-body">
-                <h4>• งานสะดึงกรึงไหม</h4>
-                <p>การปักดิ้นเงินดิ้นทองที่ประณีตที่สุดโดยช่างฝีมือไทย</p>
-            </div>
-            <div class="btn-wrap"><button class="btn-gold" onclick="showPage('p1')">กลับ</button></div>
-        </div>
-    </section>
-
-    <section id="detail-voice" class="page">
-        <div class="detail-container">
-            <h1>การพากย์-เจรจา (VOICE)</h1>
-            <div class="img-container"><img src="narration.jpg" alt="การพากย์"><div class="img-caption">คณะพากย์และวงปี่พาทย์ไม้แข็ง</div></div>
-            <div class="detail-body">
-                <h4>• จิตวิญญาณแห่งเสียง</h4>
-                <p>ผู้ให้เสียงแก่ตัวละครผ่านบทพากย์เจรจาตามขนบจารีต</p>
-            </div>
-            <div class="btn-wrap"><button class="btn-gold" onclick="showPage('p1')">กลับ</button></div>
-        </div>
-    </section>
-
-    <section id="p2" class="page"><h1>AI DESIGN STUDIO</h1><div class="card" style="margin:auto;text-align:center;"><div style="font-size:5rem;">🤖</div><p>ออกแบบร่วมกับ AI</p></div></section>
-    <section id="p3" class="page"><h1>SUSTAINABLE KHON</h1><div class="grid-info"><div class="card"><h3>🌿 Zero Waste</h3><p>ใช้วัสดุธรรมชาติในการสร้างสรรค์</p></div></div></section>
-    <section id="p4" class="page"><h1>AR EXPERIENCE</h1><div class="card" style="margin:auto;text-align:center;"><button class="btn-gold" onclick="alert('กำลังเริ่มระบบกล้อง...')">📷 เปิดกล้อง AR</button><button class="btn-gold" onclick="loadBubbleWall()">🫧 ดู Bubble Wall</button></div></section>
-
-    <div id="bubbleWallOverlay">
-        <div id="bubble-container"></div>
-        <div style="position: absolute; bottom: 30px; width: 100%; text-align: center;"><button class="btn-gold" onclick="hideBubbleWall()">กลับ</button></div>
-    </div>
 
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbzkfOo6lhKc_5no88YZgVtgtGRD09cR8JrDPEfYRQ0vaMYR7hNNRkZQIk0aaW_HyfhM/exec";
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             const target = document.getElementById(pageId);
             target.classList.add('active');
             window.scrollTo(0, 0);
-        }
-        async function loadBubbleWall() {
-            document.getElementById('bubbleWallOverlay').style.display = 'block';
-            try {
-                const resp = await fetch(GAS_URL);
-                const ids = await resp.json();
-                renderBubbles(ids);
-                requestAnimationFrame(animate);
-            } catch (e) { console.error("Error loading bubbles"); }
-        }
-        function hideBubbleWall() { document.getElementById('bubbleWallOverlay').style.display = 'none'; }
-        function renderBubbles(ids) {
-            const container = document.getElementById('bubble-container');
-            container.innerHTML = '';
-            ids.forEach(id => {
-                const b = document.createElement('div');
-                b.className = 'bubble';
-                const size = 80 + Math.random() * 50;
-                b.style.width = b.style.height = `${size}px`;
-                b.dataset.x = Math.random() * window.innerWidth;
-                b.dataset.y = Math.random() * window.innerHeight;
-                b.innerHTML = `<img src="https://lh3.googleusercontent.com/d/${id}">`;
-                container.appendChild(b);
-            });
-        }
-        function animate() {
-            const bubbles = document.querySelectorAll('.bubble');
-            const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-            bubbles.forEach((b1, i) => {
-                let x = parseFloat(b1.dataset.x), y = parseFloat(b1.dataset.y);
-                x += (cx - x) * 0.01; y += (cy - y) * 0.01;
-                bubbles.forEach((b2, j) => {
-                    if (i === j) return;
-                    let dx = x - parseFloat(b2.dataset.x), dy = y - parseFloat(b2.dataset.y);
-                    let dist = Math.sqrt(dx*dx + dy*dy);
-                    let min = (parseFloat(b1.style.width) + parseFloat(b2.style.width)) / 2 + 15;
-                    if (dist < min) { x += dx * 0.05; y += dy * 0.05; }
-                });
-                b1.dataset.x = x; b1.dataset.y = y;
-                b1.style.left = `${x - parseFloat(b1.style.width)/2}px`;
-                b1.style.top = `${y - parseFloat(b1.style.height)/2}px`;
-            });
-            if(document.getElementById('bubbleWallOverlay').style.display === 'block') requestAnimationFrame(animate);
         }
     </script>
 </body>
