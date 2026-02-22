@@ -147,6 +147,272 @@
     </div>
 </section>
 
+    <section id="p2" class="page">
+    <div class="main-designer-wrapper" style="display: flex; width: 100%; max-width: 1400px; height: 85vh; background: var(--panel); border: 1px solid rgba(201, 146, 42, 0.2); border-radius: 15px; overflow: hidden; margin-top: 10px;">
+        
+        <div class="side-panel" style="width: 320px; flex-shrink: 0; background: rgba(0,0,0,0.4); border-right: 1px solid rgba(201, 146, 42, 0.12); overflow-y: auto; padding: 20px; text-align: left;">
+            
+            <div class="panel-title" style="color: #A060FF; border-bottom-color: rgba(138, 43, 226, 0.4);">AI ASSISTANT</div>
+            <div class="ai-section" style="background: rgba(138, 43, 226, 0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(138, 43, 226, 0.2); margin-bottom: 20px;">
+                <div class="section-label" style="color: #A060FF; font-size: 10px; margin-bottom: 8px;">AI Design Prompt</div>
+                <textarea id="ai-prompt" style="width: 100%; background: #000; border: 1px solid rgba(138, 43, 226, 0.3); color: #fff; font-family: 'Sarabun'; font-size: 11px; padding: 8px; border-radius: 4px; resize: none; outline: none;" rows="3" placeholder="ระบุลักษณะ เช่น 'ทศกัณฐ์สีมรกต ลายสีเงินกุหลาบ'..."></textarea>
+                <button class="btn-gold" style="width: 100%; margin-top: 8px; padding: 10px; font-size: 11px; background: linear-gradient(135deg, #4B0082, #8A2BE2); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;" onclick="alert('ระบบ AI กำลังวิเคราะห์สไตล์การออกแบบ...')">🪄 ให้ AI ออกแบบ</button>
+            </div>
+
+            <div class="div-ornament" style="color: rgba(200,146,42,0.2); text-align: center; margin-bottom: 15px;">✦ ✦ ✦</div>
+
+            <div class="panel-title">ตัวละคร</div>
+            <div class="char-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 15px;">
+                <div class="char-card active" id="ch-rama" onclick="applyPreset('rama')">พระราม</div>
+                <div class="char-card" id="ch-ravana" onclick="applyPreset('ravana')">ทศกัณฐ์</div>
+                <div class="char-card" id="ch-hanuman" onclick="applyPreset('hanuman')">หนุมาน</div>
+                <div class="char-card" id="ch-sukreep" onclick="applyPreset('sukreep')">สุครีพ</div>
+                <div class="char-card" id="ch-yaksha" onclick="applyPreset('yaksha')">ยักษ์</div>
+                <div class="char-card" id="ch-angel" onclick="applyPreset('angel')">เทวดา</div>
+            </div>
+
+            <div class="panel-title">สีหน้ากาก</div>
+            <div class="swatch-grid" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px;">
+                <div class="swatch active" style="background:#C8922A; width:24px; height:24px; border-radius:4px; cursor:pointer;" onclick="setFaceColor('#C8922A',this)"></div>
+                <div class="swatch" style="background:#2A5C3A; width:24px; height:24px; border-radius:4px; cursor:pointer;" onclick="setFaceColor('#2A5C3A',this)"></div>
+                <div class="swatch" style="background:#8B1A1A; width:24px; height:24px; border-radius:4px; cursor:pointer;" onclick="setFaceColor('#8B1A1A',this)"></div>
+                <div class="swatch" style="background:#DDDAC8; width:24px; height:24px; border-radius:4px; cursor:pointer;" onclick="setFaceColor('#DDDAC8',this)"></div>
+                <div class="swatch" style="background:#1A2A6A; width:24px; height:24px; border-radius:4px; cursor:pointer;" onclick="setFaceColor('#1A2A6A',this)"></div>
+            </div>
+
+            <div class="panel-title">แบบตา/ปาก</div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                <div class="toggle-group" style="display: flex; gap: 5px;">
+                    <button class="toggle-btn active" style="flex:1; font-size:10px; padding:5px;" onclick="setEyeStyle('normal',this)">ตาปกติ</button>
+                    <button class="toggle-btn" style="flex:1; font-size:10px; padding:5px;" onclick="setEyeStyle('demon',this)">ตายักษ์</button>
+                </div>
+                <div class="toggle-group" style="display: flex; gap: 5px;">
+                    <button class="toggle-btn active" style="flex:1; font-size:10px; padding:5px;" onclick="setMouthStyle('smile',this)">ยิ้ม</button>
+                    <button class="toggle-btn" style="flex:1; font-size:10px; padding:5px;" onclick="setMouthStyle('fierce',this)">ดุ</button>
+                </div>
+            </div>
+
+            <div class="panel-title">รายละเอียด</div>
+            <div class="detail-item active" id="d-crown" onclick="toggleDetail('crown')" style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; margin-bottom: 5px; font-size: 11px; cursor: pointer;"><span>ชฎา / มงกุฎ</span><span>✓</span></div>
+            <div class="detail-item active" id="d-earring" onclick="toggleDetail('earring')" style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; margin-bottom: 5px; font-size: 11px; cursor: pointer;"><span>ต่างหู</span><span>✓</span></div>
+            <div class="detail-item active" id="d-mustache" onclick="toggleDetail('mustache')" style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; margin-bottom: 5px; font-size: 11px; cursor: pointer;"><span>หนวด</span><span>✓</span></div>
+
+            <div class="panel-title" style="margin-top: 15px;">ปรับขนาด</div>
+            <div class="slider-row" style="margin-bottom: 10px;">
+                <label style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim);"><span>ความสูงชฎา</span><span id="crownH-val">100%</span></label>
+                <input type="range" min="50" max="160" value="100" style="width: 100%; accent-color: var(--gold);" oninput="setCrownHeight(this)">
+            </div>
+
+            <button class="export-btn" onclick="exportScene()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, var(--gold-dark), var(--gold)); border: none; color: #000; font-weight: bold; border-radius: 5px; cursor: pointer; font-family: 'Cinzel Decorative'; font-size: 10px; margin-top: 10px;">📷 บันทึกภาพ 3D</button>
+        </div>
+
+        <div class="viewport" style="flex: 1; position: relative; background: #000;">
+            <div id="loadingOverlay" style="position: absolute; inset: 0; background: var(--blk); z-index: 10; display: flex; align-items: center; justify-content: center;">
+                <div class="loading-ring" style="width: 40px; height: 40px; border: 3px solid rgba(201,146,42,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            </div>
+            <canvas id="threeCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+            <div class="hint-text" style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: rgba(201,146,42,0.4); letter-spacing: 1px;">🖱 ลาก: หมุน | Scroll: ซูม | คลิกขวา: เลื่อน</div>
+            <div class="viewport-controls" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px;">
+                <button class="view-btn" onclick="setCamera('front')">หน้า</button>
+                <button class="view-btn" onclick="setCamera('quarter')">เฉียง</button>
+                <button class="view-btn" onclick="resetCamera()">รีเซ็ต</button>
+                <button class="view-btn" id="btn-orbit" onclick="toggleAutoRotate()" style="color: var(--gl);">🔄 AUTO</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // --- ส่วนตั้งค่า Scene และตัวแปร State ---
+    const canvas = document.getElementById('threeCanvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0A0806);
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0, 1.5, 7);
+
+    // --- ส่วนการสร้างโมเดลความละเอียดสูง (คืนค่า BuildMask ชุดเดิม) ---
+    let maskGroup = new THREE.Group();
+    scene.add(maskGroup);
+    let faceMesh, crownGroup, mustacheGroup;
+
+    function buildMask() {
+        maskGroup.clear();
+        const faceMaterial = new THREE.MeshPhongMaterial({ color: state.faceColor, shininess: 80, side: THREE.FrontSide });
+        const ornMaterial = new THREE.MeshPhongMaterial({ color: state.ornColor, shininess: 150 });
+        const eyeWhiteMat = new THREE.MeshPhongMaterial({ color: 0xF5F0E0, shininess: 60 });
+        const lipMat = new THREE.MeshPhongMaterial({ color: 0x7A1010, shininess: 60 });
+
+        // 1. ใบหน้า (Lathe Geometry สำหรับทรงที่สมจริง)
+        const faceGeo = new THREE.LatheGeometry([
+            new THREE.Vector2(0, -2.4), new THREE.Vector2(1.3, -1.8),
+            new THREE.Vector2(1.9, 0.8), new THREE.Vector2(1.5, 2.3), new THREE.Vector2(0, 2.8)
+        ], 64);
+        faceMesh = new THREE.Mesh(faceGeo, faceMaterial);
+        maskGroup.add(faceMesh);
+
+        // 2. ดวงตาชุดเต็ม (ตาขาว + รูม่านตา + ตาดำ + ประกาย)
+        const ec = state.eyeStyle === 'demon' ? {ry: 0.35, rz: 0.65} : {ry: 0.28, rz: 0.55};
+        [-0.85, 0.85].forEach(sx => {
+            const eyeW = new THREE.Mesh(new THREE.SphereGeometry(0.42, 16, 12), eyeWhiteMat);
+            eyeW.position.set(sx, 0.95, 1.5);
+            eyeW.scale.set(1, ec.ry/0.28, 1);
+            maskGroup.add(eyeW);
+
+            const iris = new THREE.Mesh(new THREE.SphereGeometry(0.28, 14, 10), new THREE.MeshPhongMaterial({color: state.eyeColor}));
+            iris.position.set(sx, 0.95, 1.75);
+            maskGroup.add(iris);
+
+            const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 8), new THREE.MeshBasicMaterial({color: 0x000000}));
+            pupil.position.set(sx, 0.95, 1.88);
+            maskGroup.add(pupil);
+            
+            // ประกายตา
+            const hi = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), new THREE.MeshBasicMaterial({color: 0xffffff}));
+            hi.position.set(sx - (sx*0.08), 1.05, 1.92);
+            maskGroup.add(hi);
+        });
+
+        // 3. จมูก และ ปาก
+        const nose = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 10), faceMaterial);
+        nose.position.set(0, -0.05, 1.9);
+        nose.scale.set(1.4, 0.7, 0.8);
+        maskGroup.add(nose);
+
+        const mouth = new THREE.Mesh(new THREE.SphereGeometry(0.42, 16, 8), lipMat);
+        mouth.position.set(0, -1.1, 1.75);
+        mouth.scale.set(1.5, state.mouthStyle === 'fierce' ? 0.2 : 0.4, 0.6);
+        maskGroup.add(mouth);
+
+        // 4. ชฎา / มงกุฎ (Multi-tier)
+        if(state.details.crown) {
+            crownGroup = new THREE.Group();
+            const baseBand = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.1, 0.4, 64), ornMaterial);
+            baseBand.position.y = 2.8;
+            crownGroup.add(baseBand);
+            
+            const tier1 = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.8, 0.8, 48), ornMaterial);
+            tier1.position.y = 3.3;
+            crownGroup.add(tier1);
+
+            const spire = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 1.4, 2.5, 32), ornMaterial);
+            spire.position.y = 4.8;
+            crownGroup.add(spire);
+
+            crownGroup.scale.y = state.crownScale;
+            maskGroup.add(crownGroup);
+        }
+
+        // 5. หนวด (Mustache)
+        if(state.details.mustache) {
+            const mCurve = new THREE.TorusGeometry(0.5, 0.05, 8, 24, Math.PI);
+            const mLeft = new THREE.Mesh(mCurve, ornMaterial);
+            mLeft.position.set(0, -0.75, 1.88);
+            maskGroup.add(mLeft);
+        }
+    }
+
+    // --- ส่วนฟังก์ชันควบคุม UI และ Animation ---
+    const state = { 
+        faceColor: 0xC8922A, ornColor: 0xF0C060, eyeColor: 0x1A1A1A,
+        eyeStyle: 'normal', mouthStyle: 'smile', crownScale: 1.0, 
+        details: { crown: true, earring: true, mustache: true } 
+    };
+
+    function onResize() {
+        const vp = document.querySelector('.viewport');
+        if(!vp || vp.clientWidth === 0) return;
+        renderer.setSize(vp.clientWidth, vp.clientHeight);
+        camera.aspect = vp.clientWidth / vp.clientHeight;
+        camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', onResize);
+
+    scene.add(new THREE.AmbientLight(0xFFE8C0, 0.6));
+    const kL = new THREE.DirectionalLight(0xFFE0A0, 1.2);
+    kL.position.set(5, 8, 5);
+    scene.add(kL);
+
+    function applyPreset(type) {
+        const p = {
+            rama: {f: 0xC8922A, e: 0x1A1A1A, es: 'normal'},
+            ravana: {f: 0x2A5C3A, e: 0x880000, es: 'demon'},
+            hanuman: {f: 0xDDDAC8, e: 0x1A1A1A, es: 'normal'},
+            yaksha: {f: 0x8B1A1A, e: 0x880000, es: 'demon'},
+            sukreep: {f: 0x1A2A6A, e: 0x003388, es: 'demon'},
+            angel: {f: 0xC8922A, e: 0x1A1A1A, es: 'normal'}
+        };
+        state.faceColor = p[type].f;
+        state.eyeColor = p[type].e;
+        state.eyeStyle = p[type].es;
+        document.querySelectorAll('.char-card').forEach(c => c.classList.remove('active'));
+        document.getElementById('ch-'+type).classList.add('active');
+        buildMask();
+    }
+
+    function setFaceColor(hex, el) {
+        state.faceColor = parseInt(hex.replace('#',''), 16);
+        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+        el.classList.add('active');
+        buildMask();
+    }
+
+    function setCrownHeight(input) {
+        state.crownScale = input.value / 100;
+        document.getElementById('crownH-val').innerText = input.value + '%';
+        buildMask();
+    }
+
+    function toggleDetail(key) {
+        state.details[key] = !state.details[key];
+        document.getElementById('d-'+key).classList.toggle('active');
+        buildMask();
+    }
+
+    let spherical = { theta: 0, phi: Math.PI/2.5, radius: 7.5 };
+    let autoRotate = false;
+    function toggleAutoRotate() { autoRotate = !autoRotate; document.getElementById('btn-orbit').classList.toggle('active'); }
+    function resetCamera() { spherical.theta = 0; spherical.phi = Math.PI/2.5; spherical.radius = 7.5; }
+    function setCamera(view) {
+        if(view === 'front') { spherical.theta = 0; spherical.phi = Math.PI/2; }
+        if(view === 'quarter') { spherical.theta = Math.PI/4; spherical.phi = Math.PI/2.5; }
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        if(autoRotate) spherical.theta += 0.008;
+        const x = spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta);
+        const y = spherical.radius * Math.cos(spherical.phi);
+        const z = spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta);
+        camera.position.set(x, y + 1.2, z);
+        camera.lookAt(0, 1.2, 0);
+        renderer.render(scene, camera);
+    }
+
+    function exportScene() {
+        renderer.render(scene, camera);
+        const link = document.createElement('a');
+        link.download = 'khon-mask-design.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+
+    // --- เริ่มต้นระบบ ---
+    buildMask();
+    animate();
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(id === 'p2') setTimeout(onResize, 100);
+        window.scrollTo(0,0);
+    }
+    setTimeout(() => { document.getElementById('loadingOverlay').style.display='none'; onResize(); }, 1200);
+</script>
+    
     <script>
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
