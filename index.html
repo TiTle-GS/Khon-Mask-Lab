@@ -1,678 +1,1113 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI–AR Sustainable Khon Mask Lab | สานศิลป์ ถิ่นศึกษา</title>
-    
-    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.1/dist/mindar-face-aframe.prod.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --gold: #C9922A; --gl: #F5C842; --red: #8B1A1A;
-            --blk: #0A0806; --cream: #F7F0E0; --glass: rgba(255, 255, 255, 0.05);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI–AR Sustainable Khon Mask Lab | สานศิลป์ ถิ่นศึกษา</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: var(--blk); color: var(--cream); 
-            font-family: 'Noto Serif Thai', serif; overflow-x: hidden; line-height: 1.6;
-            display: flex; flex-direction: column; align-items: center;
-        }
+<!-- ✅ THREE.JS โหลดถูกต้อง -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
 
-        /* ── Navigation (จัดกึ่งกลางเมนู) ── */
-        .tnav { 
-            position: fixed; top: 0; width: 100%; padding: 1rem 5%; 
-            z-index: 1000; display: flex; justify-content: space-between; align-items: center;
-            background: rgba(10, 8, 6, 0.95); border-bottom: 1px solid rgba(201, 146, 42, 0.2);
-            backdrop-filter: blur(10px);
-        }
-        .n-logo { font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 1.2rem; }
-        .n-links { display: flex; gap: 20px; }
-        .n-link { color: var(--gold); text-decoration: none; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
-
-        /* ── Page Layout (บังคับเนื้อหาให้อยู่กลาง) ── */
-        .page { 
-            display: none; width: 100%; min-height: 100vh; 
-            padding: 120px 10% 60px; opacity: 0; transition: opacity 0.5s ease;
-            flex-direction: column; align-items: center; text-align: center;
-        }
-        .page.active { display: flex; opacity: 1; }
-
-        h1, h2 { font-family: 'Cinzel Decorative', cursive; color: var(--gold); margin-bottom: 1.5rem; width: 100%; }
-        .sub-t { font-size: 0.9rem; color: var(--gl); margin-bottom: 2rem; letter-spacing: 1px; width: 100%; }
-
-        /* ── Photo Frame (จัดกลางรูปภาพ) ── */
-        .img-container {
-            width: 100%; max-width: 450px; margin: 0 auto 2rem;
-            border-radius: 15px; overflow: hidden; border: 2px solid var(--gold);
-            box-shadow: 0 10px 40px rgba(201, 146, 42, 0.2);
-        }
-        .img-container img { width: 100%; display: block; transition: 0.6s; }
-        .img-container:hover img { transform: scale(1.05); }
-
-        /* ── Grid & Cards (จัดกึ่งกลางกลุ่ม Card) ── */
-        .grid-info { 
-            display: grid; width: 100%; max-width: 1000px;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 25px; margin-top: 2rem; justify-content: center;
-        }
-        .card { 
-            background: var(--glass); border: 1px solid rgba(201, 146, 42, 0.15); 
-            padding: 2rem; border-radius: 15px; transition: 0.4s;
-            backdrop-filter: blur(5px);
-        }
-
-        /* ── Center Buttons (บังคับปุ่มอยู่กลาง) ── */
-        .btn-wrap { 
-            display: flex; width: 100%; justify-content: center; 
-            margin-top: 3rem; gap: 20px;
-        }
-        .btn-gold { 
-            padding: 12px 40px; background: linear-gradient(135deg, var(--gold), #8A641A); 
-            border: none; color: #000; font-weight: 900; border-radius: 50px; 
-            cursor: pointer; transition: 0.3s;
-        }
-        .btn-gold:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--gold); }
-
-        /* Bubble Wall */
-        #bubbleWallOverlay { position: fixed; inset: 0; z-index: 2000; display: none; background: #000; }
-        .bubble { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(201,146,42,0.2)); }
-
-
+<style>
 :root {
-  --gold: #C8922A; --gold-light: #F0C060; --gold-dark: #8B5E15;
-  --deep: #0D0A06; --bg: #0A0806; --panel: #131008; --panel2: #1C1609;
-  --white: #F5ECD7; --text-dim: #8A7050; --accent: #FF4444;
+  --gold: #C9922A; --gl: #F5C842; --red: #8B1A1A;
+  --blk: #0A0806; --cream: #F7F0E0; --glass: rgba(255,255,255,0.05);
+  --panel: #131008; --text-dim: #7A6040;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; height: 100%; overflow: hidden; }
-body {
-  font-family: 'Sarabun', sans-serif;
-  background: var(--bg);
-  color: var(--white);
-  display: flex;
-  flex-direction: column;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; background: var(--blk); color: var(--cream); font-family: 'Noto Serif Thai', serif; overflow: hidden; }
 
-/* ─── HEADER ─── */
-header {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 24px;
-  border-bottom: 1px solid rgba(200,146,42,0.2);
-  background: rgba(10,8,6,0.95);
-  backdrop-filter: blur(10px);
-  z-index: 100;
+/* ── NAV ── */
+.tnav {
+  position: fixed; top: 0; width: 100%; padding: 12px 5%;
+  z-index: 1000; display: flex; justify-content: space-between; align-items: center;
+  background: rgba(10,8,6,0.97); border-bottom: 1px solid rgba(201,146,42,0.2);
+  backdrop-filter: blur(10px); height: 56px;
 }
-header h1 {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 20px;
-  color: var(--gold-light);
-  letter-spacing: 4px;
-  text-shadow: 0 0 30px rgba(200,146,42,0.4);
+.n-logo { font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 1.1rem; letter-spacing: 2px; }
+.n-links { display: flex; gap: 6px; }
+.n-link {
+  color: var(--text-dim); text-decoration: none; font-size: 12px; cursor: pointer;
+  padding: 6px 14px; border: 1px solid transparent; border-radius: 3px; transition: all 0.2s;
+  font-family: 'Sarabun', sans-serif; letter-spacing: 1px;
 }
-.header-sub { font-size: 10px; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; margin-top: 2px; }
-.mode-tabs { display: flex; gap: 4px; }
-.mode-tab {
-  padding: 8px 18px;
-  border: 1px solid rgba(200,146,42,0.2);
-  background: transparent;
-  color: var(--text-dim);
-  font-family: 'Sarabun', sans-serif;
-  font-size: 12px;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: all 0.2s;
-  letter-spacing: 1px;
-}
-.mode-tab.active, .mode-tab:hover {
-  border-color: var(--gold);
-  color: var(--gold-light);
-  background: rgba(200,146,42,0.08);
-}
+.n-link:hover, .n-link.active { color: var(--gl); border-color: rgba(201,146,42,0.3); background: rgba(201,146,42,0.07); }
 
-/* ─── MAIN LAYOUT ─── */
-.main {
-  flex: 1;
-  display: flex;
-  min-height: 0;
-  overflow: hidden;
+/* ── PAGES ── */
+.page {
+  position: fixed; inset: 56px 0 0 0;
+  display: none; overflow-y: auto;
+  opacity: 0; transition: opacity 0.4s;
 }
+.page.active { display: flex; opacity: 1; flex-direction: column; align-items: center; }
 
-/* ─── SIDE PANEL ─── */
-.side-panel {
-  width: 260px;
-  flex-shrink: 0;
-  background: var(--panel);
-  border-right: 1px solid rgba(200,146,42,0.12);
-  overflow-y: auto;
-  padding: 16px 14px;
-}
-.side-panel::-webkit-scrollbar { width: 4px; }
-.side-panel::-webkit-scrollbar-track { background: transparent; }
-.side-panel::-webkit-scrollbar-thumb { background: rgba(200,146,42,0.3); border-radius: 2px; }
-
-.panel-title {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 9px;
-  color: var(--gold);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(200,146,42,0.15);
-}
-.section { margin-bottom: 22px; }
-.section-label {
-  font-size: 10px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-/* Char cards */
-.char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.char-card {
-  background: var(--panel2);
-  border: 1px solid rgba(200,146,42,0.12);
-  border-radius: 4px;
-  padding: 8px 6px;
-  cursor: pointer;
+/* ── PAGE 0 — HOME ── */
+.hero-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; min-height: 100%; padding: 40px 10%;
   text-align: center;
-  transition: all 0.2s;
-  font-size: 11px;
-  color: var(--text-dim);
+}
+.hero-wrap h1 { font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 2.2rem; margin-bottom: 8px; }
+.sub-t { font-size: 13px; color: var(--gl); letter-spacing: 2px; margin-bottom: 32px; }
+.img-container {
+  width: 100%; max-width: 380px; margin: 0 auto 28px;
+  border-radius: 12px; overflow: hidden; border: 2px solid var(--gold);
+  box-shadow: 0 10px 40px rgba(201,146,42,0.2);
+}
+.img-container img { width: 100%; display: block; }
+.info-card {
+  max-width: 700px; background: var(--glass); border: 1px solid rgba(201,146,42,0.15);
+  padding: 24px 32px; border-radius: 12px; margin-bottom: 28px;
+  backdrop-filter: blur(5px); line-height: 1.8; font-size: 15px;
+}
+.btn-wrap { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn-gold {
+  padding: 11px 34px; background: linear-gradient(135deg, var(--gold), #8A641A);
+  border: none; color: #000; font-weight: 900; border-radius: 50px;
+  cursor: pointer; transition: all 0.3s; font-family: 'Sarabun', sans-serif;
+  font-size: 13px; letter-spacing: 1px;
+}
+.btn-gold:hover { transform: scale(1.07); box-shadow: 0 0 20px rgba(201,146,42,0.5); }
+
+/* ── PAGE 1 — KNOWLEDGE ── */
+.knowledge-wrap {
+  max-width: 860px; width: 100%; padding: 40px 24px 60px;
+}
+.knowledge-wrap h1 { font-family: 'Cinzel Decorative', cursive; color: var(--gold); margin-bottom: 6px; }
+.k-body { background: rgba(255,255,255,0.03); border: 1px solid rgba(201,146,42,0.18); border-radius: 16px; padding: 36px 40px; }
+.k-section-title {
+  color: var(--gl); font-family: 'Noto Serif Thai', serif; font-weight: 700;
+  font-size: 18px; border-left: 4px solid var(--gold); padding-left: 14px; margin-bottom: 18px;
+}
+.k-body p { font-size: 15px; line-height: 2; margin-bottom: 18px; text-indent: 2em; }
+.unesco-box {
+  background: rgba(201,146,42,0.08); border: 1px solid var(--gold);
+  border-radius: 10px; padding: 20px 24px; margin: 24px 0;
+}
+.unesco-box h3 { color: var(--gl); margin-bottom: 8px; font-size: 15px; }
+.unesco-box p { font-size: 14px; text-indent: 0; margin: 0; }
+
+/* ── PAGE 2 — 3D DESIGNER ── */
+#p2 {
+  flex-direction: row !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+}
+.side-panel {
+  width: 280px; flex-shrink: 0;
+  background: rgba(5,4,3,0.96); border-right: 1px solid rgba(201,146,42,0.14);
+  overflow-y: auto; padding: 16px 14px;
+}
+.side-panel::-webkit-scrollbar { width: 3px; }
+.side-panel::-webkit-scrollbar-thumb { background: rgba(201,146,42,0.3); border-radius: 2px; }
+.panel-title {
+  font-family: 'Cinzel Decorative', cursive; font-size: 9px; color: var(--gold);
+  letter-spacing: 3px; text-transform: uppercase; margin: 16px 0 10px;
+  padding-bottom: 6px; border-bottom: 1px solid rgba(201,146,42,0.15);
+}
+.panel-title:first-child { margin-top: 4px; }
+.section-label { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Sarabun', sans-serif; }
+
+/* AI Box */
+.ai-box {
+  background: rgba(90,20,180,0.08); border: 1px solid rgba(120,40,220,0.25);
+  border-radius: 8px; padding: 12px; margin-bottom: 4px;
+}
+.ai-box textarea {
+  width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(120,40,220,0.3);
+  color: #ddd; font-family: 'Sarabun', sans-serif; font-size: 11px;
+  padding: 8px; border-radius: 4px; resize: none; outline: none; line-height: 1.5;
+}
+.ai-box textarea::placeholder { color: #555; }
+.btn-ai {
+  width: 100%; margin-top: 8px; padding: 9px; font-size: 11px;
+  background: linear-gradient(135deg, #3B0070, #7A22CC); color: #fff;
+  border: none; border-radius: 4px; cursor: pointer; font-weight: 700;
+  font-family: 'Sarabun', sans-serif; transition: all 0.2s;
+}
+.btn-ai:hover { background: linear-gradient(135deg, #5010A0, #9A40EE); }
+
+/* Char grid */
+.char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 4px; }
+.char-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(201,146,42,0.12);
+  border-radius: 4px; padding: 8px 4px; cursor: pointer; text-align: center;
+  transition: all 0.2s; font-size: 11px; color: var(--text-dim);
+  font-family: 'Sarabun', sans-serif;
 }
 .char-card:hover, .char-card.active {
-  border-color: var(--gold);
-  color: var(--gold-light);
-  background: rgba(200,146,42,0.06);
+  border-color: var(--gold); color: var(--gl); background: rgba(201,146,42,0.07);
 }
-.char-card .emoji { font-size: 20px; display: block; margin-bottom: 3px; }
+.char-card .emo { font-size: 18px; display: block; margin-bottom: 3px; }
 
 /* Swatches */
-.swatch-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+.swatch-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 4px; }
 .swatch {
   width: 26px; height: 26px; border-radius: 3px; cursor: pointer;
-  border: 2px solid transparent; transition: all 0.2s;
+  border: 2px solid transparent; transition: all 0.15s;
 }
-.swatch:hover { transform: scale(1.15); }
-.swatch.active { border-color: var(--gold-light); box-shadow: 0 0 8px rgba(240,192,96,0.5); }
+.swatch:hover { transform: scale(1.2); }
+.swatch.active { border-color: var(--gl); box-shadow: 0 0 8px rgba(245,200,66,0.5); }
+
+/* Toggle */
+.toggle-group { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 4px; }
+.toggle-btn {
+  flex: 1; padding: 6px 4px; border: 1px solid rgba(201,146,42,0.18);
+  background: transparent; color: var(--text-dim); border-radius: 3px;
+  font-size: 10px; cursor: pointer; transition: all 0.2s;
+  font-family: 'Sarabun', sans-serif; min-width: 48px;
+}
+.toggle-btn:hover, .toggle-btn.active {
+  border-color: var(--gold); color: var(--gl); background: rgba(201,146,42,0.09);
+}
+
+/* Details */
+.detail-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px; background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(201,146,42,0.1); border-radius: 4px;
+  margin-bottom: 5px; font-size: 11px; color: var(--text-dim);
+  cursor: pointer; transition: all 0.2s; font-family: 'Sarabun', sans-serif;
+}
+.detail-item.active { border-color: rgba(201,146,42,0.35); color: var(--cream); }
+.d-check { width: 14px; height: 14px; border: 1px solid rgba(201,146,42,0.3); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--gold); }
+.detail-item.active .d-check { background: rgba(201,146,42,0.18); border-color: var(--gold); }
 
 /* Sliders */
-.slider-row { margin-bottom: 10px; }
-.slider-row label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-bottom: 5px; }
+.slider-row { margin-bottom: 11px; }
+.slider-row label { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); margin-bottom: 5px; font-family: 'Sarabun', sans-serif; }
 input[type=range] {
-  width: 100%; height: 3px; -webkit-appearance: none;
-  background: linear-gradient(90deg, var(--gold) var(--pct,50%), rgba(200,146,42,0.2) var(--pct,50%));
+  width: 100%; height: 3px; -webkit-appearance: none; appearance: none;
+  background: linear-gradient(90deg, var(--gold) var(--pct,50%), rgba(201,146,42,0.18) var(--pct,50%));
   border-radius: 2px; outline: none; cursor: pointer;
 }
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none; width: 13px; height: 13px;
-  border-radius: 50%; background: var(--gold-light); border: 2px solid var(--bg); cursor: pointer;
+  border-radius: 50%; background: var(--gl); border: 2px solid var(--blk); cursor: pointer;
 }
 
-/* Toggle btns */
-.toggle-group { display: flex; gap: 5px; flex-wrap: wrap; }
-.toggle-btn {
-  padding: 5px 10px; border: 1px solid rgba(200,146,42,0.2);
-  background: transparent; color: var(--text-dim); border-radius: 3px;
-  font-size: 10px; cursor: pointer; transition: all 0.2s;
-  font-family: 'Sarabun', sans-serif; letter-spacing: 1px;
+/* Export */
+.btn-export {
+  width: 100%; margin-top: 10px; padding: 11px; font-size: 10px;
+  background: linear-gradient(135deg, #7A5500, var(--gold));
+  border: none; color: #000; font-weight: 900; border-radius: 4px;
+  cursor: pointer; font-family: 'Cinzel Decorative', cursive; letter-spacing: 1px; transition: all 0.2s;
 }
-.toggle-btn:hover, .toggle-btn.active {
-  border-color: var(--gold); color: var(--gold-light); background: rgba(200,146,42,0.08);
-}
+.btn-export:hover { box-shadow: 0 0 18px rgba(201,146,42,0.4); }
 
-/* Detail toggle items */
-.detail-item {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 10px; background: var(--panel2);
-  border: 1px solid rgba(200,146,42,0.1); border-radius: 4px;
-  margin-bottom: 6px; font-size: 11px; color: var(--text-dim); cursor: pointer; transition: all 0.2s;
-}
-.detail-item:hover, .detail-item.active { border-color: rgba(200,146,42,0.4); color: var(--white); }
-.detail-check {
-  width: 14px; height: 14px; border: 1px solid rgba(200,146,42,0.3);
-  border-radius: 2px; display: flex; align-items: center; justify-content: center;
-  font-size: 9px; color: var(--gold); transition: all 0.2s;
-}
-.detail-item.active .detail-check { background: rgba(200,146,42,0.2); border-color: var(--gold); }
+/* Divider ornament */
+.orn { text-align: center; color: rgba(201,146,42,0.22); font-size: 13px; margin: 10px 0; letter-spacing: 5px; }
 
-.div-ornament { text-align: center; color: rgba(200,146,42,0.25); font-size: 14px; margin: 8px 0; letter-spacing: 6px; }
-
-/* ─── 3D VIEWPORT ─── */
-.viewport {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
+/* 3D Viewport */
+.viewport3d { flex: 1; position: relative; background: #080605; overflow: hidden; }
+#threeCanvas { width: 100%; height: 100%; display: block; }
+.hint-text {
+  position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+  font-size: 10px; color: rgba(201,146,42,0.38); letter-spacing: 1.5px;
+  pointer-events: none; font-family: 'Sarabun', sans-serif; white-space: nowrap;
 }
-#threeCanvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-/* 3D Controls overlay */
 .viewport-controls {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 7px;
 }
 .view-btn {
-  padding: 7px 16px;
-  border: 1px solid rgba(200,146,42,0.3);
-  background: rgba(10,8,6,0.8);
-  color: var(--text-dim);
-  font-size: 10px;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: all 0.2s;
-  font-family: 'Sarabun', sans-serif;
-  letter-spacing: 1px;
-  backdrop-filter: blur(8px);
+  padding: 7px 16px; border: 1px solid rgba(201,146,42,0.28);
+  background: rgba(8,6,5,0.85); color: var(--text-dim);
+  font-size: 10px; cursor: pointer; border-radius: 2px; transition: all 0.2s;
+  font-family: 'Sarabun', sans-serif; letter-spacing: 1px; backdrop-filter: blur(6px);
 }
-.view-btn:hover { border-color: var(--gold); color: var(--gold-light); }
-
-.hint-text {
-  position: absolute;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  color: rgba(200,146,42,0.4);
-  letter-spacing: 2px;
-  pointer-events: none;
-}
-
-/* Export btn */
-.export-btn {
-  padding: 10px 20px;
-  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-  border: none; color: var(--deep);
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 9px; letter-spacing: 2px;
-  cursor: pointer; border-radius: 2px; transition: all 0.3s;
-  text-transform: uppercase; width: 100%; margin-top: 8px;
-}
-.export-btn:hover {
-  background: linear-gradient(135deg, var(--gold), var(--gold-light));
-  box-shadow: 0 0 20px rgba(200,146,42,0.4);
-}
-
-/* Loading overlay */
+.view-btn:hover, .view-btn.active { border-color: var(--gold); color: var(--gl); }
 #loadingOverlay {
-  position: absolute;
-  inset: 0;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-  transition: opacity 0.5s;
+  position: absolute; inset: 0; background: var(--blk); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; z-index: 20; transition: opacity 0.4s;
 }
 .loading-ring {
-  width: 60px; height: 60px;
-  border: 2px solid rgba(200,146,42,0.2);
-  border-top-color: var(--gold);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 16px;
+  width: 48px; height: 48px; border: 2px solid rgba(201,146,42,0.2);
+  border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 14px;
 }
+.loading-text { font-size: 11px; color: var(--text-dim); letter-spacing: 3px; font-family: 'Sarabun', sans-serif; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-size: 11px; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; }
-        
-    </style>
+
+/* Mobile-friendly collapse */
+@media (max-width: 700px) {
+  .side-panel { width: 220px; }
+  .n-links { gap: 2px; }
+  .n-link { padding: 5px 8px; font-size: 10px; }
+}
+</style>
 </head>
 <body>
 
-    <nav class="tnav">
-        <div class="n-logo">KHON LAB</div>
-        <div class="n-links">
-            <span class="n-link" onclick="showPage('p0')">หน้าแรก</span>
-            <span class="n-link" onclick="showPage('p1')">ความรู้โขน</span>
-            <span class="n-link" onclick="showPage('p2')">AI ออกแบบ</span>
-            <span class="n-link" onclick="showPage('p4')">AR Experience</span>
-        </div>
-    </nav>
+<!-- ══ NAV ══ -->
+<nav class="tnav">
+  <div class="n-logo">KHON LAB</div>
+  <div class="n-links">
+    <span class="n-link active" id="nav-p0" onclick="showPage('p0')">หน้าแรก</span>
+    <span class="n-link" id="nav-p1" onclick="showPage('p1')">ความรู้โขน</span>
+    <span class="n-link" id="nav-p2" onclick="showPage('p2')">🎭 AI ออกแบบ 3D</span>
+  </div>
+</nav>
 
-    <section id="p0" class="page active">
-        <h1>THE ROYAL CONNECTION</h1>
-        <div class="sub-t">สมเด็จพระพันปีหลวงกับมรดกโขนไทย</div>
-        
-        <div class="img-container">
-            <img src="queen.webp" alt="สมเด็จพระพันปีหลวง">
-        </div>
+<!-- ══ PAGE 0 — HOME ══ -->
+<div id="p0" class="page active">
+  <div class="hero-wrap">
+    <h1>THE ROYAL CONNECTION</h1>
+    <div class="sub-t">สมเด็จพระพันปีหลวงกับมรดกโขนไทย</div>
+    <div class="img-container">
+      <img src="queen.webp" alt="สมเด็จพระพันปีหลวง" onerror="this.style.display='none';this.parentElement.style.minHeight='160px';this.parentElement.style.background='linear-gradient(135deg,#1a1000,#2a1a00)';this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:160px;color:#C8922A;font-size:48px\'>👑</div>'">
+    </div>
+    <div class="info-card">
+      <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง<br>ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง<br>จนได้รับการขึ้นทะเบียนเป็นมรดกโลก UNESCO</p>
+    </div>
+    <div class="btn-wrap">
+      <button class="btn-gold" onclick="showPage('p1')">เรียนรู้มรดกไทย 📖</button>
+      <button class="btn-gold" onclick="showPage('p2')">ออกแบบหัวโขน 3D 🎭</button>
+    </div>
+  </div>
+</div>
 
-        <div class="card" style="max-width: 800px; cursor: default;">
-            <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง <br> ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง</p>
-        </div>
-        
-        <div class="btn-wrap">
-            <button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button>
-        </div>
-    </section>
-
-  <section id="p1" class="page">
-    <h1 style="font-family:'Cinzel Decorative'; color:var(--gold); font-size: 2.5rem;">KNOWLEDGE HUB</h1>
+<!-- ══ PAGE 1 — KNOWLEDGE ══ -->
+<div id="p1" class="page">
+  <div class="knowledge-wrap">
+    <h1 style="margin-bottom:6px">KNOWLEDGE HUB</h1>
     <div class="sub-t">มรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ (UNESCO)</div>
-
-    <div class="detail-container" style="max-width: 900px; text-align: left; background: rgba(255,255,255,0.03); padding: 40px; border-radius: 20px; border: 1px solid rgba(201, 146, 42, 0.2);">
-        <h2 style="text-align: left; color: var(--gl); font-family: 'Noto Serif Thai'; font-weight: 700; border-left: 5px solid var(--gold); padding-left: 15px; margin-bottom: 20px;">โขนพระราชทาน</h2>
-        
-        <div class="detail-body" style="font-size: 1.1rem; line-height: 2; color: var(--cream);">
-            <p style="margin-bottom: 20px; text-indent: 2em;">
-                ประเทศไทย <strong>"โขน"</strong> เป็นศาสตร์และศิลปะการแสดงชั้นสูงของไทยที่หลอมรวมศิลปะของชาติหลากหลายแขนง นับแต่วรรณกรรม วรรณศิลป์ นาฏศิลป์ คีตศิลป์ หัตถศิลป์ และพัสตราภรณ์อันงดงามตามแบบฉบับโบราณ รวมถึงการจัดฉากและแสง เสียง ที่ยิ่งใหญ่
-            </p>
-
-          
-            <p style="margin-bottom: 20px; text-indent: 2em;">
-                โขนพระราชทานเริ่มขึ้นในปี พ.ศ. ๒๕๕๐ เป็นการแสดงเรื่องรามเกียรติ์ ตอนพรหมาศ ในรูปแบบการบรรเลงคอนเสิร์ตโดยวงโยธวาทิต กองดุริยางค์กองทัพบก เพื่อเฉลิมฉลองพระบาทสมเด็จพระบรมชนกาธิเบศร มหาภูมิพลอดุลยเดชมหาราช บรมนาถบพิตร ทรงเจริญพระชนมพรรษา ๘๐ พรรษา และสมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง ทรงเจริญพระชนมพรรษา ๗๕ พรรษา ณ หอประชุมใหญ่ ศูนย์วัฒนธรรมแห่งประเทศไทย และเมื่อวันที่ ๒๕ ธันวาคม ๒๕๕๐ สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง เสด็จพระราชดำเนินทอดพระเนตรการแสดงรอบปฐมทัศน์
-            </p>
-
-            <p style="margin-bottom: 20px;">
-               จากวันนั้น โขนพระราชทานที่สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนี พระบรมราชชนนีพันปีหลวง ได้ทอดพระเนตร จึงมีพระราชเสาวนีย์ว่า ทุกวันนี้ประชาชนชาวไทยไม่ใคร่มีโอกาสได้ชมโขน เนื่องจากการจัดการแสดงโขนแต่ละครั้งไม่ใช่เรื่องง่าย จึงทรงพระกรุณาโปรดเกล้าฯ ให้ประชุมผู้รู้ ผู้เชี่ยวชาญเกี่ยวกับโขน และงานหัตถศิลป์แขนงต่างๆ แล้วโปรดเกล้าฯ ให้จัดสร้างเครื่องแต่งกายโขนขึ้นใหม่สำหรับใช้ในการแสดงโขนพระราชทาน โดยทรงกำชับให้ยึดถือรูปแบบเครื่องแต่งกายโขนแบบโบราณ แต่มีความคงทนและสวยงามยิ่งขึ้น ได้รับการส่งเสริม สืบสานและพัฒนาการแสดงจนได้รับความนิยมจนถึงวันนี้
-            </p>
-
-            <div class="card" style="background: rgba(201, 146, 42, 0.1); border: 1px solid var(--gold); margin: 30px 0;">
-                <h3 style="color: var(--gl); margin-bottom: 10px;">UNESCO</h3>
-                <p style="font-size: 1rem;">
-                    องค์การยูเนสโกได้ประกาศขึ้นทะเบียน <strong>“โขน”</strong>ของไทย เป็นรายการตัวแทนมรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ เมื่อวันที่ ๒๙ พฤศจิกายน ๒๕๖๑ ถือเป็นการยืนยันบทบาทของประเทศไทยในเวทีโลกต่อการดำเนินงานตามอนุสัญญาว่าด้วยการสงวนรักษามรดกวัฒนธรรมที่จับต้องไม่ได้ ค.ศ. ๒๐๐๓ และภายใต้แนวปฏิบัติ การดำเนินงานตามอนุสัญญาฯ ประเทศไทยเพิ่มความตระหนักเพื่อให้เกิดความเคารพและเรียนรู้คุณค่าทั้งในระดับท้องถิ่น ระดับชาติและระดับนานาชาติ ตลอดจนสร้างการมีส่วนร่วมอย่างกว้างขวางในการส่งเสริมและรักษามรดกวัฒนธรรมโขนให้สืบสานอย่างต่อเนื่อง
-                </p>
-            </div>
-        </div>
-
-        <div class="btn-wrap">
-            <button class="btn-gold" onclick="showPage('p0')">กลับหน้าแรก</button>
-            <button class="btn-gold" onclick="showPage('p2')">ไปหน้า AI ออกแบบ →</button>
-        </div>
+    <div class="k-body">
+      <div class="k-section-title">โขนพระราชทาน</div>
+      <p>ประเทศไทย <strong>"โขน"</strong> เป็นศาสตร์และศิลปะการแสดงชั้นสูงของไทยที่หลอมรวมศิลปะของชาติหลากหลายแขนง นับแต่วรรณกรรม วรรณศิลป์ นาฏศิลป์ คีตศิลป์ หัตถศิลป์ และพัสตราภรณ์อันงดงามตามแบบฉบับโบราณ รวมถึงการจัดฉากและแสง เสียง ที่ยิ่งใหญ่</p>
+      <p>โขนพระราชทานเริ่มขึ้นในปี พ.ศ. ๒๕๕๐ เป็นการแสดงเรื่องรามเกียรติ์ ตอนพรหมาศ ในรูปแบบการบรรเลงคอนเสิร์ต โดยวงโยธวาทิต กองดุริยางค์กองทัพบก เพื่อเฉลิมฉลองพระบาทสมเด็จพระบรมชนกาธิเบศร มหาภูมิพลอดุลยเดชมหาราช บรมนาถบพิตร ทรงเจริญพระชนมพรรษา ๘๐ พรรษา</p>
+      <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง มีพระราชเสาวนีย์ให้ประชุมผู้รู้ ผู้เชี่ยวชาญเกี่ยวกับโขน โปรดเกล้าฯ ให้จัดสร้างเครื่องแต่งกายโขนขึ้นใหม่ โดยยึดถือรูปแบบเครื่องแต่งกายโขนแบบโบราณ แต่มีความคงทนและสวยงามยิ่งขึ้น</p>
+      <div class="unesco-box">
+        <h3>🌏 UNESCO ขึ้นทะเบียนมรดกโลก</h3>
+        <p>องค์การยูเนสโกได้ประกาศขึ้นทะเบียน <strong>"โขน"</strong> ของไทย เป็นรายการตัวแทนมรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ เมื่อวันที่ ๒๙ พฤศจิกายน ๒๕๖๑ ถือเป็นการยืนยันบทบาทของประเทศไทยในเวทีโลก และสร้างการมีส่วนร่วมอย่างกว้างขวางในการส่งเสริมรักษามรดกวัฒนธรรมโขนให้สืบสานต่อเนื่อง</p>
+      </div>
     </div>
-</section>
-
-    <section id="p2" class="page">
-    <div class="main-designer-wrapper" style="display: flex; width: 100%; max-width: 1400px; height: 85vh; background: var(--panel); border: 1px solid rgba(201, 146, 42, 0.2); border-radius: 15px; overflow: hidden; margin-top: 10px;">
-        
-        <div class="side-panel" style="width: 320px; flex-shrink: 0; background: rgba(0,0,0,0.4); border-right: 1px solid rgba(201, 146, 42, 0.12); overflow-y: auto; padding: 20px; text-align: left;">
-            
-            <div class="panel-title" style="color: #A060FF; border-bottom-color: rgba(138, 43, 226, 0.4);">AI ASSISTANT</div>
-            <div class="ai-section" style="background: rgba(138, 43, 226, 0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(138, 43, 226, 0.2); margin-bottom: 20px;">
-                <div class="section-label" style="color: #A060FF; font-size: 10px; margin-bottom: 8px;">AI Design Prompt</div>
-                <textarea id="ai-prompt" style="width: 100%; background: #000; border: 1px solid rgba(138, 43, 226, 0.3); color: #fff; font-family: 'Sarabun'; font-size: 11px; padding: 8px; border-radius: 4px; resize: none; outline: none;" rows="3" placeholder="ระบุลักษณะ เช่น 'ทศกัณฐ์สีมรกต ลายสีเงินกุหลาบ'..."></textarea>
-                <button class="btn-gold" style="width: 100%; margin-top: 8px; padding: 10px; font-size: 11px; background: linear-gradient(135deg, #4B0082, #8A2BE2); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;" onclick="alert('ระบบ AI กำลังวิเคราะห์สไตล์การออกแบบ...')">🪄 ให้ AI ออกแบบ</button>
-            </div>
-
-            <div class="div-ornament" style="color: rgba(200,146,42,0.2); text-align: center; margin-bottom: 15px;">✦ ✦ ✦</div>
-
-            <div class="panel-title">ตัวละคร</div>
-            <div class="char-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 15px;">
-                <div class="char-card active" id="ch-rama" onclick="applyPreset('rama')">พระราม</div>
-                <div class="char-card" id="ch-ravana" onclick="applyPreset('ravana')">ทศกัณฐ์</div>
-                <div class="char-card" id="ch-hanuman" onclick="applyPreset('hanuman')">หนุมาน</div>
-                <div class="char-card" id="ch-sukreep" onclick="applyPreset('sukreep')">สุครีพ</div>
-                <div class="char-card" id="ch-yaksha" onclick="applyPreset('yaksha')">ยักษ์</div>
-                <div class="char-card" id="ch-angel" onclick="applyPreset('angel')">เทวดา</div>
-            </div>
-
-            <div class="panel-title">สีหน้ากาก</div>
-            <div class="swatch-grid" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px;">
-                <div class="swatch active" style="background:#C8922A; width:24px; height:24px; border-radius:4px; cursor:pointer;" onclick="setFaceColor('#C8922A',this)"></div>
-                <div class="swatch" style="background:#2A5C3A; width:24px; height:24px; border-radius:4px; cursor:pointer;" onclick="setFaceColor('#2A5C3A',this)"></div>
-                <div class="swatch" style="background:#8B1A1A; width:24px; height:24px; border-radius:4px; cursor:pointer;" onclick="setFaceColor('#8B1A1A',this)"></div>
-                <div class="swatch" style="background:#DDDAC8; width:24px; height:24px; border-radius:4px; cursor:pointer;" onclick="setFaceColor('#DDDAC8',this)"></div>
-                <div class="swatch" style="background:#1A2A6A; width:24px; height:24px; border-radius:4px; cursor:pointer;" onclick="setFaceColor('#1A2A6A',this)"></div>
-            </div>
-
-            <div class="panel-title">แบบตา/ปาก</div>
-            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                <div class="toggle-group" style="display: flex; gap: 5px;">
-                    <button class="toggle-btn active" style="flex:1; font-size:10px; padding:5px;" onclick="setEyeStyle('normal',this)">ตาปกติ</button>
-                    <button class="toggle-btn" style="flex:1; font-size:10px; padding:5px;" onclick="setEyeStyle('demon',this)">ตายักษ์</button>
-                </div>
-                <div class="toggle-group" style="display: flex; gap: 5px;">
-                    <button class="toggle-btn active" style="flex:1; font-size:10px; padding:5px;" onclick="setMouthStyle('smile',this)">ยิ้ม</button>
-                    <button class="toggle-btn" style="flex:1; font-size:10px; padding:5px;" onclick="setMouthStyle('fierce',this)">ดุ</button>
-                </div>
-            </div>
-
-            <div class="panel-title">รายละเอียด</div>
-            <div class="detail-item active" id="d-crown" onclick="toggleDetail('crown')" style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; margin-bottom: 5px; font-size: 11px; cursor: pointer;"><span>ชฎา / มงกุฎ</span><span>✓</span></div>
-            <div class="detail-item active" id="d-earring" onclick="toggleDetail('earring')" style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; margin-bottom: 5px; font-size: 11px; cursor: pointer;"><span>ต่างหู</span><span>✓</span></div>
-            <div class="detail-item active" id="d-mustache" onclick="toggleDetail('mustache')" style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; margin-bottom: 5px; font-size: 11px; cursor: pointer;"><span>หนวด</span><span>✓</span></div>
-
-            <div class="panel-title" style="margin-top: 15px;">ปรับขนาด</div>
-            <div class="slider-row" style="margin-bottom: 10px;">
-                <label style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim);"><span>ความสูงชฎา</span><span id="crownH-val">100%</span></label>
-                <input type="range" min="50" max="160" value="100" style="width: 100%; accent-color: var(--gold);" oninput="setCrownHeight(this)">
-            </div>
-
-            <button class="export-btn" onclick="exportScene()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, var(--gold-dark), var(--gold)); border: none; color: #000; font-weight: bold; border-radius: 5px; cursor: pointer; font-family: 'Cinzel Decorative'; font-size: 10px; margin-top: 10px;">📷 บันทึกภาพ 3D</button>
-        </div>
-
-        <div class="viewport" style="flex: 1; position: relative; background: #000;">
-            <div id="loadingOverlay" style="position: absolute; inset: 0; background: var(--blk); z-index: 10; display: flex; align-items: center; justify-content: center;">
-                <div class="loading-ring" style="width: 40px; height: 40px; border: 3px solid rgba(201,146,42,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite;"></div>
-            </div>
-            <canvas id="threeCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
-            <div class="hint-text" style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: rgba(201,146,42,0.4); letter-spacing: 1px;">🖱 ลาก: หมุน | Scroll: ซูม | คลิกขวา: เลื่อน</div>
-            <div class="viewport-controls" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px;">
-                <button class="view-btn" onclick="setCamera('front')">หน้า</button>
-                <button class="view-btn" onclick="setCamera('quarter')">เฉียง</button>
-                <button class="view-btn" onclick="resetCamera()">รีเซ็ต</button>
-                <button class="view-btn" id="btn-orbit" onclick="toggleAutoRotate()" style="color: var(--gl);">🔄 AUTO</button>
-            </div>
-        </div>
+    <div class="btn-wrap" style="margin-top:24px">
+      <button class="btn-gold" onclick="showPage('p0')">← กลับหน้าแรก</button>
+      <button class="btn-gold" onclick="showPage('p2')">ออกแบบหัวโขน 3D →</button>
     </div>
-</section>
+  </div>
+</div>
 
+<!-- ══ PAGE 2 — 3D DESIGNER ══ -->
+<div id="p2" class="page">
+
+  <!-- LEFT PANEL -->
+  <div class="side-panel">
+
+    <!-- AI PROMPT -->
+    <div class="panel-title" style="color:#A060FF; border-bottom-color:rgba(138,43,226,0.3); margin-top:4px">AI ASSISTANT</div>
+    <div class="ai-box">
+      <div class="section-label" style="color:#9050EE">AI Design Prompt</div>
+      <textarea id="ai-prompt" rows="3" placeholder="เช่น 'ทศกัณฐ์สีมรกต ลายสีเงิน ตาแดงดุดัน'…"></textarea>
+      <button class="btn-ai" onclick="runAiPrompt()">🪄 ให้ AI ออกแบบ</button>
+    </div>
+
+    <div class="orn">✦ ✦ ✦</div>
+
+    <!-- CHARACTER -->
+    <div class="panel-title">ตัวละคร</div>
+    <div class="char-grid">
+      <div class="char-card active" id="ch-rama" onclick="applyPreset('rama')"><span class="emo">👑</span>พระราม</div>
+      <div class="char-card" id="ch-ravana" onclick="applyPreset('ravana')"><span class="emo">😤</span>ทศกัณฐ์</div>
+      <div class="char-card" id="ch-hanuman" onclick="applyPreset('hanuman')"><span class="emo">🐒</span>หนุมาน</div>
+      <div class="char-card" id="ch-sukreep" onclick="applyPreset('sukreep')"><span class="emo">💙</span>สุครีพ</div>
+      <div class="char-card" id="ch-yaksha" onclick="applyPreset('yaksha')"><span class="emo">👹</span>ยักษ์</div>
+      <div class="char-card" id="ch-angel" onclick="applyPreset('angel')"><span class="emo">✨</span>เทวดา</div>
+    </div>
+
+    <!-- FACE COLOR -->
+    <div class="panel-title">สีหน้ากาก</div>
+    <div class="swatch-grid" id="faceSwatches">
+      <div class="swatch active" style="background:#C8922A" onclick="setFaceColor('#C8922A',this)"></div>
+      <div class="swatch" style="background:#2A5C3A" onclick="setFaceColor('#2A5C3A',this)"></div>
+      <div class="swatch" style="background:#8B1A1A" onclick="setFaceColor('#8B1A1A',this)"></div>
+      <div class="swatch" style="background:#1A2A6A" onclick="setFaceColor('#1A2A6A',this)"></div>
+      <div class="swatch" style="background:#DDDAC8" onclick="setFaceColor('#DDDAC8',this)"></div>
+      <div class="swatch" style="background:#181818" onclick="setFaceColor('#181818',this)"></div>
+      <div class="swatch" style="background:#7A2A8A" onclick="setFaceColor('#7A2A8A',this)"></div>
+      <div class="swatch" style="background:#306070" onclick="setFaceColor('#306070',this)"></div>
+    </div>
+
+    <!-- ORN COLOR -->
+    <div class="panel-title">สีลาย / ทอง</div>
+    <div class="swatch-grid" id="ornSwatches">
+      <div class="swatch active" style="background:#F0C060" onclick="setOrnColor('#F0C060',this)"></div>
+      <div class="swatch" style="background:#E0E0E0" onclick="setOrnColor('#E0E0E0',this)"></div>
+      <div class="swatch" style="background:#FF6060" onclick="setOrnColor('#FF6060',this)"></div>
+      <div class="swatch" style="background:#60AAFF" onclick="setOrnColor('#60AAFF',this)"></div>
+      <div class="swatch" style="background:#80FF80" onclick="setOrnColor('#80FF80',this)"></div>
+      <div class="swatch" style="background:#FF80FF" onclick="setOrnColor('#FF80FF',this)"></div>
+    </div>
+
+    <!-- EYE STYLE -->
+    <div class="panel-title">แบบตา</div>
+    <div class="toggle-group" id="eyeGroup">
+      <button class="toggle-btn active" onclick="setEyeStyle('normal',this)">ปกติ</button>
+      <button class="toggle-btn" onclick="setEyeStyle('large',this)">โต</button>
+      <button class="toggle-btn" onclick="setEyeStyle('demon',this)">ยักษ์</button>
+      <button class="toggle-btn" onclick="setEyeStyle('narrow',this)">แคบ</button>
+    </div>
+
+    <!-- EYE COLOR -->
+    <div class="panel-title">สีดวงตา</div>
+    <div class="swatch-grid" id="eyeSwatches">
+      <div class="swatch active" style="background:#1A1A1A" onclick="setEyeColor('#1A1A1A',this)"></div>
+      <div class="swatch" style="background:#880000" onclick="setEyeColor('#880000',this)"></div>
+      <div class="swatch" style="background:#003388" onclick="setEyeColor('#003388',this)"></div>
+      <div class="swatch" style="background:#006633" onclick="setEyeColor('#006633',this)"></div>
+      <div class="swatch" style="background:#886600" onclick="setEyeColor('#886600',this)"></div>
+      <div class="swatch" style="background:#660088" onclick="setEyeColor('#660088',this)"></div>
+    </div>
+
+    <!-- MOUTH STYLE -->
+    <div class="panel-title">แบบปาก</div>
+    <div class="toggle-group" id="mouthGroup">
+      <button class="toggle-btn active" onclick="setMouthStyle('smile',this)">ยิ้ม</button>
+      <button class="toggle-btn" onclick="setMouthStyle('fierce',this)">ดุ</button>
+      <button class="toggle-btn" onclick="setMouthStyle('open',this)">อ้า</button>
+      <button class="toggle-btn" onclick="setMouthStyle('fangs',this)">เขี้ยว</button>
+    </div>
+
+    <div class="orn">✦ ✦ ✦</div>
+
+    <!-- DETAILS -->
+    <div class="panel-title">รายละเอียด</div>
+    <div class="detail-item active" id="d-crown" onclick="toggleDetail('crown')">
+      <span>ชฎา / มงกุฎ</span><div class="d-check">✓</div>
+    </div>
+    <div class="detail-item active" id="d-earring" onclick="toggleDetail('earring')">
+      <span>ต่างหู</span><div class="d-check">✓</div>
+    </div>
+    <div class="detail-item active" id="d-mustache" onclick="toggleDetail('mustache')">
+      <span>หนวด</span><div class="d-check">✓</div>
+    </div>
+    <div class="detail-item" id="d-fangs" onclick="toggleDetail('fangs')">
+      <span>เขี้ยว</span><div class="d-check"></div>
+    </div>
+    <div class="detail-item" id="d-beard" onclick="toggleDetail('beard')">
+      <span>เครา</span><div class="d-check"></div>
+    </div>
+
+    <!-- SLIDERS -->
+    <div class="panel-title">ปรับขนาด</div>
+    <div class="slider-row">
+      <label><span>ความสูงชฎา</span><span id="crownH-val">100%</span></label>
+      <input type="range" min="50" max="160" value="100" oninput="setCrownHeight(this)">
+    </div>
+    <div class="slider-row">
+      <label><span>ความกว้างหน้า</span><span id="faceW-val">100%</span></label>
+      <input type="range" min="80" max="125" value="100" oninput="setFaceWidth(this)">
+    </div>
+    <div class="slider-row">
+      <label><span>ความเงา</span><span id="shine-val">80</span></label>
+      <input type="range" min="10" max="200" value="80" oninput="setShininess(this)">
+    </div>
+    <div class="slider-row">
+      <label><span>แสงรอบข้าง</span><span id="amb-val">60%</span></label>
+      <input type="range" min="10" max="100" value="60" oninput="setAmbient(this)">
+    </div>
+
+    <button class="btn-export" onclick="exportScene()">📷 บันทึกภาพ 3D</button>
+  </div>
+
+  <!-- 3D VIEWPORT -->
+  <div class="viewport3d">
+    <div id="loadingOverlay">
+      <div class="loading-ring"></div>
+      <div class="loading-text">กำลังสร้างหัวโขน 3 มิติ…</div>
+    </div>
+    <canvas id="threeCanvas"></canvas>
+    <div class="hint-text">🖱 ลาก: หมุน &nbsp;|&nbsp; Scroll: ซูม &nbsp;|&nbsp; คลิกขวา: เลื่อน</div>
+    <div class="viewport-controls">
+      <button class="view-btn" onclick="setCamera('front')">หน้า</button>
+      <button class="view-btn" onclick="setCamera('side')">ข้าง</button>
+      <button class="view-btn" onclick="setCamera('top')">บน</button>
+      <button class="view-btn" onclick="setCamera('quarter')">เฉียง</button>
+      <button class="view-btn" onclick="resetCamera()">รีเซ็ต</button>
+      <button class="view-btn" id="btn-orbit" onclick="toggleAutoRotate()">🔄 AUTO</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     JAVASCRIPT — สมบูรณ์ ไม่มีข้อผิดพลาด
+══════════════════════════════════════════════ -->
 <script>
-    // --- ส่วนตั้งค่า Scene และตัวแปร State ---
-    const canvas = document.getElementById('threeCanvas');
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+// ─────────────────────────────────
+// 1. STATE (ต้องอยู่ก่อน buildMask)
+// ─────────────────────────────────
+const state = {
+  faceColor: 0xC8922A,
+  ornColor:  0xF0C060,
+  eyeColor:  0x1A1A1A,
+  eyeStyle:  'normal',
+  mouthStyle:'smile',
+  crownScale: 1.0,
+  faceWidth:  1.0,
+  shininess:  80,
+  details: { crown: true, earring: true, mustache: true, fangs: false, beard: false }
+};
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0A0806);
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-    camera.position.set(0, 1.5, 7);
+// ─────────────────────────────────
+// 2. THREE.JS SCENE
+// ─────────────────────────────────
+const canvas3d = document.getElementById('threeCanvas');
+const renderer = new THREE.WebGLRenderer({ canvas: canvas3d, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
 
-    // --- ส่วนการสร้างโมเดลความละเอียดสูง (คืนค่า BuildMask ชุดเดิม) ---
-    let maskGroup = new THREE.Group();
-    scene.add(maskGroup);
-    let faceMesh, crownGroup, mustacheGroup;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x080605);
+scene.fog = new THREE.Fog(0x080605, 18, 40);
 
-    function buildMask() {
-        maskGroup.clear();
-        const faceMaterial = new THREE.MeshPhongMaterial({ color: state.faceColor, shininess: 80, side: THREE.FrontSide });
-        const ornMaterial = new THREE.MeshPhongMaterial({ color: state.ornColor, shininess: 150 });
-        const eyeWhiteMat = new THREE.MeshPhongMaterial({ color: 0xF5F0E0, shininess: 60 });
-        const lipMat = new THREE.MeshPhongMaterial({ color: 0x7A1010, shininess: 60 });
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(0, 1.5, 7.5);
 
-        // 1. ใบหน้า (Lathe Geometry สำหรับทรงที่สมจริง)
-        const faceGeo = new THREE.LatheGeometry([
-            new THREE.Vector2(0, -2.4), new THREE.Vector2(1.3, -1.8),
-            new THREE.Vector2(1.9, 0.8), new THREE.Vector2(1.5, 2.3), new THREE.Vector2(0, 2.8)
-        ], 64);
-        faceMesh = new THREE.Mesh(faceGeo, faceMaterial);
-        maskGroup.add(faceMesh);
+// ─────────────────────────────────
+// 3. LIGHTS
+// ─────────────────────────────────
+const ambientLight = new THREE.AmbientLight(0xFFE8C0, 0.6);
+scene.add(ambientLight);
 
-        // 2. ดวงตาชุดเต็ม (ตาขาว + รูม่านตา + ตาดำ + ประกาย)
-        const ec = state.eyeStyle === 'demon' ? {ry: 0.35, rz: 0.65} : {ry: 0.28, rz: 0.55};
-        [-0.85, 0.85].forEach(sx => {
-            const eyeW = new THREE.Mesh(new THREE.SphereGeometry(0.42, 16, 12), eyeWhiteMat);
-            eyeW.position.set(sx, 0.95, 1.5);
-            eyeW.scale.set(1, ec.ry/0.28, 1);
-            maskGroup.add(eyeW);
+const keyLight = new THREE.DirectionalLight(0xFFE0A0, 1.6);
+keyLight.position.set(3, 6, 5);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(1024, 1024);
+scene.add(keyLight);
 
-            const iris = new THREE.Mesh(new THREE.SphereGeometry(0.28, 14, 10), new THREE.MeshPhongMaterial({color: state.eyeColor}));
-            iris.position.set(sx, 0.95, 1.75);
-            maskGroup.add(iris);
+const fillLight = new THREE.DirectionalLight(0x8090FF, 0.35);
+fillLight.position.set(-4, 2, 3);
+scene.add(fillLight);
 
-            const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 8), new THREE.MeshBasicMaterial({color: 0x000000}));
-            pupil.position.set(sx, 0.95, 1.88);
-            maskGroup.add(pupil);
-            
-            // ประกายตา
-            const hi = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), new THREE.MeshBasicMaterial({color: 0xffffff}));
-            hi.position.set(sx - (sx*0.08), 1.05, 1.92);
-            maskGroup.add(hi);
-        });
+const rimLight = new THREE.DirectionalLight(0xFFAA40, 0.7);
+rimLight.position.set(0, 3, -6);
+scene.add(rimLight);
 
-        // 3. จมูก และ ปาก
-        const nose = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 10), faceMaterial);
-        nose.position.set(0, -0.05, 1.9);
-        nose.scale.set(1.4, 0.7, 0.8);
-        maskGroup.add(nose);
+// ─────────────────────────────────
+// 4. RESIZE
+// ─────────────────────────────────
+function onResize() {
+  const vp = document.querySelector('.viewport3d');
+  if (!vp || vp.clientWidth === 0) return;
+  const w = vp.clientWidth, h = vp.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', onResize);
 
-        const mouth = new THREE.Mesh(new THREE.SphereGeometry(0.42, 16, 8), lipMat);
-        mouth.position.set(0, -1.1, 1.75);
-        mouth.scale.set(1.5, state.mouthStyle === 'fierce' ? 0.2 : 0.4, 0.6);
-        maskGroup.add(mouth);
+// ─────────────────────────────────
+// 5. ORBIT CONTROLS (mouse + touch)
+// ─────────────────────────────────
+let spherical = { theta: 0.1, phi: Math.PI / 2.4, radius: 7.5 };
+let panOffset = { x: 0, y: 0 };
+let isDragging = false, isRightDrag = false;
+let prevMouse = { x: 0, y: 0 };
+let autoRotate = false;
 
-        // 4. ชฎา / มงกุฎ (Multi-tier)
-        if(state.details.crown) {
-            crownGroup = new THREE.Group();
-            const baseBand = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.1, 0.4, 64), ornMaterial);
-            baseBand.position.y = 2.8;
-            crownGroup.add(baseBand);
-            
-            const tier1 = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.8, 0.8, 48), ornMaterial);
-            tier1.position.y = 3.3;
-            crownGroup.add(tier1);
+canvas3d.addEventListener('mousedown', e => {
+  isDragging = true;
+  isRightDrag = (e.button === 2);
+  prevMouse = { x: e.clientX, y: e.clientY };
+  e.preventDefault();
+});
+canvas3d.addEventListener('contextmenu', e => e.preventDefault());
+window.addEventListener('mouseup', () => { isDragging = false; });
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  const dx = (e.clientX - prevMouse.x) * 0.008;
+  const dy = (e.clientY - prevMouse.y) * 0.008;
+  prevMouse = { x: e.clientX, y: e.clientY };
+  if (isRightDrag) {
+    panOffset.x -= dx * 0.4;
+    panOffset.y += dy * 0.4;
+  } else {
+    spherical.theta -= dx;
+    spherical.phi = Math.max(0.2, Math.min(Math.PI - 0.2, spherical.phi + dy));
+  }
+});
+canvas3d.addEventListener('wheel', e => {
+  spherical.radius = Math.max(3, Math.min(14, spherical.radius + e.deltaY * 0.01));
+}, { passive: true });
 
-            const spire = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 1.4, 2.5, 32), ornMaterial);
-            spire.position.y = 4.8;
-            crownGroup.add(spire);
+// Touch
+let prevTouch = null;
+canvas3d.addEventListener('touchstart', e => { prevTouch = e.touches[0]; }, { passive: true });
+canvas3d.addEventListener('touchmove', e => {
+  if (!prevTouch) return;
+  const dx = (e.touches[0].clientX - prevTouch.clientX) * 0.012;
+  const dy = (e.touches[0].clientY - prevTouch.clientY) * 0.012;
+  spherical.theta -= dx;
+  spherical.phi = Math.max(0.3, Math.min(Math.PI - 0.3, spherical.phi + dy));
+  prevTouch = e.touches[0];
+  e.preventDefault();
+}, { passive: false });
 
-            crownGroup.scale.y = state.crownScale;
-            maskGroup.add(crownGroup);
-        }
+function updateCamera() {
+  const r = spherical.radius;
+  camera.position.set(
+    r * Math.sin(spherical.phi) * Math.sin(spherical.theta) + panOffset.x,
+    r * Math.cos(spherical.phi) + panOffset.y + 1.5,
+    r * Math.sin(spherical.phi) * Math.cos(spherical.theta)
+  );
+  camera.lookAt(panOffset.x, panOffset.y + 1.5, 0);
+}
 
-        // 5. หนวด (Mustache)
-        if(state.details.mustache) {
-            const mCurve = new THREE.TorusGeometry(0.5, 0.05, 8, 24, Math.PI);
-            const mLeft = new THREE.Mesh(mCurve, ornMaterial);
-            mLeft.position.set(0, -0.75, 1.88);
-            maskGroup.add(mLeft);
-        }
+// ─────────────────────────────────
+// 6. MATERIALS HELPERS
+// ─────────────────────────────────
+const eyeWhiteMat = new THREE.MeshPhongMaterial({ color: 0xF5F0E0, shininess: 60 });
+const blackMat    = new THREE.MeshPhongMaterial({ color: 0x111111, shininess: 20 });
+const lipMat      = new THREE.MeshPhongMaterial({ color: 0x7A1010, shininess: 60 });
+const toothMat    = new THREE.MeshPhongMaterial({ color: 0xEEE8D8, shininess: 60 });
+const gemR = new THREE.MeshPhongMaterial({ color: 0xFF2244, shininess: 200, specular: 0xFFFFFF, emissive: 0x220008 });
+const gemB = new THREE.MeshPhongMaterial({ color: 0x2244FF, shininess: 200, specular: 0xFFFFFF, emissive: 0x000822 });
+const gemG = new THREE.MeshPhongMaterial({ color: 0x22AA44, shininess: 200, specular: 0xFFFFFF, emissive: 0x002208 });
+
+// ─────────────────────────────────
+// 7. MASK GROUP
+// ─────────────────────────────────
+const maskGroup = new THREE.Group();
+scene.add(maskGroup);
+
+let crownGroup, earGroup, mustacheGroup, beardGroup, fangsGroup;
+
+function buildMask() {
+  maskGroup.clear();
+
+  const faceMat = new THREE.MeshPhongMaterial({
+    color: new THREE.Color(state.faceColor),
+    specular: new THREE.Color(0x886633),
+    shininess: state.shininess
+  });
+  const ornMat = new THREE.MeshPhongMaterial({
+    color: new THREE.Color(state.ornColor),
+    specular: new THREE.Color(0xFFFFFF),
+    shininess: 180,
+    emissive: new THREE.Color(state.ornColor).multiplyScalar(0.07)
+  });
+
+  // ── FACE ──
+  const faceGeo = new THREE.LatheGeometry([
+    new THREE.Vector2(0,   -2.4),
+    new THREE.Vector2(0.5, -2.3),
+    new THREE.Vector2(1.3, -1.8),
+    new THREE.Vector2(1.7, -1.0),
+    new THREE.Vector2(1.85, 0.0),
+    new THREE.Vector2(1.9,  0.8),
+    new THREE.Vector2(1.85, 1.4),
+    new THREE.Vector2(1.7,  1.9),
+    new THREE.Vector2(1.5,  2.3),
+    new THREE.Vector2(1.1,  2.6),
+    new THREE.Vector2(0,    2.8),
+  ], 64);
+  const faceMesh = new THREE.Mesh(faceGeo, faceMat);
+  faceMesh.scale.x = state.faceWidth;
+  faceMesh.castShadow = true;
+  faceMesh.receiveShadow = true;
+  maskGroup.add(faceMesh);
+
+  // Back plate
+  const backGeo = new THREE.LatheGeometry([
+    new THREE.Vector2(0, -2.3), new THREE.Vector2(1.0,-1.5),
+    new THREE.Vector2(1.3, 0.0), new THREE.Vector2(1.1, 1.5),
+    new THREE.Vector2(0.7, 2.4), new THREE.Vector2(0, 2.5)
+  ], 40);
+  const backMat = faceMat.clone(); backMat.side = THREE.BackSide; backMat.color.multiplyScalar(0.45);
+  const backMesh = new THREE.Mesh(backGeo, backMat);
+  backMesh.scale.x = state.faceWidth;
+  maskGroup.add(backMesh);
+
+  // ── FOREHEAD ORNAMENT ──
+  const fhGeo = new THREE.TorusGeometry(0.44, 0.07, 7, 30);
+  const fhMesh = new THREE.Mesh(fhGeo, ornMat);
+  fhMesh.position.set(0, 2.3, 1.55);
+  fhMesh.rotation.x = Math.PI / 4;
+  maskGroup.add(fhMesh);
+  const cgGeo = new THREE.SphereGeometry(0.12, 10, 10);
+  const cGem = new THREE.Mesh(cgGeo, gemR);
+  cGem.position.set(0, 2.38, 1.7);
+  maskGroup.add(cGem);
+
+  // ── EYES ──
+  const eyeScales = {
+    normal: { sy: 1.0,  sz: 1.0 },
+    large:  { sy: 1.25, sz: 1.0 },
+    demon:  { sy: 0.8,  sz: 1.1 },
+    narrow: { sy: 0.6,  sz: 1.0 }
+  };
+  const es = eyeScales[state.eyeStyle];
+  const eyeMat = new THREE.MeshPhongMaterial({ color: new THREE.Color(state.eyeColor), shininess: 100 });
+
+  [-0.85, 0.85].forEach(sx => {
+    const bx = sx * state.faceWidth;
+    // socket
+    const sockGeo = new THREE.SphereGeometry(0.5, 14, 10, 0, Math.PI*2, 0, Math.PI*0.55);
+    const sockMat = faceMat.clone(); sockMat.color.multiplyScalar(0.6);
+    const sock = new THREE.Mesh(sockGeo, sockMat);
+    sock.position.set(bx, 0.95, 1.45); sock.rotation.x = -0.3;
+    maskGroup.add(sock);
+    // white
+    const ew = new THREE.Mesh(new THREE.SphereGeometry(0.4, 14, 10), eyeWhiteMat);
+    ew.position.set(bx, 0.95, 1.68);
+    ew.scale.set(1, es.sy, es.sz);
+    maskGroup.add(ew);
+    // iris
+    const ir = new THREE.Mesh(new THREE.SphereGeometry(0.26, 12, 10), eyeMat.clone());
+    ir.position.set(bx, 0.95, 1.88);
+    ir.scale.set(1, es.sy, es.sz);
+    maskGroup.add(ir);
+    // pupil
+    const pu = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), blackMat);
+    pu.position.set(bx, 0.95, 2.0);
+    maskGroup.add(pu);
+    // highlight
+    const hi = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6),
+      new THREE.MeshPhongMaterial({ color: 0xFFFFFF, shininess: 200, emissive: 0x444444 }));
+    hi.position.set(bx - sx * 0.08, 1.04, 2.05);
+    maskGroup.add(hi);
+    // eye ring
+    const erGeo = new THREE.TorusGeometry(0.48, 0.05, 6, 28);
+    const er = new THREE.Mesh(erGeo, ornMat);
+    er.position.set(bx, 0.95, 1.66);
+    er.scale.set(1, es.sy * 0.9, 1);
+    maskGroup.add(er);
+  });
+
+  // ── EYEBROWS ──
+  [-1, 1].forEach(sx => {
+    const pts = [
+      new THREE.Vector3(sx * 0.32 * state.faceWidth, 1.48, 1.72),
+      new THREE.Vector3(sx * 0.72 * state.faceWidth, 1.55, 1.80),
+      new THREE.Vector3(sx * 1.12 * state.faceWidth, 1.46, 1.62),
+    ];
+    const bGeo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 18, 0.065, 7, false);
+    maskGroup.add(new THREE.Mesh(bGeo, ornMat));
+  });
+
+  // ── NOSE ──
+  const nGeo = new THREE.SphereGeometry(0.27, 12, 10);
+  const nMat = faceMat.clone(); nMat.color.multiplyScalar(0.78);
+  const nose = new THREE.Mesh(nGeo, nMat);
+  nose.position.set(0, -0.05, 1.9);
+  nose.scale.set(1.35 * state.faceWidth, 0.7, 0.8);
+  maskGroup.add(nose);
+  // nostrils
+  [-0.3, 0.3].forEach(ox => {
+    const nl = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8), blackMat);
+    nl.position.set(ox * state.faceWidth, -0.21, 1.78);
+    nl.scale.set(0.9, 0.65, 0.5);
+    maskGroup.add(nl);
+  });
+  // nose ring
+  const nrGeo = new THREE.TorusGeometry(0.21, 0.04, 6, 20);
+  const nr = new THREE.Mesh(nrGeo, ornMat);
+  nr.position.set(0, -0.04, 1.86);
+  nr.rotation.x = 0.3;
+  maskGroup.add(nr);
+
+  // ── MOUTH ──
+  buildMouth(faceMat, ornMat);
+
+  // ── CHEEK ORNAMENTS ──
+  [-1, 1].forEach((sx, i) => {
+    const ckGeo = new THREE.TorusGeometry(0.28, 0.05, 6, 22);
+    const ck = new THREE.Mesh(ckGeo, ornMat);
+    ck.position.set(sx * 1.38 * state.faceWidth, -0.5, 1.36);
+    ck.rotation.y = sx * 0.35;
+    maskGroup.add(ck);
+    const cgem = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 6), i === 0 ? gemR : gemG);
+    cgem.position.set(sx * 1.38 * state.faceWidth, -0.5, 1.46);
+    maskGroup.add(cgem);
+  });
+
+  // ── FACE BORDER ──
+  const borderPts = [
+    new THREE.Vector3(0, 2.75, 0.38), new THREE.Vector3(1.82, 1.8, 0.28),
+    new THREE.Vector3(2.0, 0.4, 0.18), new THREE.Vector3(1.92, -0.6, 0.15),
+    new THREE.Vector3(1.72, -1.55, 0.2), new THREE.Vector3(1.18, -2.2, 0.3),
+    new THREE.Vector3(0, -2.38, 0.38), new THREE.Vector3(-1.18, -2.2, 0.3),
+    new THREE.Vector3(-1.72, -1.55, 0.2), new THREE.Vector3(-1.92, -0.6, 0.15),
+    new THREE.Vector3(-2.0, 0.4, 0.18), new THREE.Vector3(-1.82, 1.8, 0.28),
+    new THREE.Vector3(0, 2.75, 0.38),
+  ];
+  const bdGeo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(borderPts, true), 80, 0.042, 7, true);
+  const bd = new THREE.Mesh(bdGeo, ornMat);
+  bd.scale.set(state.faceWidth, 1, 1);
+  maskGroup.add(bd);
+
+  // ── CROWN ──
+  crownGroup = new THREE.Group();
+  buildCrown(ornMat);
+  crownGroup.visible = state.details.crown;
+  maskGroup.add(crownGroup);
+
+  // ── EARS ──
+  earGroup = new THREE.Group();
+  buildEars(faceMat, ornMat);
+  earGroup.visible = state.details.earring;
+  maskGroup.add(earGroup);
+
+  // ── MUSTACHE ──
+  mustacheGroup = new THREE.Group();
+  buildMustache(ornMat);
+  mustacheGroup.visible = state.details.mustache;
+  maskGroup.add(mustacheGroup);
+
+  // ── FANGS ──
+  fangsGroup = new THREE.Group();
+  buildFangs();
+  fangsGroup.visible = state.details.fangs;
+  maskGroup.add(fangsGroup);
+
+  // ── BEARD ──
+  beardGroup = new THREE.Group();
+  buildBeard(ornMat);
+  beardGroup.visible = state.details.beard;
+  maskGroup.add(beardGroup);
+}
+
+function buildMouth(faceMat, ornMat) {
+  const cfg = {
+    smile:  { cy: -1.14, scaleX: 1.5, scaleY: 0.4, open: 0.08 },
+    fierce: { cy: -1.08, scaleX: 1.5, scaleY: 0.2, open: 0.05 },
+    open:   { cy: -1.10, scaleX: 1.6, scaleY: 0.45, open: 0.3 },
+    fangs:  { cy: -1.10, scaleX: 1.55, scaleY: 0.42, open: 0.22 }
+  };
+  const mc = cfg[state.mouthStyle];
+
+  const upper = new THREE.Mesh(new THREE.SphereGeometry(0.4, 14, 8), lipMat);
+  upper.position.set(0, mc.cy + mc.open * 0.5, 1.76);
+  upper.scale.set(mc.scaleX * state.faceWidth, mc.scaleY, 0.6);
+  maskGroup.add(upper);
+
+  const lower = new THREE.Mesh(new THREE.SphereGeometry(0.44, 14, 8), lipMat.clone());
+  lower.position.set(0, mc.cy - mc.open * 0.55, 1.74);
+  lower.scale.set(mc.scaleX * 1.1 * state.faceWidth, mc.scaleY * 0.85, 0.55);
+  maskGroup.add(lower);
+
+  if (mc.open > 0.15) {
+    const interior = new THREE.Mesh(new THREE.SphereGeometry(0.38, 12, 8), blackMat);
+    interior.position.set(0, mc.cy, 1.7);
+    interior.scale.set(mc.scaleX * 0.9 * state.faceWidth, mc.open * 1.4, 0.45);
+    maskGroup.add(interior);
+    // teeth row
+    for (let i = -2; i <= 2; i++) {
+      const tg = new THREE.BoxGeometry(0.11, 0.18, 0.09);
+      const t = new THREE.Mesh(tg, toothMat);
+      t.position.set(i * 0.135 * state.faceWidth, mc.cy + mc.open * 0.32, 1.84);
+      maskGroup.add(t);
     }
+  }
+  // mouth border
+  const mbrPts = [];
+  for (let a = 0; a <= 60; a++) {
+    const ang = (a / 60) * Math.PI * 2;
+    mbrPts.push(new THREE.Vector3(Math.cos(ang) * 0.88 * state.faceWidth, mc.cy + Math.sin(ang) * mc.scaleY, 1.8));
+  }
+  const mbrGeo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(mbrPts, true), 60, 0.033, 6, true);
+  maskGroup.add(new THREE.Mesh(mbrGeo, ornMat));
+}
 
-    // --- ส่วนฟังก์ชันควบคุม UI และ Animation ---
-    const state = { 
-        faceColor: 0xC8922A, ornColor: 0xF0C060, eyeColor: 0x1A1A1A,
-        eyeStyle: 'normal', mouthStyle: 'smile', crownScale: 1.0, 
-        details: { crown: true, earring: true, mustache: true } 
-    };
+function buildCrown(ornMat) {
+  const tiers = [
+    { y: 2.82, r: 2.0,  h: 0.38 },
+    { y: 3.1,  r: 1.68, h: 0.36 },
+    { y: 3.44, r: 1.38, h: 0.34 },
+    { y: 3.76, r: 1.08, h: 0.30 },
+    { y: 4.04, r: 0.80, h: 0.27 },
+    { y: 4.28, r: 0.55, h: 0.23 },
+    { y: 4.48, r: 0.33, h: 0.18 },
+  ];
+  tiers.forEach((t, i) => {
+    const cg = new THREE.CylinderGeometry(t.r, t.r * 1.08, t.h, 48);
+    const cm = ornMat.clone();
+    cm.color = new THREE.Color(state.ornColor).multiplyScalar(1 - i * 0.04);
+    const c = new THREE.Mesh(cg, cm);
+    c.position.y = t.y;
+    c.castShadow = true;
+    crownGroup.add(c);
 
-    function onResize() {
-        const vp = document.querySelector('.viewport');
-        if(!vp || vp.clientWidth === 0) return;
-        renderer.setSize(vp.clientWidth, vp.clientHeight);
-        camera.aspect = vp.clientWidth / vp.clientHeight;
-        camera.updateProjectionMatrix();
+    // ridge ring
+    const rg = new THREE.TorusGeometry(t.r * 1.01, 0.038, 5, 46);
+    const r = new THREE.Mesh(rg, ornMat);
+    r.position.y = t.y + t.h * 0.55;
+    crownGroup.add(r);
+
+    if (i === 0) {
+      // gem row
+      for (let g = 0; g < 10; g++) {
+        const ang = (g / 10) * Math.PI * 2;
+        const gg = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), [gemR, gemB, gemG][g % 3]);
+        gg.position.set(Math.sin(ang) * t.r * 0.88, t.y + t.h, Math.cos(ang) * t.r * 0.88);
+        crownGroup.add(gg);
+      }
     }
-    window.addEventListener('resize', onResize);
+  });
+  // pinnacle
+  const pin = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.42, 12), ornMat);
+  pin.position.y = 4.66;
+  crownGroup.add(pin);
+  const tgem = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), gemR);
+  tgem.position.y = 4.92;
+  crownGroup.add(tgem);
 
-    scene.add(new THREE.AmbientLight(0xFFE8C0, 0.6));
-    const kL = new THREE.DirectionalLight(0xFFE0A0, 1.2);
-    kL.position.set(5, 8, 5);
-    scene.add(kL);
+  crownGroup.scale.y = state.crownScale;
+  crownGroup.position.y = (state.crownScale - 1) * -0.2;
+}
 
-    function applyPreset(type) {
-        const p = {
-            rama: {f: 0xC8922A, e: 0x1A1A1A, es: 'normal'},
-            ravana: {f: 0x2A5C3A, e: 0x880000, es: 'demon'},
-            hanuman: {f: 0xDDDAC8, e: 0x1A1A1A, es: 'normal'},
-            yaksha: {f: 0x8B1A1A, e: 0x880000, es: 'demon'},
-            sukreep: {f: 0x1A2A6A, e: 0x003388, es: 'demon'},
-            angel: {f: 0xC8922A, e: 0x1A1A1A, es: 'normal'}
-        };
-        state.faceColor = p[type].f;
-        state.eyeColor = p[type].e;
-        state.eyeStyle = p[type].es;
-        document.querySelectorAll('.char-card').forEach(c => c.classList.remove('active'));
-        document.getElementById('ch-'+type).classList.add('active');
-        buildMask();
-    }
+function buildEars(faceMat, ornMat) {
+  [-1, 1].forEach(sx => {
+    const eg = new THREE.SphereGeometry(0.32, 12, 10);
+    const e = new THREE.Mesh(eg, faceMat.clone());
+    e.position.set(sx * 1.98, 0.38, 0.18); e.scale.set(0.5, 0.88, 0.6);
+    earGroup.add(e);
+    // ear ring
+    const erg = new THREE.TorusGeometry(0.42, 0.065, 7, 22);
+    const er = new THREE.Mesh(erg, ornMat);
+    er.position.set(sx * 2.02, 0.38, 0.28); er.rotation.y = sx * Math.PI / 2;
+    earGroup.add(er);
+    // drop
+    const chainPts = [new THREE.Vector3(sx * 2.02, 0.0, 0.28), new THREE.Vector3(sx * 2.02, -0.68, 0.28)];
+    const ch = new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(chainPts[0], chainPts[1]), 5, 0.028, 6, false), ornMat);
+    earGroup.add(ch);
+    const drop = new THREE.Mesh(new THREE.SphereGeometry(0.18, 10, 8), ornMat);
+    drop.position.set(sx * 2.02, -0.82, 0.28);
+    earGroup.add(drop);
+    const dg = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 6), gemR);
+    dg.position.set(sx * 2.02, -0.94, 0.33);
+    earGroup.add(dg);
+  });
+}
 
-    function setFaceColor(hex, el) {
-        state.faceColor = parseInt(hex.replace('#',''), 16);
-        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-        el.classList.add('active');
-        buildMask();
-    }
+function buildMustache(ornMat) {
+  [
+    [new THREE.Vector3(0,-0.77,1.86), new THREE.Vector3(-0.34,-0.67,1.88), new THREE.Vector3(-0.7,-0.74,1.8), new THREE.Vector3(-0.94,-0.87,1.68)],
+    [new THREE.Vector3(0,-0.77,1.86), new THREE.Vector3(0.34,-0.67,1.88), new THREE.Vector3(0.7,-0.74,1.8), new THREE.Vector3(0.94,-0.87,1.68)],
+  ].forEach(pts => {
+    const mg = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 18, 0.052, 7, false);
+    mustacheGroup.add(new THREE.Mesh(mg, ornMat));
+  });
+}
 
-    function setCrownHeight(input) {
-        state.crownScale = input.value / 100;
-        document.getElementById('crownH-val').innerText = input.value + '%';
-        buildMask();
-    }
+function buildFangs() {
+  [-0.28, 0.28].forEach(ox => {
+    const fg = new THREE.ConeGeometry(0.085, 0.52, 8);
+    const f = new THREE.Mesh(fg, toothMat);
+    f.position.set(ox * state.faceWidth, -1.5, 1.74); f.rotation.x = 0.2;
+    fangsGroup.add(f);
+  });
+}
 
-    function toggleDetail(key) {
-        state.details[key] = !state.details[key];
-        document.getElementById('d-'+key).classList.toggle('active');
-        buildMask();
-    }
+function buildBeard(ornMat) {
+  const bMat = ornMat.clone();
+  bMat.color = new THREE.Color(state.ornColor).multiplyScalar(0.65);
+  const pts = [
+    new THREE.Vector3(-1.0 * state.faceWidth, -2.08, 0.75),
+    new THREE.Vector3(-0.5 * state.faceWidth, -2.48, 1.15),
+    new THREE.Vector3(0, -2.76, 1.38),
+    new THREE.Vector3(0.5 * state.faceWidth, -2.48, 1.15),
+    new THREE.Vector3(1.0 * state.faceWidth, -2.08, 0.75),
+  ];
+  const bGeo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 36, 0.1, 7, false);
+  beardGroup.add(new THREE.Mesh(bGeo, bMat));
+}
 
-    let spherical = { theta: 0, phi: Math.PI/2.5, radius: 7.5 };
-    let autoRotate = false;
-    function toggleAutoRotate() { autoRotate = !autoRotate; document.getElementById('btn-orbit').classList.toggle('active'); }
-    function resetCamera() { spherical.theta = 0; spherical.phi = Math.PI/2.5; spherical.radius = 7.5; }
-    function setCamera(view) {
-        if(view === 'front') { spherical.theta = 0; spherical.phi = Math.PI/2; }
-        if(view === 'quarter') { spherical.theta = Math.PI/4; spherical.phi = Math.PI/2.5; }
-    }
+// ─────────────────────────────────
+// 8. PARTICLES
+// ─────────────────────────────────
+(function addParticles() {
+  const n = 280;
+  const pos = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    pos[i*3]   = (Math.random()-0.5)*30;
+    pos[i*3+1] = (Math.random()-0.5)*22;
+    pos[i*3+2] = (Math.random()-0.5)*20 - 5;
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xC8922A, size: 0.05, transparent: true, opacity: 0.45 })));
+})();
 
-    function animate() {
-        requestAnimationFrame(animate);
-        if(autoRotate) spherical.theta += 0.008;
-        const x = spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta);
-        const y = spherical.radius * Math.cos(spherical.phi);
-        const z = spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta);
-        camera.position.set(x, y + 1.2, z);
-        camera.lookAt(0, 1.2, 0);
-        renderer.render(scene, camera);
-    }
+// ─────────────────────────────────
+// 9. UI CONTROLS
+// ─────────────────────────────────
+function applyPreset(type) {
+  const presets = {
+    rama:    { f:'#C8922A', o:'#F0C060', e:'#1A1A1A', es:'normal',  ms:'smile' },
+    ravana:  { f:'#2A5C3A', o:'#F0C060', e:'#880000', es:'demon',   ms:'fierce' },
+    hanuman: { f:'#DDDAC8', o:'#F0C060', e:'#1A1A1A', es:'large',   ms:'open' },
+    sukreep: { f:'#1A2A6A', o:'#60AAFF', e:'#003388', es:'demon',   ms:'fierce' },
+    yaksha:  { f:'#8B1A1A', o:'#FFD700', e:'#880000', es:'demon',   ms:'fangs' },
+    angel:   { f:'#C8922A', o:'#E0E0E0', e:'#1A1A1A', es:'normal',  ms:'smile' }
+  };
+  const p = presets[type];
+  state.faceColor  = parseInt(p.f.replace('#',''), 16);
+  state.ornColor   = parseInt(p.o.replace('#',''), 16);
+  state.eyeColor   = parseInt(p.e.replace('#',''), 16);
+  state.eyeStyle   = p.es;
+  state.mouthStyle = p.ms;
 
-    function exportScene() {
-        renderer.render(scene, camera);
-        const link = document.createElement('a');
-        link.download = 'khon-mask-design.png';
-        link.href = canvas.toDataURL();
-        link.click();
-    }
+  document.querySelectorAll('.char-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('ch-' + type).classList.add('active');
 
-    // --- เริ่มต้นระบบ ---
-    buildMask();
-    animate();
-    function showPage(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(id === 'p2') setTimeout(onResize, 100);
-        window.scrollTo(0,0);
-    }
-    setTimeout(() => { document.getElementById('loadingOverlay').style.display='none'; onResize(); }, 1200);
+  if (type === 'yaksha') {
+    state.details.fangs = true;
+    document.getElementById('d-fangs').classList.add('active');
+    document.getElementById('d-fangs').querySelector('.d-check').textContent = '✓';
+  } else {
+    state.details.fangs = false;
+    document.getElementById('d-fangs').classList.remove('active');
+    document.getElementById('d-fangs').querySelector('.d-check').textContent = '';
+  }
+  buildMask();
+}
+
+function setFaceColor(hex, el) {
+  state.faceColor = parseInt(hex.replace('#',''), 16);
+  document.querySelectorAll('#faceSwatches .swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  buildMask();
+}
+function setOrnColor(hex, el) {
+  state.ornColor = parseInt(hex.replace('#',''), 16);
+  document.querySelectorAll('#ornSwatches .swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  buildMask();
+}
+function setEyeColor(hex, el) {
+  state.eyeColor = parseInt(hex.replace('#',''), 16);
+  document.querySelectorAll('#eyeSwatches .swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  buildMask();
+}
+function setEyeStyle(style, btn) {
+  state.eyeStyle = style;
+  document.querySelectorAll('#eyeGroup .toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildMask();
+}
+function setMouthStyle(style, btn) {
+  state.mouthStyle = style;
+  document.querySelectorAll('#mouthGroup .toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildMask();
+}
+function toggleDetail(key) {
+  state.details[key] = !state.details[key];
+  const item = document.getElementById('d-' + key);
+  item.classList.toggle('active', state.details[key]);
+  item.querySelector('.d-check').textContent = state.details[key] ? '✓' : '';
+  const grpMap = { crown: crownGroup, earring: earGroup, mustache: mustacheGroup, fangs: fangsGroup, beard: beardGroup };
+  if (grpMap[key]) grpMap[key].visible = state.details[key];
+}
+
+function updateSlider(el) {
+  const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+  el.style.setProperty('--pct', pct + '%');
+}
+function setCrownHeight(el) {
+  updateSlider(el);
+  document.getElementById('crownH-val').textContent = el.value + '%';
+  state.crownScale = el.value / 100;
+  if (crownGroup) {
+    crownGroup.scale.y = state.crownScale;
+    crownGroup.position.y = (state.crownScale - 1) * -0.2;
+  }
+}
+function setFaceWidth(el) {
+  updateSlider(el);
+  document.getElementById('faceW-val').textContent = el.value + '%';
+  state.faceWidth = el.value / 100;
+  buildMask();
+}
+function setShininess(el) {
+  updateSlider(el);
+  document.getElementById('shine-val').textContent = el.value;
+  state.shininess = parseInt(el.value);
+  buildMask();
+}
+function setAmbient(el) {
+  updateSlider(el);
+  document.getElementById('amb-val').textContent = el.value + '%';
+  ambientLight.intensity = el.value / 100 * 1.2;
+}
+document.querySelectorAll('input[type=range]').forEach(s => updateSlider(s));
+
+function setCamera(view) {
+  const v = { front:{theta:0,phi:Math.PI/2,r:7.5}, side:{theta:Math.PI/2,phi:Math.PI/2,r:7.5}, top:{theta:0,phi:0.28,r:7.5}, quarter:{theta:Math.PI/5,phi:Math.PI/2.4,r:8} };
+  Object.assign(spherical, { theta: v[view].theta, phi: v[view].phi, radius: v[view].r });
+  panOffset = { x: 0, y: 0 };
+}
+function resetCamera() {
+  spherical = { theta: 0.1, phi: Math.PI / 2.4, radius: 7.5 };
+  panOffset = { x: 0, y: 0 };
+}
+function toggleAutoRotate() {
+  autoRotate = !autoRotate;
+  document.getElementById('btn-orbit').classList.toggle('active', autoRotate);
+}
+function exportScene() {
+  renderer.render(scene, camera);
+  const a = document.createElement('a');
+  a.download = 'khon-mask-3d.png';
+  a.href = canvas3d.toDataURL('image/png');
+  a.click();
+}
+
+// AI Prompt (stub — สามารถเชื่อม API จริงได้)
+function runAiPrompt() {
+  const txt = document.getElementById('ai-prompt').value.toLowerCase();
+  if (txt.includes('ทศกัณฐ์') || txt.includes('เขียว') || txt.includes('ravana')) applyPreset('ravana');
+  else if (txt.includes('หนุมาน') || txt.includes('ขาว'))                            applyPreset('hanuman');
+  else if (txt.includes('ยักษ์') || txt.includes('แดง'))                             applyPreset('yaksha');
+  else if (txt.includes('สุครีพ') || txt.includes('น้ำเงิน'))                        applyPreset('sukreep');
+  else if (txt.includes('เทวดา') || txt.includes('ทอง'))                             applyPreset('angel');
+  else                                                                                 applyPreset('rama');
+}
+
+// ─────────────────────────────────
+// 10. PAGE NAVIGATION
+// ─────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.n-link').forEach(l => l.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'p2') setTimeout(onResize, 80);
+}
+
+// ─────────────────────────────────
+// 11. ANIMATION LOOP
+// ─────────────────────────────────
+let tick = 0;
+function animate() {
+  requestAnimationFrame(animate);
+  tick += 0.012;
+  if (autoRotate) spherical.theta += 0.008;
+  maskGroup.position.y = Math.sin(tick * 0.55) * 0.055;
+  rimLight.intensity = 0.6 + Math.sin(tick * 0.7) * 0.18;
+  updateCamera();
+  renderer.render(scene, camera);
+}
+
+// ─────────────────────────────────
+// 12. INIT
+// ─────────────────────────────────
+buildMask();
+animate();
+setTimeout(() => {
+  onResize();
+  const ov = document.getElementById('loadingOverlay');
+  ov.style.opacity = '0';
+  setTimeout(() => ov.style.display = 'none', 450);
+}, 1000);
 </script>
-    
-    <script>
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const target = document.getElementById(pageId);
-            target.classList.add('active');
-            window.scrollTo(0, 0);
-        }
-    </script>
 </body>
 </html>
