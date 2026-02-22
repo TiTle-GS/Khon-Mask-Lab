@@ -7,89 +7,107 @@
     
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.1/dist/mindar-face-aframe.prod.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
+
+        /* ส่วนปรับปรุงเพิ่มเติมสำหรับหน้า P2 */
+.main-3d-layout .side-panel::-webkit-scrollbar { width: 4px; }
+.main-3d-layout .side-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+.char-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(201, 146, 42, 0.2);
+    padding: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-size: 13px; transition: 0.3s;
+}
+.char-card.active, .char-card:hover { border-color: var(--gold); background: rgba(201, 146, 42, 0.15); color: var(--gold-light); }
+
+.swatch-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+.swatch { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+.swatch.active { border-color: white; transform: scale(1.2); }
+
+.detail-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 12px; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 5px;
+    cursor: pointer; font-size: 12px; border: 1px solid transparent;
+}
+.detail-item.active { border-color: rgba(201, 146, 42, 0.3); color: var(--gold-light); }
+.detail-check { color: var(--gold); font-weight: bold; }
+
+.view-btn {
+    background: rgba(0,0,0,0.6); border: 1px solid rgba(201, 146, 42, 0.4);
+    color: var(--cream); padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 11px;
+}
+        
         :root {
-            --gold: #C9922A; --gl: #F5C842; --gold-dark: #8B5E15;
-            --red: #8B1A1A; --blk: #0A0806; --cream: #F7F0E0; 
-            --glass: rgba(255, 255, 255, 0.05); --panel: #131008; --panel2: #1C1609;
-            --text-dim: #8A7050;
+            --gold: #C9922A; --gl: #F5C842; --red: #8B1A1A;
+            --blk: #0A0806; --cream: #F7F0E0; --glass: rgba(255, 255, 255, 0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             background: var(--blk); color: var(--cream); 
             font-family: 'Noto Serif Thai', serif; overflow-x: hidden; line-height: 1.6;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* ── Navigation ── */
+        /* ── Navigation (จัดกึ่งกลางเมนู) ── */
         .tnav { 
             position: fixed; top: 0; width: 100%; padding: 1rem 5%; 
             z-index: 1000; display: flex; justify-content: space-between; align-items: center;
             background: rgba(10, 8, 6, 0.95); border-bottom: 1px solid rgba(201, 146, 42, 0.2);
             backdrop-filter: blur(10px);
         }
-        .n-logo { font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 1.2rem; letter-spacing: 2px; }
+        .n-logo { font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 1.2rem; }
         .n-links { display: flex; gap: 20px; }
-        .n-link { color: var(--gold); text-decoration: none; font-size: 0.85rem; cursor: pointer; transition: 0.3s; font-family: 'Sarabun'; }
-        .n-link:hover, .n-link.active { color: var(--gl); text-shadow: 0 0 10px var(--gold); }
+        .n-link { color: var(--gold); text-decoration: none; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
 
-        /* ── Page Management ── */
+        /* ── Page Layout (บังคับเนื้อหาให้อยู่กลาง) ── */
         .page { 
             display: none; width: 100%; min-height: 100vh; 
-            padding-top: 80px; opacity: 0; transition: opacity 0.5s ease;
+            padding: 120px 10% 60px; opacity: 0; transition: opacity 0.5s ease;
+            flex-direction: column; align-items: center; text-align: center;
         }
-        .page.active { display: flex; opacity: 1; flex-direction: column; }
+        .page.active { display: flex; opacity: 1; }
 
-        /* ── P2: 3D DESIGNER LAYOUT ── */
-        .designer-container {
-            display: flex; flex: 1; height: calc(100vh - 80px); overflow: hidden;
+        h1, h2 { font-family: 'Cinzel Decorative', cursive; color: var(--gold); margin-bottom: 1.5rem; width: 100%; }
+        .sub-t { font-size: 0.9rem; color: var(--gl); margin-bottom: 2rem; letter-spacing: 1px; width: 100%; }
+
+        /* ── Photo Frame (จัดกลางรูปภาพ) ── */
+        .img-container {
+            width: 100%; max-width: 450px; margin: 0 auto 2rem;
+            border-radius: 15px; overflow: hidden; border: 2px solid var(--gold);
+            box-shadow: 0 10px 40px rgba(201, 146, 42, 0.2);
         }
-        .side-panel {
-            width: 300px; background: var(--panel); border-right: 1px solid rgba(200,146,42,0.12);
-            overflow-y: auto; padding: 20px; text-align: left;
+        .img-container img { width: 100%; display: block; transition: 0.6s; }
+        .img-container:hover img { transform: scale(1.05); }
+
+        /* ── Grid & Cards (จัดกึ่งกลางกลุ่ม Card) ── */
+        .grid-info { 
+            display: grid; width: 100%; max-width: 1000px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; margin-top: 2rem; justify-content: center;
         }
-        .viewport { flex: 1; position: relative; background: radial-gradient(circle, #1a1510 0%, #0a0806 100%); }
-        #threeCanvas { width: 100%; height: 100%; display: block; }
+        .card { 
+            background: var(--glass); border: 1px solid rgba(201, 146, 42, 0.15); 
+            padding: 2rem; border-radius: 15px; transition: 0.4s;
+            backdrop-filter: blur(5px);
+        }
 
-        /* UI Elements 3D */
-        .panel-title { font-family: 'Cinzel Decorative'; font-size: 11px; color: var(--gold); letter-spacing: 2px; margin-bottom: 15px; border-bottom: 1px solid rgba(201,146,42,0.2); padding-bottom: 5px; text-transform: uppercase; }
-        .section-label { font-size: 10px; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 15px; }
-        .char-card { background: var(--panel2); border: 1px solid rgba(200,146,42,0.12); padding: 8px; border-radius: 4px; cursor: pointer; text-align: center; font-size: 11px; transition: 0.3s; color: var(--text-dim); }
-        .char-card.active { border-color: var(--gold); color: var(--gl); background: rgba(200,146,42,0.1); }
-        .swatch-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
-        .swatch { width: 26px; height: 26px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; }
-        .swatch.active { border-color: #fff; transform: scale(1.1); }
-        .detail-item { display: flex; justify-content: space-between; padding: 10px; background: var(--panel2); border-radius: 4px; margin-bottom: 6px; font-size: 11px; cursor: pointer; border: 1px solid transparent; }
-        .detail-item.active { border-color: rgba(200,146,42,0.3); color: #fff; }
-        .slider-row { margin-bottom: 15px; }
-        .slider-row label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-bottom: 5px; }
-        input[type=range] { width: 100%; height: 3px; cursor: pointer; accent-color: var(--gold); }
-        
-        /* AI Assistant Style */
-        .ai-box { background: rgba(138, 43, 226, 0.05); border: 1px solid rgba(138, 43, 226, 0.3); padding: 12px; border-radius: 8px; margin-bottom: 20px; }
-        .ai-textarea { width: 100%; background: #000; border: 1px solid rgba(138, 43, 226, 0.3); color: #fff; font-family: 'Sarabun'; font-size: 11px; padding: 8px; border-radius: 4px; resize: none; outline: none; }
-        .ai-btn { width: 100%; margin-top: 8px; padding: 8px; background: linear-gradient(135deg, #4B0082, #8A2BE2); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        /* ── Center Buttons (บังคับปุ่มอยู่กลาง) ── */
+        .btn-wrap { 
+            display: flex; width: 100%; justify-content: center; 
+            margin-top: 3rem; gap: 20px;
+        }
+        .btn-gold { 
+            padding: 12px 40px; background: linear-gradient(135deg, var(--gold), #8A641A); 
+            border: none; color: #000; font-weight: 900; border-radius: 50px; 
+            cursor: pointer; transition: 0.3s;
+        }
+        .btn-gold:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--gold); }
 
-        /* Buttons & Overlays */
-        .export-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--gold-dark), var(--gold)); border: none; color: #000; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; font-family: 'Cinzel Decorative'; font-size: 10px; }
-        .viewport-controls { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
-        .view-btn { padding: 6px 15px; background: rgba(0,0,0,0.7); border: 1px solid rgba(201,146,42,0.4); color: var(--cream); font-size: 10px; border-radius: 4px; cursor: pointer; }
-        #loadingOverlay { position: absolute; inset: 0; background: var(--blk); z-index: 50; display: flex; align-items: center; justify-content: center; }
-        .loading-ring { width: 40px; height: 40px; border: 3px solid rgba(201,146,42,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ── P0 & P1 Styles ── */
-        .content-wrap { padding: 40px 10%; text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; }
-        .img-container { width: 100%; max-width: 450px; border: 2px solid var(--gold); border-radius: 15px; overflow: hidden; margin-bottom: 2rem; }
-        .img-container img { width: 100%; display: block; }
-        .card { background: var(--glass); border: 1px solid rgba(201,146,42,0.15); padding: 2rem; border-radius: 15px; max-width: 800px; margin-bottom: 20px; }
-        .btn-gold { padding: 12px 40px; background: var(--gold); border: none; color: #000; font-weight: bold; border-radius: 50px; cursor: pointer; transition: 0.3s; font-family: 'Sarabun'; }
-        .btn-gold:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--gold); }
-        .div-ornament { color: rgba(200,146,42,0.25); font-size: 14px; margin: 15px 0; text-align: center; letter-spacing: 5px; }
+        /* Bubble Wall */
+        #bubbleWallOverlay { position: fixed; inset: 0; z-index: 2000; display: none; background: #000; }
+        .bubble { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(201,146,42,0.2)); }
     </style>
 </head>
 <body>
@@ -97,240 +115,137 @@
     <nav class="tnav">
         <div class="n-logo">KHON LAB</div>
         <div class="n-links">
-            <span class="n-link" id="link-p0" onclick="showPage('p0')">หน้าแรก</span>
-            <span class="n-link" id="link-p1" onclick="showPage('p1')">ความรู้โขน</span>
-            <span class="n-link" id="link-p2" onclick="showPage('p2')">AI ออกแบบ</span>
-            <span class="n-link" id="link-p4" onclick="showPage('p4')">AR Experience</span>
+            <span class="n-link" onclick="showPage('p0')">หน้าแรก</span>
+            <span class="n-link" onclick="showPage('p1')">ความรู้โขน</span>
+            <span class="n-link" onclick="showPage('p2')">AI ออกแบบ</span>
+            <span class="n-link" onclick="showPage('p4')">AR Experience</span>
         </div>
     </nav>
 
     <section id="p0" class="page active">
-        <div class="content-wrap">
-            <h1 style="color: var(--gold); font-size: 2.5rem;">THE ROYAL CONNECTION</h1>
-            <div style="color: var(--gl); letter-spacing: 2px; margin-bottom: 2rem;">สมเด็จพระพันปีหลวงกับมรดกโขนไทย</div>
-            <div class="img-container">
-                <img src="https://via.placeholder.com/450x600/131008/C9922A?text=Queen+Sirikit+Image" alt="สมเด็จพระพันปีหลวง">
-            </div>
-            <div class="card">
-                <p>ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง จนเป็นที่ประจักษ์แก่สายตาชาวโลก</p>
-            </div>
+        <h1>THE ROYAL CONNECTION</h1>
+        <div class="sub-t">สมเด็จพระพันปีหลวงกับมรดกโขนไทย</div>
+        
+        <div class="img-container">
+            <img src="queen.webp" alt="สมเด็จพระพันปีหลวง">
+        </div>
+
+        <div class="card" style="max-width: 800px; cursor: default;">
+            <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง <br> ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง</p>
+        </div>
+        
+        <div class="btn-wrap">
             <button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button>
         </div>
     </section>
 
-    <section id="p1" class="page">
-        <div class="content-wrap" style="text-align: left;">
-            <h1 style="text-align: center;">KNOWLEDGE HUB</h1>
-            <div style="text-align: center; color: var(--gl); margin-bottom: 30px;">มรดกวัฒนธรรมที่จับต้องไม่ได้ (UNESCO)</div>
-            
-            <div class="card" style="max-width: 900px; margin: 0 auto; line-height: 2;">
-                <h2 style="color: var(--gold); border-left: 4px solid var(--gold); padding-left: 15px; margin-bottom: 20px;">โขนพระราชทาน</h2>
-                <p style="text-indent: 2em; margin-bottom: 20px;">
-                    ประเทศไทย "โขน" เป็นศาสตร์และศิลปะการแสดงชั้นสูงที่หลอมรวมศิลปะหลากหลายแขนง นับแต่วรรณศิลป์ นาฏศิลป์ หัตถศิลป์ และพัสตราภรณ์อันงดงามตามแบบฉบับโบราณ 
+  <section id="p1" class="page">
+    <h1 style="font-family:'Cinzel Decorative'; color:var(--gold); font-size: 2.5rem;">KNOWLEDGE HUB</h1>
+    <div class="sub-t">มรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ (UNESCO)</div>
+
+    <div class="detail-container" style="max-width: 900px; text-align: left; background: rgba(255,255,255,0.03); padding: 40px; border-radius: 20px; border: 1px solid rgba(201, 146, 42, 0.2);">
+        <h2 style="text-align: left; color: var(--gl); font-family: 'Noto Serif Thai'; font-weight: 700; border-left: 5px solid var(--gold); padding-left: 15px; margin-bottom: 20px;">โขนพระราชทาน</h2>
+        
+        <div class="detail-body" style="font-size: 1.1rem; line-height: 2; color: var(--cream);">
+            <p style="margin-bottom: 20px; text-indent: 2em;">
+                ประเทศไทย <strong>"โขน"</strong> เป็นศาสตร์และศิลปะการแสดงชั้นสูงของไทยที่หลอมรวมศิลปะของชาติหลากหลายแขนง นับแต่วรรณกรรม วรรณศิลป์ นาฏศิลป์ คีตศิลป์ หัตถศิลป์ และพัสตราภรณ์อันงดงามตามแบบฉบับโบราณ รวมถึงการจัดฉากและแสง เสียง ที่ยิ่งใหญ่
+            </p>
+
+          
+            <p style="margin-bottom: 20px; text-indent: 2em;">
+                โขนพระราชทานเริ่มขึ้นในปี พ.ศ. ๒๕๕๐ เป็นการแสดงเรื่องรามเกียรติ์ ตอนพรหมาศ ในรูปแบบการบรรเลงคอนเสิร์ตโดยวงโยธวาทิต กองดุริยางค์กองทัพบก เพื่อเฉลิมฉลองพระบาทสมเด็จพระบรมชนกาธิเบศร มหาภูมิพลอดุลยเดชมหาราช บรมนาถบพิตร ทรงเจริญพระชนมพรรษา ๘๐ พรรษา และสมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง ทรงเจริญพระชนมพรรษา ๗๕ พรรษา ณ หอประชุมใหญ่ ศูนย์วัฒนธรรมแห่งประเทศไทย และเมื่อวันที่ ๒๕ ธันวาคม ๒๕๕๐ สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง เสด็จพระราชดำเนินทอดพระเนตรการแสดงรอบปฐมทัศน์
+            </p>
+
+            <p style="margin-bottom: 20px;">
+               จากวันนั้น โขนพระราชทานที่สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนี พระบรมราชชนนีพันปีหลวง ได้ทอดพระเนตร จึงมีพระราชเสาวนีย์ว่า ทุกวันนี้ประชาชนชาวไทยไม่ใคร่มีโอกาสได้ชมโขน เนื่องจากการจัดการแสดงโขนแต่ละครั้งไม่ใช่เรื่องง่าย จึงทรงพระกรุณาโปรดเกล้าฯ ให้ประชุมผู้รู้ ผู้เชี่ยวชาญเกี่ยวกับโขน และงานหัตถศิลป์แขนงต่างๆ แล้วโปรดเกล้าฯ ให้จัดสร้างเครื่องแต่งกายโขนขึ้นใหม่สำหรับใช้ในการแสดงโขนพระราชทาน โดยทรงกำชับให้ยึดถือรูปแบบเครื่องแต่งกายโขนแบบโบราณ แต่มีความคงทนและสวยงามยิ่งขึ้น ได้รับการส่งเสริม สืบสานและพัฒนาการแสดงจนได้รับความนิยมจนถึงวันนี้
+            </p>
+
+            <div class="card" style="background: rgba(201, 146, 42, 0.1); border: 1px solid var(--gold); margin: 30px 0;">
+                <h3 style="color: var(--gl); margin-bottom: 10px;">UNESCO</h3>
+                <p style="font-size: 1rem;">
+                    องค์การยูเนสโกได้ประกาศขึ้นทะเบียน <strong>“โขน”</strong> ของไทย เป็นรายการตัวแทนมรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ เมื่อวันที่ ๒๙ พฤศจิกายน ๒๕๖๑ ถือเป็นการยืนยันบทบาทของประเทศไทยในเวทีโลกต่อการดำเนินงานตามอนุสัญญาว่าด้วยการสงวนรักษามรดกวัฒนธรรมที่จับต้องไม่ได้ ค.ศ. ๒๐๐๓ และภายใต้แนวปฏิบัติ การดำเนินงานตามอนุสัญญาฯ ประเทศไทยเพิ่มความตระหนักเพื่อให้เกิดความเคารพและเรียนรู้คุณค่าทั้งในระดับท้องถิ่น ระดับชาติและระดับนานาชาติ ตลอดจนสร้างการมีส่วนร่วมอย่างกว้างขวางในการส่งเสริมและรักษามรดกวัฒนธรรมโขนให้สืบสานอย่างต่อเนื่อง
                 </p>
-                <p style="margin-bottom: 20px;">
-                    โขนพระราชทานเริ่มขึ้นในปี พ.ศ. ๒๕๕๐ เพื่อเฉลิมฉลองในวโรกาสมหามงคล โดยสมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง ทรงพระกรุณาโปรดเกล้าฯ ให้จัดสร้างเครื่องแต่งกายโขนขึ้นใหม่และพัฒนาการแสดงจนได้รับความนิยมจนถึงปัจจุบัน
-                </p>
-                <div style="background: rgba(201, 146, 42, 0.1); padding: 20px; border-radius: 10px; border: 1px solid var(--gold);">
-                    <strong>UNESCO:</strong> เมื่อวันที่ ๒๙ พฤศจิกายน ๒๕๖๑ ยูเนสโกประกาศขึ้นทะเบียน “โขน” เป็นมรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ
-                </div>
-            </div>
-            <div style="text-align: center; margin-top: 30px;">
-                <button class="btn-gold" onclick="showPage('p2')">ไปหน้าออกแบบ AI →</button>
             </div>
         </div>
-    </section>
 
-    <section id="p2" class="page">
-        <div class="designer-container">
-            <div class="side-panel">
-                <div class="panel-title" style="color: #A060FF;">AI Assistant</div>
-                <div class="ai-box">
-                    <div class="section-label" style="color: #A060FF;">AI Design Prompt</div>
-                    <textarea id="ai-prompt" class="ai-textarea" rows="3" placeholder="ระบุลักษณะ เช่น 'ทศกัณฐ์สีขาว ลายทองอร่าม'"></textarea>
-                    <button class="ai-btn" onclick="alert('AI กำลังออกแบบสไตล์ให้คุณ...')">🪄 ให้ AI ปรับแต่ง</button>
+        <div class="btn-wrap">
+            <button class="btn-gold" onclick="showPage('p0')">กลับหน้าแรก</button>
+            <button class="btn-gold" onclick="showPage('p2')">ไปหน้า AI ออกแบบ →</button>
+        </div>
+    </div>
+</section>
+
+<section id="p2" class="page">
+        <h1 style="margin-bottom: 5px;">3D KHON DESIGNER</h1>
+        <div class="sub-t">นวัตกรรมการออกแบบหัวโขนด้วย AI และระบบ 3 มิติ</div>
+
+        <div class="main-3d-layout" style="display: flex; width: 100%; max-width: 1200px; height: 75vh; background: var(--panel); border: 1px solid rgba(201, 146, 42, 0.2); border-radius: 20px; overflow: hidden;">
+            
+            <div class="side-panel" style="width: 320px; overflow-y: auto; padding: 20px; background: rgba(0,0,0,0.3); text-align: left; border-right: 1px solid rgba(201, 146, 42, 0.1);">
+                
+                <div class="panel-title" style="color: #A060FF; border-bottom-color: #A060FF;">AI ASSISTANT</div>
+                <div class="section" style="background: rgba(138, 43, 226, 0.05); padding: 15px; border-radius: 10px; border: 1px solid rgba(138, 43, 226, 0.2); margin-bottom: 20px;">
+                    <div class="section-label" style="color: #A060FF;">AI Prompt</div>
+                    <textarea id="ai-prompt" style="width: 100%; background: #000; border: 1px solid rgba(138, 43, 226, 0.3); color: #fff; padding: 10px; border-radius: 5px; font-size: 12px; font-family: 'Sarabun'; resize: none;" rows="3" placeholder="เช่น 'ทศกัณฐ์สีม่วงอมชมพู ลายสีเงินกุหลาบ'"></textarea>
+                    <button class="btn-gold" style="width: 100%; margin-top: 10px; padding: 8px; font-size: 12px; background: linear-gradient(135deg, #4B0082, #8A2BE2); color: white;" onclick="alert('AI กำลังวิเคราะห์สไตล์...')">🪄 ให้ AI ออกแบบ</button>
                 </div>
 
                 <div class="div-ornament">✦ ✦ ✦</div>
 
                 <div class="panel-title">ตัวละคร</div>
-                <div class="char-grid">
-                    <div class="char-card active" id="ch-rama" onclick="applyPreset('rama')">พระราม</div>
-                    <div class="char-card" id="ch-ravana" onclick="applyPreset('ravana')">ทศกัณฐ์</div>
-                    <div class="char-card" id="ch-hanuman" onclick="applyPreset('hanuman')">หนุมาน</div>
-                    <div class="char-card" id="ch-sukreep" onclick="applyPreset('sukreep')">สุครีพ</div>
+                <div class="char-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div class="char-card active" id="ch-rama" onclick="applyPreset('rama')"><span class="emoji">👑</span>พระราม</div>
+                    <div class="char-card" id="ch-ravana" onclick="applyPreset('ravana')"><span class="emoji">😤</span>ทศกัณฐ์</div>
+                    <div class="char-card" id="ch-hanuman" onclick="applyPreset('hanuman')"><span class="emoji">🐒</span>หนุมาน</div>
+                    <div class="char-card" id="ch-sukreep" onclick="applyPreset('sukreep')"><span class="emoji">💙</span>สุครีพ</div>
+                    <div class="char-card" id="ch-yaksha" onclick="applyPreset('yaksha')"><span class="emoji">👹</span>ยักษ์</div>
+                    <div class="char-card" id="ch-angel" onclick="applyPreset('angel')"><span class="emoji">✨</span>เทวดา</div>
                 </div>
 
-                <div class="panel-title">สีหน้ากาก</div>
-                <div class="swatch-grid" id="faceSwatches">
-                    <div class="swatch active" style="background:#C8922A" onclick="setFaceColor('#C8922A',this)"></div>
-                    <div class="swatch" style="background:#2A5C3A" onclick="setFaceColor('#2A5C3A',this)"></div>
-                    <div class="swatch" style="background:#8B1A1A" onclick="setFaceColor('#8B1A1A',this)"></div>
-                    <div class="swatch" style="background:#1A2A6A" onclick="setFaceColor('#1A2A6A',this)"></div>
+                <div class="div-ornament">✦ ✦ ✦</div>
+
+                <div class="section">
+                    <div class="section-label">สีหน้ากาก</div>
+                    <div class="swatch-grid" id="faceSwatches">
+                        <div class="swatch active" style="background:#C8922A" onclick="setFaceColor('#C8922A',this)"></div>
+                        <div class="swatch" style="background:#2A5C3A" onclick="setFaceColor('#2A5C3A',this)"></div>
+                        <div class="swatch" style="background:#8B1A1A" onclick="setFaceColor('#8B1A1A',this)"></div>
+                        <div class="swatch" style="background:#1A2A6A" onclick="setFaceColor('#1A2A6A',this)"></div>
+                        <div class="swatch" style="background:#DDDAC8" onclick="setFaceColor('#DDDAC8',this)"></div>
+                    </div>
                 </div>
 
-                <div class="panel-title">รายละเอียด</div>
-                <div class="detail-item active" id="d-crown" onclick="toggleDetail('crown')"><span>ชฎา</span><span>✓</span></div>
-                <div class="detail-item active" id="d-earring" onclick="toggleDetail('earring')"><span>ต่างหู</span><span>✓</span></div>
-                
-                <div class="panel-title">ปรับขนาด</div>
-                <div class="slider-row">
-                    <label><span>ความสูงชฎา</span><span id="crownH-val">100%</span></label>
-                    <input type="range" min="50" max="160" value="100" oninput="setCrownHeight(this)">
+                <div class="section">
+                    <div class="section-label">รายละเอียด</div>
+                    <div class="detail-item active" id="d-crown" onclick="toggleDetail('crown')"><span>ชฎา</span><div class="detail-check">✓</div></div>
+                    <div class="detail-item active" id="d-earring" onclick="toggleDetail('earring')"><span>ต่างหู</span><div class="detail-check">✓</div></div>
+                    <div class="detail-item" id="d-fangs" onclick="toggleDetail('fangs')"><span>เขี้ยว</span><div class="detail-check"></div></div>
                 </div>
 
-                <button class="export-btn" onclick="exportScene()">📷 บันทึกภาพ 3D</button>
+                <button class="export-btn" onclick="exportScene()" style="margin-top: 10px;">📷 บันทึกภาพ</button>
             </div>
 
-            <div class="viewport">
+            <div class="viewport" style="flex: 1; position: relative; background: radial-gradient(circle, #1a1510 0%, #0a0806 100%);">
                 <div id="loadingOverlay"><div class="loading-ring"></div></div>
                 <canvas id="threeCanvas"></canvas>
-                <div class="viewport-controls">
+                <div class="hint-text" style="bottom: 80px;">🖱 ลากเพื่อหมุน | Scroll เพื่อซูม</div>
+                <div class="viewport-controls" style="bottom: 20px;">
                     <button class="view-btn" onclick="setCamera('front')">หน้าตรง</button>
                     <button class="view-btn" onclick="setCamera('quarter')">มุมเฉียง</button>
                     <button class="view-btn" onclick="resetCamera()">รีเซ็ต</button>
-                    <button class="view-btn" id="btn-orbit" onclick="toggleAutoRotate()">🔄 AUTO</button>
+                    <button class="view-btn" style="border-color: var(--gl); color: var(--gl);" onclick="toggleAutoRotate()">🔄 AUTO</button>
                 </div>
             </div>
         </div>
     </section>
-
-    <section id="p4" class="page">
-        <div style="position: absolute; top: 100px; width: 100%; text-align: center; z-index: 10;">
-            <h2>AR FACE MASK</h2>
-            <p>สวมหน้ากากโขนผ่านกล้องของคุณ</p>
-        </div>
-        <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #222;">
-            <p style="color: var(--gold);">[ ระบบ AR กำลังเตรียมการเชื่อมต่อกล้อง... ]</p>
-        </div>
-    </section>
-
+    
     <script>
-        // ─── PAGE NAVIGATION ───
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.n-link').forEach(l => l.classList.remove('active'));
-            
-            document.getElementById(pageId).classList.add('active');
-            document.getElementById('link-' + pageId).classList.add('active');
-            
-            if (pageId === 'p2') setTimeout(onResize, 100);
+            const target = document.getElementById(pageId);
+            target.classList.add('active');
             window.scrollTo(0, 0);
         }
-
-        // ─── THREE.JS 3D LOGIC ───
-        const canvas = document.getElementById('threeCanvas');
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.shadowMap.enabled = true;
-        renderer.outputEncoding = THREE.sRGBEncoding;
-
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x0A0806);
-        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-        camera.position.set(0, 1.5, 7);
-
-        function onResize() {
-            const vp = document.querySelector('.viewport');
-            if(!vp) return;
-            renderer.setSize(vp.clientWidth, vp.clientHeight);
-            camera.aspect = vp.clientWidth / vp.clientHeight;
-            camera.updateProjectionMatrix();
-        }
-        window.addEventListener('resize', onResize);
-
-        // Lights
-        const ambientLight = new THREE.AmbientLight(0xFFE8C0, 0.6);
-        scene.add(ambientLight);
-        const keyLight = new THREE.DirectionalLight(0xFFE0A0, 1.2);
-        keyLight.position.set(5, 5, 5);
-        scene.add(keyLight);
-
-        // State & Groups
-        const state = { faceColor: 0xC8922A, ornColor: 0xF0C060, crownScale: 1.0, details: { crown: true, earring: true } };
-        let maskGroup = new THREE.Group();
-        scene.add(maskGroup);
-        let crownGroup = new THREE.Group();
-
-        function buildMask() {
-            maskGroup.clear();
-            const faceMat = new THREE.MeshPhongMaterial({ color: state.faceColor, shininess: 80 });
-            const faceGeo = new THREE.SphereGeometry(1.8, 32, 32);
-            const face = new THREE.Mesh(faceGeo, faceMat);
-            maskGroup.add(face);
-
-            if(state.details.crown) {
-                crownGroup = new THREE.Group();
-                const crownMat = new THREE.MeshPhongMaterial({ color: state.ornColor, shininess: 100 });
-                const cGeo = new THREE.CylinderGeometry(0.5, 1.5, 2.5, 32);
-                const crown = new THREE.Mesh(cGeo, crownMat);
-                crown.position.y = 2.5;
-                crownGroup.add(crown);
-                crownGroup.scale.y = state.crownScale;
-                maskGroup.add(crownGroup);
-            }
-        }
-
-        // UI Functions
-        function applyPreset(type) {
-            const p = { rama: 0xC8922A, ravana: 0x2A5C3A, hanuman: 0xDDDAC8, sukreep: 0x1A2A6A };
-            state.faceColor = p[type];
-            document.querySelectorAll('.char-card').forEach(c => c.classList.remove('active'));
-            document.getElementById('ch-'+type).classList.add('active');
-            buildMask();
-        }
-        function setFaceColor(hex, el) {
-            state.faceColor = parseInt(hex.replace('#',''), 16);
-            document.querySelectorAll('#faceSwatches .swatch').forEach(s => s.classList.remove('active'));
-            el.classList.add('active');
-            buildMask();
-        }
-        function toggleDetail(key) {
-            state.details[key] = !state.details[key];
-            document.getElementById('d-'+key).classList.toggle('active');
-            buildMask();
-        }
-        function setCrownHeight(input) {
-            state.crownScale = input.value / 100;
-            document.getElementById('crownH-val').innerText = input.value + '%';
-            buildMask();
-        }
-
-        // Camera controls (Simple)
-        let spherical = { theta: 0, phi: Math.PI/2, radius: 7 };
-        let autoRotate = false;
-        function toggleAutoRotate() { 
-            autoRotate = !autoRotate; 
-            document.getElementById('btn-orbit').classList.toggle('active');
-        }
-        function resetCamera() { spherical = { theta: 0, phi: Math.PI/2, radius: 7 }; }
-        function setCamera(view) {
-            if(view === 'front') spherical.theta = 0;
-            if(view === 'quarter') spherical.theta = Math.PI/4;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            if(autoRotate) spherical.theta += 0.01;
-            const x = spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta);
-            const z = spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta);
-            camera.position.set(x, 1.5, z);
-            camera.lookAt(0, 1.5, 0);
-            renderer.render(scene, camera);
-        }
-
-        function exportScene() {
-            renderer.render(scene, camera);
-            const link = document.createElement('a');
-            link.download = 'khon-design.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        }
-
-        // Init
-        buildMask();
-        animate();
-        setTimeout(() => document.getElementById('loadingOverlay').style.display='none', 1000);
     </script>
 </body>
 </html>
