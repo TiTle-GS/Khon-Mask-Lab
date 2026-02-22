@@ -10,6 +10,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
+
+        /* ส่วนปรับปรุงเพิ่มเติมสำหรับหน้า P2 */
+.main-3d-layout .side-panel::-webkit-scrollbar { width: 4px; }
+.main-3d-layout .side-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+.char-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(201, 146, 42, 0.2);
+    padding: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-size: 13px; transition: 0.3s;
+}
+.char-card.active, .char-card:hover { border-color: var(--gold); background: rgba(201, 146, 42, 0.15); color: var(--gold-light); }
+
+.swatch-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+.swatch { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+.swatch.active { border-color: white; transform: scale(1.2); }
+
+.detail-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 12px; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 5px;
+    cursor: pointer; font-size: 12px; border: 1px solid transparent;
+}
+.detail-item.active { border-color: rgba(201, 146, 42, 0.3); color: var(--gold-light); }
+.detail-check { color: var(--gold); font-weight: bold; }
+
+.view-btn {
+    background: rgba(0,0,0,0.6); border: 1px solid rgba(201, 146, 42, 0.4);
+    color: var(--cream); padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 11px;
+}
+        
         :root {
             --gold: #C9922A; --gl: #F5C842; --red: #8B1A1A;
             --blk: #0A0806; --cream: #F7F0E0; --glass: rgba(255, 255, 255, 0.05);
