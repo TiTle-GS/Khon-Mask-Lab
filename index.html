@@ -584,160 +584,72 @@
     </section>
 
 <section id="p4" class="page">
-  <h1 style="font-family:'Cinzel Decorative'; color:var(--gold); font-size:2.2rem;">AR EXPERIENCE</h1>
-  <div class="sub-t">สวมหน้ากากโขนผ่านกล้องหน้า · Face Tracking Technology</div>
+    <h1 style="font-family:'Cinzel Decorative'; color:var(--gold); font-size:2.5rem;">AR EXHIBITION</h1>
+    <div class="sub-t">ส่องกล้องชมมรดกหัวโขนไทยในรูปแบบ AR</div>
 
-  <!-- ── AR Viewport ── -->
-  <div id="ar-wrapper" style="
-    position: relative;
-    width: 100%; max-width: 560px;
-    aspect-ratio: 3/4;
-    border-radius: 28px;
-    overflow: hidden;
-    border: 2px solid var(--gold);
-    box-shadow: 0 0 60px rgba(201,146,42,0.25);
-    background: #000;
-    margin: 0 auto;
-  ">
+    <div id="ar-wrapper" style="position: relative; width: 100%; max-width: 600px; aspect-ratio: 3/4; border-radius: 28px; overflow: hidden; border: 2px solid var(--gold); background: #000; margin: 0 auto;">
+        
+        <a-scene 
+            embedded 
+            color-space="sRGB" 
+            renderer="colorManagement: true, physicallyCorrectLights" 
+            vr-mode-ui="enabled: false" 
+            device-orientation-permission-ui="enabled: false">
+            
+            <a-assets>
+                <a-asset-item id="model1" src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/1-v1.glb"></a-asset-item>
+                <a-asset-item id="model2" src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/2-v5.glb"></a-asset-item>
+                <a-asset-item id="model3" src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/3-v1.glb"></a-asset-item>
+                <a-asset-item id="model4" src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/4-v1.glb"></a-asset-item>
+                <a-asset-item id="model5" src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/5-v1.glb"></a-asset-item>
+            </a-assets>
 
-    <!-- MindAR + A-Frame Scene -->
-    <a-scene
-      id="ar-scene"
-      mindar-face="autoStart: false; uiLoading: no; uiScanning: no; uiError: no"
-      embedded
-      color-space="sRGB"
-      renderer="colorManagement: true; alpha: true"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"
-      style="width:100%; height:100%;"
-    >
-      <!-- Asset Preloader -->
-      <a-assets id="ar-assets" timeout="15000">
-        <a-asset-item id="model-giant"  src="giant.glb"></a-asset-item>
-        <a-asset-item id="model-monkey" src="monkey.glb"></a-asset-item>
-        <a-asset-item id="model-human"  src="human.glb"></a-asset-item>
-        <a-asset-item id="model-nang"   src="nang.glb"></a-asset-item>
-        <a-asset-item id="model-rishi"  src="rishi.glb"></a-asset-item>
-      </a-assets>
+            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-camera active="false" position="0 0 0" look-controls="enabled: false"></a-camera>
+            <a-entity id="targetModel" 
+                      gltf-model="#model1" 
+                      position="0 -0.5 -2.5" 
+                      scale="1 1 1" 
+                      rotation="0 0 0"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 15000; easing: linear">
+            </a-entity>
 
-      <!--
-        anchorIndex: 168 = จุดกลางหน้าผาก (เหมาะกับหน้ากากโขน)
-        ปรับ position / scale / rotation ตามโมเดลจริงที่มี
-      -->
-      <a-entity mindar-face-target="anchorIndex: 168">
-        <a-gltf-model
-          id="ar-khon-mask"
-          src="#model-giant"
-          position="0 -0.3 0.1"
-          rotation="0 0 0"
-          scale="0.45 0.45 0.45"
-          visible="true"
-          animation-mixer
-        ></a-gltf-model>
-      </a-entity>
-    </a-scene>
+            <a-light type="ambient" intensity="0.8"></a-light>
+            <a-light type="directional" position="1 2 1" intensity="1"></a-light>
+        </a-scene>
 
-    <!-- Overlay: เส้นไกด์วางหน้า -->
-    <div id="face-guide" style="
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      pointer-events: none;
-    ">
-      <svg width="200" height="260" viewBox="0 0 200 260" fill="none"
-           style="opacity: 0.35; transition: opacity 0.5s;">
-        <!-- หัวไข่ไกด์ -->
-        <ellipse cx="100" cy="130" rx="72" ry="95"
-          stroke="#c9922a" stroke-width="1.5" stroke-dasharray="6 4"/>
-        <!-- มุม 4 ด้าน -->
-        <path d="M28 60 L28 40 L48 40"   stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
-        <path d="M172 60 L172 40 L152 40" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
-        <path d="M28 200 L28 220 L48 220" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
-        <path d="M172 200 L172 220 L152 220" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+        <div id="ar-status" style="position: absolute; top: 16px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); border: 1px solid var(--gold); color: var(--gold); font-size: 0.7rem; padding: 5px 16px; border-radius: 20px; z-index: 10;">พร้อมแสดงผล</div>
     </div>
 
-    <!-- Flash effect เมื่อถ่ายรูป -->
-    <div id="flash-effect" style="
-      position: absolute; inset: 0;
-      background: #fff;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.08s;
-    "></div>
-
-    <!-- Status badge -->
-    <div id="ar-status" style="
-      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
-      background: rgba(0,0,0,0.7); border: 1px solid var(--gold);
-      color: var(--gold); font-size: 0.7rem; letter-spacing: 0.1em;
-      padding: 5px 16px; border-radius: 20px;
-      backdrop-filter: blur(6px);
-    ">⏳ กำลังโหลด...</div>
-
-  </div><!-- /ar-wrapper -->
-
-  <!-- ── Mask Selector ── -->
-  <div id="mask-selector" style="
-    display: flex; gap: 12px; margin-top: 20px;
-    flex-wrap: wrap; justify-content: center;
-    max-width: 560px;
-  ">
-    <button onclick="changeARMask('giant')"  id="sel-giant"  class="mask-sel-btn active-sel">👺 ยักษ์</button>
-    <button onclick="changeARMask('monkey')" id="sel-monkey" class="mask-sel-btn">🐒 ลิง</button>
-    <button onclick="changeARMask('human')"  id="sel-human"  class="mask-sel-btn">🌟 เทวดา</button>
-    <button onclick="changeARMask('nang')"   id="sel-nang"   class="mask-sel-btn">🌸 นาง</button>
-    <button onclick="changeARMask('rishi')"  id="sel-rishi"  class="mask-sel-btn">🔱 ฤๅษี</button>
-  </div>
-
-  <!-- ── Scale / Position Sliders (fine-tune หน้ากาก) ── -->
-  <div id="tune-panel" style="
-    max-width: 560px; width: 100%;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(201,146,42,0.2);
-    border-radius: 16px;
-    padding: 18px 22px; margin-top: 16px;
-  ">
-    <p style="color: var(--gl); font-size:0.75rem; letter-spacing:0.15em; margin-bottom:14px;">🔧 ปรับตำแหน่งหน้ากาก</p>
-    <div style="display:grid; gap:10px;">
-
-      <label style="font-size:0.75rem; color:var(--cream); display:flex; align-items:center; gap:10px;">
-        <span style="width:70px; color:var(--gold);">ขนาด</span>
-        <input type="range" id="sl-scale" min="0.1" max="1.5" step="0.01" value="0.45"
-          oninput="tuneMask()" style="flex:1; accent-color:var(--gold);">
-        <span id="lbl-scale" style="width:38px; text-align:right;">0.45</span>
-      </label>
-
-      <label style="font-size:0.75rem; color:var(--cream); display:flex; align-items:center; gap:10px;">
-        <span style="width:70px; color:var(--gold);">ขึ้น/ลง</span>
-        <input type="range" id="sl-y" min="-1.5" max="1.5" step="0.01" value="-0.3"
-          oninput="tuneMask()" style="flex:1; accent-color:var(--gold);">
-        <span id="lbl-y" style="width:38px; text-align:right;">-0.30</span>
-      </label>
-
-      <label style="font-size:0.75rem; color:var(--cream); display:flex; align-items:center; gap:10px;">
-        <span style="width:70px; color:var(--gold);">หน้า/หลัง</span>
-        <input type="range" id="sl-z" min="-0.5" max="0.8" step="0.01" value="0.1"
-          oninput="tuneMask()" style="flex:1; accent-color:var(--gold);">
-        <span id="lbl-z" style="width:38px; text-align:right;">0.10</span>
-      </label>
-
+    <div id="mask-selector" style="display: flex; gap: 10px; margin-top: 25px; flex-wrap: wrap; justify-content: center;">
+        <button onclick="changeShowModel(1)" class="mask-btn active">แบบที่ 1</button>
+        <button onclick="changeShowModel(2)" class="mask-btn">แบบที่ 2</button>
+        <button onclick="changeShowModel(3)" class="mask-btn">แบบที่ 3</button>
+        <button onclick="changeShowModel(4)" class="mask-btn">แบบที่ 4</button>
+        <button onclick="changeShowModel(5)" class="mask-btn">แบบที่ 5</button>
     </div>
-  </div>
 
-  <!-- ── Buttons ── -->
-  <div class="btn-wrap" style="margin-top:24px; gap:16px; flex-wrap:wrap;">
-    <button id="start-ar-btn"   onclick="startAR()"        class="btn-gold">📷 เปิดกล้อง AR</button>
-    <button id="capture-ar-btn" onclick="captureARPhoto()"  class="btn-gold" style="display:none; background:linear-gradient(135deg,#fff,#ddd); color:#000;">⬤ ถ่ายรูป</button>
-    <button id="stop-ar-btn"    onclick="stopAR()"          class="btn-gold" style="display:none; background:rgba(80,20,20,0.8); color:#fcc;">✕ ปิดกล้อง</button>
-  </div>
+    <div class="ar-sliders" style="max-width: 500px; width: 100%; background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px; margin-top: 20px; border: 1px solid rgba(201,146,42,0.2);">
+        <p style="color:var(--gold); font-size:12px; margin-bottom:15px; letter-spacing:1px;">🔧 ปรับแต่งโมเดล</p>
+        <div class="flex items-center gap-4 mb-3">
+            <span style="color:var(--gold); font-size:12px; width:50px;">ขนาด</span>
+            <input type="range" id="sl-scale" min="0.1" max="3" step="0.1" value="1" oninput="updateModelTransform()" style="flex:1; accent-color:var(--gold);">
+        </div>
+        <div class="flex items-center gap-4">
+            <span style="color:var(--gold); font-size:12px; width:50px;">ความสูง</span>
+            <input type="range" id="sl-y" min="-2" max="2" step="0.1" value="-0.5" oninput="updateModelTransform()" style="flex:1; accent-color:var(--gold);">
+        </div>
+    </div>
 
-  <p style="color:rgba(255,255,255,0.25); font-size:0.72rem; margin-top:14px;">
-    * ต้องเปิดในเบราว์เซอร์ที่รองรับกล้อง (Chrome / Safari) และอนุญาตการใช้กล้อง
-  </p>
-
+    <div class="btn-wrap">
+        <button class="btn-gold" onclick="location.reload()">↺ รีเซ็ตระบบ</button>
+    </div>
 </section>
+
+<style>
+    .mask-btn { padding: 10px 20px; background: #1a1a1a; border: 1px solid var(--gold); color: #fff; border-radius: 50px; cursor: pointer; font-size: 13px; transition: 0.3s; }
+    .mask-btn.active { background: var(--gold); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--gold); }
+</style>
 
 <!-- ── Styles เพิ่มเติมสำหรับ p4 ── -->
 <style>
@@ -1130,6 +1042,35 @@
             window.scrollTo(0, 0);
         }
     </script>
+
+    <script>
+    // ── ฟังก์ชันเปลี่ยนโมเดล ──
+    function changeShowModel(id) {
+        const modelEl = document.getElementById('targetModel');
+        modelEl.setAttribute('gltf-model', '#model' + id);
+        
+        // อัปเดตสถานะปุ่ม
+        document.querySelectorAll('.mask-btn').forEach((btn, index) => {
+            btn.classList.toggle('active', index + 1 === id);
+        });
+    }
+
+    // ── ฟังก์ชันปรับแต่งโมเดล ──
+    function updateModelTransform() {
+        const el = document.getElementById('targetModel');
+        const s = document.getElementById('sl-scale').value;
+        const y = document.getElementById('sl-y').value;
+        el.setAttribute('scale', `${s} ${s} ${s}`);
+        el.setAttribute('position', `0 ${y} -2.5`);
+    }
+
+    // ── ฟังก์ชันเปลี่ยนหน้า ──
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+</script>
 
     
 </body>
