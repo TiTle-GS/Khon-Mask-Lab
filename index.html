@@ -149,154 +149,212 @@
     </div>
 </section>
 
-    <section id="p2" class="page">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <section id="p2" class="page active">
+            <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
-    
     <style>
-        /* แก้ไขตำแหน่งและการแสดงผลของหน้า P2 */
-        #p2.page.active {
-            display: flex !important;
-            flex-direction: column;
-            padding: 80px 0 0 0 !important; /* เว้นที่ให้ Navbar */
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
+        body {
+            font-family: 'Sarabun', sans-serif;
             background: #0a0a0a;
+            color: #e5e5e5;
+            overflow-x: hidden;
+        }
+        h1, h2, h3 { font-family: 'Kanit', sans-serif; }
+        
+        .studio-bg {
+            background-color: #0a0a0a;
+            background-image: 
+                radial-gradient(#1a1a1a 1px, transparent 1px),
+                radial-gradient(#1a1a1a 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
         }
 
-        .studio-container {
-            display: flex;
-            flex: 1;
-            width: 100%;
-            height: calc(100vh - 80px);
-            overflow: hidden;
-        }
-
-        .canvas-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
-            position: relative;
-            padding: 20px;
+        .canvas-area {
+            background: radial-gradient(circle, #222 0%, #000 100%);
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+            border: 1px solid #333;
         }
 
         .sidebar-right {
-            width: 400px;
-            background: rgba(15, 15, 15, 0.98);
-            border-left: 1px solid rgba(197, 160, 89, 0.2);
-            overflow-y: auto;
-            padding: 30px;
-            height: 100%;
+            border-left: 1px solid #c5a05933;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
         }
 
-        /* SVG Shadow & Mask Position */
-        #main-svg {
-            width: 85%;
-            height: 85%;
-            max-width: 600px;
-            filter: drop-shadow(0 25px 50px rgba(0,0,0,0.9));
+        .color-input-wrapper {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            overflow: hidden;
+            border-radius: 10px;
+            border: 2px solid #333;
+            transition: all 0.2s;
+        }
+        .color-input-wrapper:hover { border-color: #c5a059; transform: scale(1.05); }
+        .color-input-wrapper input {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            cursor: pointer;
         }
 
-        @media (max-width: 1024px) {
-            .studio-container { flex-direction: column; overflow-y: auto; }
-            .sidebar-right { width: 100%; height: auto; }
-            #p2.page.active { overflow-y: auto; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0a0a0a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c5a059; border-radius: 10px; }
+
+        .active-btn { 
+            background: #c5a059 !important; 
+            color: #000 !important;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
         }
     </style>
+</head>
+<body class="studio-bg min-h-screen flex flex-col">
+</nav>
 
-    <div class="studio-container">
-        <div class="canvas-container">
-            <div class="absolute top-6 right-6 z-10 hidden md:flex gap-4">
-                <button onclick="randomizeAll()" class="text-sm text-zinc-400 hover:text-[#c5a059] transition-all flex items-center gap-2 bg-black/40 px-4 py-2 rounded-full border border-white/5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-                    สุ่มรูปแบบ
-                </button>
-                <button onclick="exportMask()" class="bg-[#c5a059] text-black px-6 py-2 rounded-full text-sm font-bold hover:brightness-110 shadow-lg active:scale-95 transition-all">
-                    บันทึกรูปภาพ
-                </button>
+    <main class="flex-1 flex flex-col lg:flex-row h-full overflow-hidden">
+        
+        <!-- Left Section: Viewport / Canvas Area -->
+        <div class="flex-1 flex flex-col items-center justify-center p-6 md:p-12 relative">
+            <div id="capture-area" class="canvas-area w-full max-w-[650px] aspect-square rounded-[2.5rem] flex items-center justify-center relative shadow-2xl overflow-hidden border border-zinc-800">
+                <div class="absolute inset-0 opacity-10 pointer-events-none">
+                    <div class="absolute top-1/2 left-0 w-full h-[1px] bg-white"></div>
+                    <div class="absolute top-0 left-1/2 w-[1px] h-full bg-white"></div>
+                </div>
+
+                <svg id="main-svg" viewBox="0 0 400 400" class="w-4/5 h-4/5 drop-shadow-[0_35px_60px_rgba(0,0,0,0.8)]">
+                    <path d="M140 85 L260 85 L255 135 L145 135 Z" fill="rgba(0,0,0,0.4)" transform="translate(8,8)" />
+                    
+                    <!-- Crown Group -->
+                    <g id="crown-group">
+                        <path id="part-crown-top" d="M200 10 L215 85 L185 85 Z" fill="#FFD700" />
+                        <circle id="part-crown-ornament" cx="200" cy="50" r="4" fill="#FFD700" stroke="#000" stroke-width="0.5" />
+                        <path id="part-crown-base" d="M140 80 L260 80 L250 130 L150 130 Z" fill="#FFD700" stroke="#b08d4a" stroke-width="1" />
+                    </g>
+
+                    <!-- Face Base -->
+                    <path id="part-face" d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 L120 130" fill="#16a34a" />
+                    
+                    <!-- Ears -->
+                    <path id="part-ear-l" d="M100 200 C80 200 70 240 90 260 Q100 240 100 220" fill="#16a34a" />
+                    <path id="part-ear-r" d="M300 200 C320 200 330 240 310 260 Q300 240 300 220" fill="#16a34a" />
+
+                    <!-- Facial Details -->
+                    <g id="details-layer">
+                        <!-- Patterns Group -->
+                        <g id="patterns-container" fill="none" stroke-width="1.5" stroke-linecap="round">
+                            <!-- Basic Lines (Pattern 1) -->
+                            <g id="pattern-basic" class="hidden">
+                                <path d="M130 260 Q150 270 150 290" />
+                                <path d="M270 260 Q250 270 250 290" />
+                                <path d="M190 350 Q200 330 210 350" />
+                            </g>
+                            <!-- Kanok Swirls (Pattern 2) -->
+                            <g id="pattern-kanok" class="hidden">
+                                <path d="M120 240 Q140 230 150 250 T160 270" />
+                                <path d="M280 240 Q260 230 250 250 T240 270" />
+                                <path d="M180 150 Q200 140 220 150" />
+                                <path d="M195 160 Q200 155 205 160" />
+                            </g>
+                            <!-- Royal Intricate (Pattern 3) -->
+                            <g id="pattern-royal" class="hidden">
+                                <path d="M110 230 Q130 210 160 240 T180 280" />
+                                <path d="M290 230 Q270 210 240 240 T220 280" />
+                                <path d="M200 140 L200 180 M185 160 L215 160" />
+                                <circle cx="200" cy="160" r="3" fill="currentColor" />
+                                <path d="M85 220 Q75 220 80 240" />
+                                <path d="M315 220 Q325 220 320 240" />
+                            </g>
+                        </g>
+
+                        <g id="eye-group">
+                            <path id="part-eye-l" d="M140 215 Q165 195 190 215" fill="white" stroke="black" stroke-width="1.5" />
+                            <path id="part-eye-r" d="M210 215 Q235 195 260 215" fill="white" stroke="black" stroke-width="1.5" />
+                            <circle id="pupil-l" cx="165" cy="212" r="6" fill="black" />
+                            <circle id="pupil-r" cx="235" cy="212" r="6" fill="black" />
+                        </g>
+                        
+                        <path id="part-eyebrow-l" d="M135 200 Q165 160 190 205" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" />
+                        <path id="part-eyebrow-r" d="M210 205 Q235 160 265 200" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" />
+
+                        <path id="part-mouth" d="M170 300 Q200 330 230 300" fill="none" stroke="black" stroke-width="2.5" />
+                        <path id="part-fang-l" d="M175 305 L170 325 L185 310 Z" fill="white" stroke="black" stroke-width="0.5" />
+                        <path id="part-fang-r" d="M225 305 L230 325 L215 310 Z" fill="white" stroke="black" stroke-width="0.5" />
+
+                        <circle id="part-gem" cx="200" cy="105" r="7" fill="#dc2626" stroke="#fff" stroke-width="1" />
+                    </g>
+                </svg>
             </div>
-
-            <svg id="main-svg" viewBox="0 0 400 400">
-                <g id="crown-group">
-                    <path id="part-crown-top" d="M200 10 L215 85 L185 85 Z" fill="#FFD700" />
-                    <circle id="part-crown-ornament" cx="200" cy="50" r="4" fill="#FFD700" stroke="#000" stroke-width="0.5" />
-                    <path id="part-crown-base" d="M140 80 L260 80 L250 130 L150 130 Z" fill="#FFD700" stroke="#b08d4a" stroke-width="1" />
-                </g>
-                <path id="part-face" d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 L120 130" fill="#16a34a" />
-                <path id="part-ear-l" d="M100 200 C80 200 70 240 90 260 Q100 240 100 220" fill="#16a34a" />
-                <path id="part-ear-r" d="M300 200 C320 200 330 240 310 260 Q300 240 300 220" fill="#16a34a" />
-                <g id="details-layer">
-                    <g id="patterns-container" fill="none" stroke-width="1.5" stroke-linecap="round">
-                        <g id="pattern-basic" class="hidden"><path d="M130 260 Q150 270 150 290" /><path d="M270 260 Q250 270 250 290" /><path d="M190 350 Q200 330 210 350" /></g>
-                        <g id="pattern-kanok" class="hidden"><path d="M120 240 Q140 230 150 250 T160 270" /><path d="M280 240 Q260 230 250 250 T240 270" /><path d="M180 150 Q200 140 220 150" /><path d="M195 160 Q200 155 205 160" /></g>
-                        <g id="pattern-royal" class="hidden"><path d="M110 230 Q130 210 160 240 T180 280" /><path d="M290 230 Q270 210 240 240 T220 280" /><path d="M200 140 L200 180 M185 160 L215 160" /><circle cx="200" cy="160" r="3" fill="currentColor" /><path d="M85 220 Q75 220 80 240" /><path d="M315 220 Q325 220 320 240" /></g>
-                    </g>
-                    <g id="eye-group">
-                        <path id="part-eye-l" d="M140 215 Q165 195 190 215" fill="white" stroke="black" stroke-width="1.5" />
-                        <path id="part-eye-r" d="M210 215 Q235 195 260 215" fill="white" stroke="black" stroke-width="1.5" />
-                        <circle id="pupil-l" cx="165" cy="212" r="6" fill="black" />
-                        <circle id="pupil-r" cx="235" cy="212" r="6" fill="black" />
-                    </g>
-                    <path id="part-eyebrow-l" d="M135 200 Q165 160 190 205" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" />
-                    <path id="part-eyebrow-r" d="M210 205 Q235 160 265 200" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" />
-                    <path id="part-mouth" d="M170 300 Q200 330 230 300" fill="none" stroke="black" stroke-width="2.5" />
-                    <path id="part-fang-l" d="M175 305 L170 325 L185 310 Z" fill="white" stroke="black" stroke-width="0.5" />
-                    <path id="part-fang-r" d="M225 305 L230 325 L215 310 Z" fill="white" stroke="black" stroke-width="0.5" />
-                    <circle id="part-gem" cx="200" cy="105" r="7" fill="#dc2626" stroke="#fff" stroke-width="1" />
-                </g>
-            </svg>
+            
+            <div class="flex md:hidden mt-8 gap-3 w-full max-w-sm">
+                <button onclick="randomizeAll()" class="flex-1 py-3 bg-zinc-800 rounded-xl text-xs font-bold border border-zinc-700">สุ่มสี</button>
+                <button onclick="exportMask()" class="flex-1 py-3 bg-[#c5a059] text-black rounded-xl text-xs font-bold shadow-lg">บันทึกรูป</button>
+            </div>
         </div>
 
-        <aside class="sidebar-right custom-scrollbar">
-            <h2 class="text-[#c5a059] font-bold text-xl mb-8 flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                KHON DESIGNER
+        <!-- Right Section: Tools Sidebar -->
+        <aside class="w-full lg:w-[400px] sidebar-right custom-scrollbar overflow-y-auto p-8 h-full">
+           <div class="hidden md:flex items-center gap-6 justify-end ">
+            <button onclick="randomizeAll()" class="text-sm text-zinc-400 hover:text-[#c5a059] transition-colors flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                สุ่มรูปแบบ
+            </button>
+            <button onclick="exportMask()" class="bg-[#c5a059] text-black px-6 py-2 rounded-full text-sm font-bold hover:bg-[#b08d4a] transition-all shadow-lg active:scale-95">
+                บันทึกรูปภาพ
+            </button>
+               <span></span>
+        </div>
+            <h2 class="text-[#c5a059] font-bold text-xl mb-6 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                แผงควบคุมการออกแบบ
             </h2>
 
             <div class="space-y-8">
                 <section>
-                    <label class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold block mb-4">ประเภทตัวละคร</label>
+                    <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">หมวดหมู่ตัวละคร</label>
                     <div class="grid grid-cols-3 gap-2">
-                        <button onclick="updateState({char: 'giant'})" id="btn-giant" class="char-btn p-3 bg-zinc-800/40 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059]">ยักษ์</button>
-                        <button onclick="updateState({char: 'monkey'})" id="btn-monkey" class="char-btn p-3 bg-zinc-800/40 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059]">ลิง</button>
-                        <button onclick="updateState({char: 'human'})" id="btn-human" class="char-btn p-3 bg-zinc-800/40 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059]">เทวดา</button>
+                        <button onclick="updateState({char: 'giant'})" id="btn-giant" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ยักษ์</button>
+                        <button onclick="updateState({char: 'monkey'})" id="btn-monkey" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ลิง</button>
+                        <button onclick="updateState({char: 'human'})" id="btn-human" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">เทวดา</button>
+                        <button onclick="updateState({char: 'nang'})" id="btn-nang" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ตัวนาง</button>
+                        <button onclick="updateState({char: 'rishi'})" id="btn-rishi" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ฤๅษี</button>
                     </div>
                 </section>
 
                 <section>
-                    <label class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold block mb-4">ลวดลายใบหน้า (THAI PATTERNS)</label>
+                    <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">ลวดลายใบหน้า (Thai Patterns)</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="updateState({pattern: 'none'})" id="pat-none" class="pat-btn p-3 bg-zinc-800/40 border border-zinc-800 rounded-xl text-[10px]">ไม่มีลาย</button>
-                        <button onclick="updateState({pattern: 'basic'})" id="pat-basic" class="pat-btn p-3 bg-zinc-800/40 border border-zinc-800 rounded-xl text-[10px]">ลายกนก</button>
-                        <button onclick="updateState({pattern: 'royal'})" id="pat-royal" class="pat-btn p-3 bg-zinc-800/40 border border-zinc-800 rounded-xl text-[10px]">ลายเครื่องสูง</button>
+                        <button onclick="updateState({pattern: 'none'})" id="pat-none" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ไม่มีลาย</button>
+                        <button onclick="updateState({pattern: 'basic'})" id="pat-basic" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายเส้นพื้นฐาน</button>
+                        <button onclick="updateState({pattern: 'kanok'})" id="pat-kanok" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายกนกแก้ม</button>
+                        <button onclick="updateState({pattern: 'royal'})" id="pat-royal" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายประดับเครื่องสูง</button>
                     </div>
                 </section>
 
                 <section>
-                    <label class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold block mb-4">โทนสี (COLOR PALETTE)</label>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between bg-zinc-900/60 p-3 rounded-xl border border-zinc-800/50">
-                            <span class="text-xs text-zinc-400">สีหน้ากาก</span>
-                            <div class="color-input-wrapper"><input type="color" id="c-skin" oninput="applyColors()"></div>
+                    <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">รูปทรงมงกุฎและดวงตา</label>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="bg-zinc-900/40 p-3 rounded-xl border border-zinc-800">
+                            <p class="text-[10px] text-zinc-500 mb-2">มงกุฎ (Crown)</p>
+                            <div class="flex gap-2">
+                                <button onclick="updateState({crown: 'spike'})" id="crown-spike" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ยอดแหลม</button>
+                                <button onclick="updateState({crown: 'round'})" id="crown-round" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ยอดบายศรี</button>
+                                <button onclick="updateState({crown: 'none'})" id="crown-none" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ไม่มี</button>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between bg-zinc-900/60 p-3 rounded-xl border border-zinc-800/50">
-                            <span class="text-xs text-zinc-400">สีมงกุฎ</span>
-                            <div class="color-input-wrapper"><input type="color" id="c-crown" oninput="applyColors()"></div>
+                        <div class="bg-zinc-900/40 p-3 rounded-xl border border-zinc-800">
+                            <p class="text-[10px] text-zinc-500 mb-2">ดวงตา (Eyes)</p>
+                            <div class="flex gap-2">
+                                <button onclick="updateState({eye: 'normal'})" id="eye-normal" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ตาจระเข้</button>
+                                <button onclick="updateState({eye: 'wide'})" id="eye-wide" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ตาโพลง</button>
+                            </div>
                         </div>
                     </div>
                 </section>
-            </div>
-
-            <div class="mt-10 md:hidden grid grid-cols-2 gap-3">
-                <button onclick="randomizeAll()" class="py-4 bg-zinc-800 rounded-2xl text-xs font-bold border border-zinc-700">สุ่มรูปแบบ</button>
-                <button onclick="exportMask()" class="py-4 bg-[#c5a059] text-black rounded-2xl text-xs font-bold shadow-lg">บันทึกรูปภาพ</button>
-            </div>
-        </aside>
-    </div>
-</section>
 
                 <section>
                     <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">พาเลทสี (Color Palette)</label>
