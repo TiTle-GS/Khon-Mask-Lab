@@ -647,164 +647,26 @@ async function exportMask() {
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
 /* ═══════════════════════
-   วาดหน้ากากลง Canvas โดยตรง
-   คืน HTMLCanvasElement (ไม่ต้องแปลงเป็น Image)
+   SVG → Image (snapshot)
 ═══════════════════════ */
-function buildMaskCanvas(size) {
-  size = size || 600;
-  const c   = document.createElement('canvas');
-  c.width   = size;
-  c.height  = size;
-  const ctx = c.getContext('2d');
-  const S   = size / 400; // scale: SVG viewBox 400×400
-
-  const col = maskState.colors;
-
-  ctx.save();
-  ctx.scale(S, S);
-
-  /* ── มงกุฎ ── */
-  if (maskState.crown !== 'none') {
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.5)';
-    ctx.shadowBlur  = 12;
-    ctx.shadowOffsetX = 6; ctx.shadowOffsetY = 6;
-    ctx.fillStyle = col.crown;
-    ctx.beginPath();
-    if (maskState.crown === 'spike') {
-      ctx.moveTo(200,10); ctx.lineTo(220,85); ctx.lineTo(180,85);
-    } else {
-      ctx.moveTo(200,30);
-      ctx.bezierCurveTo(230,40, 235,65, 200,85);
-      ctx.bezierCurveTo(165,65, 170,40, 200,30);
-    }
-    ctx.closePath(); ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(140,80); ctx.lineTo(260,80); ctx.lineTo(250,130); ctx.lineTo(150,130);
-    ctx.closePath(); ctx.fill();
-    ctx.restore();
-    /* อัญมณี */
-    ctx.fillStyle = col.gem;
-    ctx.beginPath(); ctx.arc(200, 105, 7, 0, Math.PI*2); ctx.fill();
-    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
-  }
-
-  /* ── ใบหน้า + หู ── */
-  ctx.fillStyle = col.skin;
-  /* หูซ้าย */
-  ctx.beginPath();
-  ctx.moveTo(100,200); ctx.bezierCurveTo(78,200, 68,242, 90,262);
-  ctx.quadraticCurveTo(100,242, 100,220); ctx.closePath(); ctx.fill();
-  /* หูขวา */
-  ctx.beginPath();
-  ctx.moveTo(300,200); ctx.bezierCurveTo(322,200, 332,242, 310,262);
-  ctx.quadraticCurveTo(300,242, 300,220); ctx.closePath(); ctx.fill();
-  /* ใบหน้า */
-  ctx.beginPath();
-  ctx.moveTo(120,130);
-  ctx.bezierCurveTo(100,180, 100,220, 100,240);
-  ctx.bezierCurveTo(100,320, 160,360, 200,360);
-  ctx.bezierCurveTo(240,360, 300,320, 300,240);
-  ctx.bezierCurveTo(300,220, 300,180, 280,130);
-  ctx.closePath(); ctx.fill();
-
-  /* ── ลวดลาย ── */
-  if (maskState.pattern !== 'none') {
-    ctx.save();
-    ctx.strokeStyle = col.line; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin='round';
-    if (maskState.pattern === 'basic') {
-      ctx.beginPath();
-      ctx.moveTo(130,260); ctx.quadraticCurveTo(150,270,150,290); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(270,260); ctx.quadraticCurveTo(250,270,250,290); ctx.stroke();
-    } else if (maskState.pattern === 'kanok') {
-      ctx.beginPath();
-      ctx.moveTo(120,240); ctx.quadraticCurveTo(140,225,155,250); ctx.quadraticCurveTo(160,265,162,275); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(280,240); ctx.quadraticCurveTo(260,225,245,250); ctx.quadraticCurveTo(240,265,238,275); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(175,155); ctx.quadraticCurveTo(200,143,225,155); ctx.stroke();
-    } else if (maskState.pattern === 'royal') {
-      ctx.beginPath();
-      ctx.moveTo(108,232); ctx.bezierCurveTo(128,210,152,236,162,244);
-      ctx.bezierCurveTo(172,252,177,272,180,282); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(292,232); ctx.bezierCurveTo(272,210,248,236,238,244);
-      ctx.bezierCurveTo(228,252,223,272,220,282); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(200,142); ctx.lineTo(200,180); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(184,161); ctx.lineTo(216,161); ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  /* ── คิ้ว ── */
-  ctx.save();
-  ctx.strokeStyle='#000'; ctx.lineWidth=3.5; ctx.lineCap='round';
-  ctx.beginPath(); ctx.moveTo(132,202); ctx.quadraticCurveTo(163,158,190,206); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(210,206); ctx.quadraticCurveTo(237,158,268,202); ctx.stroke();
-  ctx.restore();
-
-  /* ── ตา ── */
-  if (maskState.eye === 'wide') {
-    /* ขาวตาซ้าย */
-    ctx.fillStyle='white';
-    ctx.beginPath();
-    ctx.moveTo(133,212); ctx.quadraticCurveTo(163,178,191,216);
-    ctx.lineTo(191,226); ctx.quadraticCurveTo(163,242,133,212); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle='#000'; ctx.lineWidth=1.5; ctx.stroke();
-    /* ขาวตาขวา */
-    ctx.fillStyle='white';
-    ctx.beginPath();
-    ctx.moveTo(209,216); ctx.quadraticCurveTo(237,178,267,212);
-    ctx.lineTo(267,212); ctx.quadraticCurveTo(237,242,209,226); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle='#000'; ctx.lineWidth=1.5; ctx.stroke();
-    /* รูม่านตา */
-    ctx.fillStyle='#111';
-    ctx.beginPath(); ctx.arc(162,211,9,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(238,211,9,0,Math.PI*2); ctx.fill();
-  } else {
-    ctx.fillStyle='white';
-    ctx.beginPath(); ctx.moveTo(138,216); ctx.quadraticCurveTo(164,200,191,216); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle='#000'; ctx.lineWidth=1.5; ctx.stroke();
-    ctx.fillStyle='white';
-    ctx.beginPath(); ctx.moveTo(209,216); ctx.quadraticCurveTo(236,200,262,216); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle='#000'; ctx.lineWidth=1.5; ctx.stroke();
-    ctx.fillStyle='#111';
-    ctx.beginPath(); ctx.arc(164,213,5.5,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(236,213,5.5,0,Math.PI*2); ctx.fill();
-  }
-
-  /* ── ปาก ── */
-  ctx.strokeStyle='#000'; ctx.lineWidth=2.5; ctx.lineCap='round';
-  ctx.beginPath();
-  if (maskState.char === 'nang') {
-    ctx.moveTo(178,306); ctx.quadraticCurveTo(200,316,222,306);
-  } else {
-    ctx.moveTo(168,302); ctx.quadraticCurveTo(200,332,232,302);
-  }
-  ctx.stroke();
-
-  /* ── เขี้ยว ── */
-  if (maskState.char === 'giant') {
-    ctx.fillStyle='white';
-    ctx.strokeStyle='#333'; ctx.lineWidth=0.8;
-    ctx.beginPath(); ctx.moveTo(176,307); ctx.lineTo(170,328); ctx.lineTo(186,312); ctx.closePath(); ctx.fill(); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(224,307); ctx.lineTo(230,328); ctx.lineTo(214,312); ctx.closePath(); ctx.fill(); ctx.stroke();
-  }
-
-  ctx.restore(); // restore scale
-  return c;      // คืน canvas element โดยตรง
-}
-
-/* ═══════════════════════
-   สร้าง maskImg = canvas element
-   (drawImage รับ canvas ได้โดยตรง ไม่ต้องแปลงเป็น Image)
-═══════════════════════ */
-function svgToImage() {
-  return Promise.resolve(buildMaskCanvas(600));
-}
-function drawMaskToCanvas() {
-  return Promise.resolve(buildMaskCanvas(600));
+function svgToImage(size=600) {
+  return new Promise(resolve => {
+    const svg = document.getElementById('main-svg');
+    const src = new XMLSerializer().serializeToString(svg);
+    const b64 = btoa(unescape(encodeURIComponent(src)));
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = c.height = size;
+      c.getContext('2d').drawImage(img, 0, 0, size, size);
+      const out = new Image();
+      out.onload = () => resolve(out);
+      out.onerror = () => resolve(null);
+      out.src = c.toDataURL('image/png');
+    };
+    img.onerror = () => resolve(null);
+    img.src = 'data:image/svg+xml;base64,' + b64;
+  });
 }
 
 /* ═══════════════════════
@@ -816,22 +678,25 @@ let arRunning=false, stream=null, rafId=null, maskImg=null, faceApiReady=false;
    applyToAR — ส่งหน้ากาก P2 → P4
 ═══════════════════════ */
 async function applyToAR() {
-  // สร้าง maskImg จาก canvas โดยตรง (sync, ไม่ล้มเหลว)
-  maskImg = buildMaskCanvas(600);
-  console.log('[applyToAR] maskImg:', maskImg ? maskImg.width+'x'+maskImg.height : 'NULL');
+  // snapshot SVG ก่อนเปลี่ยนหน้า
+  maskImg = await svgToImage(600);
+  console.log('[applyToAR] maskImg created:', maskImg ? 'OK' : 'FAIL');
 
   showPage('p4');
 
+  // อัปเดต preview bar
   const charNames = { giant:'ยักษ์', monkey:'ลิง', human:'เทวดา', nang:'ตัวนาง', rishi:'ฤๅษี' };
   const label = charNames[maskState.char] || maskState.char;
   document.getElementById('ar-mask-preview-bar').style.display = 'flex';
   document.getElementById('ar-mask-preview-name').textContent = 'ตัวละคร: '+label+'  |  สีหน้า: '+maskState.colors.skin;
 
-  // วาด thumbnail จาก canvas โดยตรง
-  const thumb = document.getElementById('ar-mask-thumb');
-  const tctx  = thumb.getContext('2d');
-  tctx.clearRect(0,0,44,44);
-  tctx.drawImage(maskImg, 0,0,44,44);
+  // วาด thumbnail
+  if (maskImg) {
+    const thumb = document.getElementById('ar-mask-thumb');
+    const ctx = thumb.getContext('2d');
+    ctx.clearRect(0,0,44,44);
+    ctx.drawImage(maskImg, 0,0,44,44);
+  }
 }
 
 /* ═══════════════════════
@@ -884,11 +749,15 @@ async function startAR() {
   overlay.width  = video.videoWidth  || 640;
   overlay.height = video.videoHeight || 480;
 
-  // ── สร้าง maskImg เสมอ (sync, canvas 2D โดยตรง ไม่ล้มเหลว) ──
-  maskImg = buildMaskCanvas(600);
-  console.log('[startAR] maskImg:', maskImg ? maskImg.width+'x'+maskImg.height : 'NULL');
+  // สร้าง maskImg จาก SVG ณ ปัจจุบัน (ใช้หน้ากากที่ส่งมาจาก P2 หรือสร้างใหม่)
+  if (!maskImg) {
+    setStatus('🎨 สร้างหน้ากาก...');
+    maskImg = await svgToImage(600);
+  }
 
-  // ── เริ่ม fallback loop ทันที ── 
+  setStatus('⏳ โหลด Face Detection...');
+  const ok = await loadFaceApi();
+
   arRunning = true;
   document.getElementById('guide-svg').style.opacity = '0';
   document.getElementById('start-ar-btn').style.display  = 'none';
@@ -896,20 +765,8 @@ async function startAR() {
   document.getElementById('capture-ar-btn').style.display = '';
   document.getElementById('stop-ar-btn').style.display    = '';
 
-  setStatus('🎭 หน้ากากพร้อม — กำลังโหลด Face Tracking...');
-  runFallbackLoop(); // เริ่มแสดงหน้ากากทันที
-
-  // ── พยายามโหลด face-api แบบ async (ถ้าสำเร็จค่อย upgrade) ──
-  loadFaceApi().then(ok => {
-    if (!arRunning) return;
-    if (ok) {
-      cancelAnimationFrame(rafId); rafId = null;
-      setStatus('🟢 Face Tracking Active');
-      runTrackingLoop();
-    } else {
-      setStatus('🎭 Fallback mode (หน้ากากกลางจอ)');
-    }
-  });
+  if (ok) { setStatus('🟢 Face Tracking Active'); runTrackingLoop(); }
+  else    { setStatus('⚠️ Fallback mode — กลางจอ'); runFallbackLoop(); }
 }
 
 function runTrackingLoop() {
