@@ -611,8 +611,7 @@
       device-orientation-permission-ui="enabled: false"
       style="width:100%; height:100%;"
     >
-      <!-- Asset Preloader -->
-      <a-assets id="ar-assets" timeout="15000">
+      <a-assets id="ar-assets" timeout="30000">
         <a-asset-item id="model-giant"  src="giant.glb"></a-asset-item>
         <a-asset-item id="model-monkey" src="monkey.glb"></a-asset-item>
         <a-asset-item id="model-human"  src="human.glb"></a-asset-item>
@@ -622,10 +621,6 @@
 
       <a-camera active="false" position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!--
-        anchorIndex: 168 = จุดกลางหน้าผาก (เหมาะกับหน้ากากโขน)
-        ปรับ position / scale / rotation ตามโมเดลจริงที่มี
-      -->
       <a-entity mindar-face-target="anchorIndex: 168">
         <a-gltf-model
           id="ar-khon-mask"
@@ -639,51 +634,42 @@
       </a-entity>
     </a-scene>
 
-    <!-- Overlay: เส้นไกด์วางหน้า -->
+    <!-- เส้นไกด์วางหน้า -->
     <div id="face-guide" style="
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
       pointer-events: none;
     ">
       <svg width="200" height="260" viewBox="0 0 200 260" fill="none"
-           style="opacity: 0.35; transition: opacity 0.5s;">
-        <!-- หัวไข่ไกด์ -->
+           style="opacity:0.35; transition:opacity 0.5s;">
         <ellipse cx="100" cy="130" rx="72" ry="95"
           stroke="#c9922a" stroke-width="1.5" stroke-dasharray="6 4"/>
-        <!-- มุม 4 ด้าน -->
-        <path d="M28 60 L28 40 L48 40"   stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
+        <path d="M28 60 L28 40 L48 40"    stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
         <path d="M172 60 L172 40 L152 40" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
         <path d="M28 200 L28 220 L48 220" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
         <path d="M172 200 L172 220 L152 220" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
       </svg>
     </div>
 
-    <!-- Flash effect เมื่อถ่ายรูป -->
+    <!-- Flash -->
     <div id="flash-effect" style="
-      position: absolute; inset: 0;
-      background: #fff;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.08s;
+      position:absolute; inset:0; background:#fff;
+      opacity:0; pointer-events:none; transition:opacity 0.08s;
     "></div>
 
     <!-- Status badge -->
     <div id="ar-status" style="
-      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
-      background: rgba(0,0,0,0.7); border: 1px solid var(--gold);
-      color: var(--gold); font-size: 0.7rem; letter-spacing: 0.1em;
-      padding: 5px 16px; border-radius: 20px;
-      backdrop-filter: blur(6px);
-    ">⏳ กำลังโหลด...</div>
+      position:absolute; top:16px; left:50%; transform:translateX(-50%);
+      background:rgba(0,0,0,0.75); border:1px solid var(--gold);
+      color:var(--gold); font-size:0.7rem; letter-spacing:0.1em;
+      padding:5px 16px; border-radius:20px; white-space:nowrap;
+      backdrop-filter:blur(6px); z-index:10;
+    ">⏳ กำลังโหลด A-Frame...</div>
 
-  </div><!-- /ar-wrapper -->
+  </div>
 
-  <!-- ── Mask Selector ── -->
-  <div id="mask-selector" style="
-    display: flex; gap: 12px; margin-top: 20px;
-    flex-wrap: wrap; justify-content: center;
-    max-width: 560px;
-  ">
+  <!-- Mask Selector -->
+  <div style="display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; justify-content:center; max-width:560px;">
     <button onclick="changeARMask('giant')"  id="sel-giant"  class="mask-sel-btn active-sel">👺 ยักษ์</button>
     <button onclick="changeARMask('monkey')" id="sel-monkey" class="mask-sel-btn">🐒 ลิง</button>
     <button onclick="changeARMask('human')"  id="sel-human"  class="mask-sel-btn">🌟 เทวดา</button>
@@ -691,53 +677,230 @@
     <button onclick="changeARMask('rishi')"  id="sel-rishi"  class="mask-sel-btn">🔱 ฤๅษี</button>
   </div>
 
-  <!-- ── Scale / Position Sliders (fine-tune หน้ากาก) ── -->
-  <div id="tune-panel" style="
-    max-width: 560px; width: 100%;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(201,146,42,0.2);
-    border-radius: 16px;
-    padding: 18px 22px; margin-top: 16px;
+  <!-- Sliders ปรับตำแหน่ง -->
+  <div style="
+    max-width:560px; width:100%;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(201,146,42,0.2);
+    border-radius:16px; padding:18px 22px; margin-top:16px;
   ">
-    <p style="color: var(--gl); font-size:0.75rem; letter-spacing:0.15em; margin-bottom:14px;">🔧 ปรับตำแหน่งหน้ากาก</p>
+    <p style="color:var(--gl); font-size:0.75rem; letter-spacing:0.15em; margin-bottom:14px;">🔧 ปรับตำแหน่งหน้ากาก</p>
     <div style="display:grid; gap:10px;">
-
       <label style="font-size:0.75rem; color:var(--cream); display:flex; align-items:center; gap:10px;">
         <span style="width:70px; color:var(--gold);">ขนาด</span>
         <input type="range" id="sl-scale" min="0.1" max="1.5" step="0.01" value="0.45"
           oninput="tuneMask()" style="flex:1; accent-color:var(--gold);">
         <span id="lbl-scale" style="width:38px; text-align:right;">0.45</span>
       </label>
-
       <label style="font-size:0.75rem; color:var(--cream); display:flex; align-items:center; gap:10px;">
         <span style="width:70px; color:var(--gold);">ขึ้น/ลง</span>
         <input type="range" id="sl-y" min="-1.5" max="1.5" step="0.01" value="-0.3"
           oninput="tuneMask()" style="flex:1; accent-color:var(--gold);">
         <span id="lbl-y" style="width:38px; text-align:right;">-0.30</span>
       </label>
-
       <label style="font-size:0.75rem; color:var(--cream); display:flex; align-items:center; gap:10px;">
         <span style="width:70px; color:var(--gold);">หน้า/หลัง</span>
         <input type="range" id="sl-z" min="-0.5" max="0.8" step="0.01" value="0.1"
           oninput="tuneMask()" style="flex:1; accent-color:var(--gold);">
         <span id="lbl-z" style="width:38px; text-align:right;">0.10</span>
       </label>
-
     </div>
   </div>
 
-  <!-- ── Buttons ── -->
+  <!-- Buttons -->
   <div class="btn-wrap" style="margin-top:24px; gap:16px; flex-wrap:wrap;">
-    <button id="start-ar-btn"   onclick="startAR()"        class="btn-gold">📷 เปิดกล้อง AR</button>
-    <button id="capture-ar-btn" onclick="captureARPhoto()"  class="btn-gold" style="display:none; background:linear-gradient(135deg,#fff,#ddd); color:#000;">⬤ ถ่ายรูป</button>
-    <button id="stop-ar-btn"    onclick="stopAR()"          class="btn-gold" style="display:none; background:rgba(80,20,20,0.8); color:#fcc;">✕ ปิดกล้อง</button>
+    <button id="start-ar-btn"   onclick="startAR()"       class="btn-gold">📷 เปิดกล้อง AR</button>
+    <button id="capture-ar-btn" onclick="captureARPhoto()" class="btn-gold"
+      style="display:none; background:linear-gradient(135deg,#fff,#ddd); color:#000;">⬤ ถ่ายรูป</button>
+    <button id="stop-ar-btn"    onclick="stopAR()"         class="btn-gold"
+      style="display:none; background:rgba(80,20,20,0.8); color:#fcc;">✕ ปิดกล้อง</button>
   </div>
 
   <p style="color:rgba(255,255,255,0.25); font-size:0.72rem; margin-top:14px;">
     * ต้องเปิดในเบราว์เซอร์ที่รองรับกล้อง (Chrome / Safari) และอนุญาตการใช้กล้อง
   </p>
-
 </section>
+
+<style>
+  .mask-sel-btn {
+    padding:8px 18px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(201,146,42,0.3);
+    color:var(--cream); border-radius:50px;
+    cursor:pointer; font-size:0.8rem;
+    font-family:'Noto Serif Thai', serif;
+    transition:all 0.25s;
+  }
+  .mask-sel-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .mask-sel-btn.active-sel {
+    background:linear-gradient(135deg, var(--gold), #8A641A);
+    border-color:var(--gold); color:#000; font-weight:700;
+    box-shadow:0 0 16px rgba(201,146,42,0.4);
+  }
+</style>
+
+<script>
+(function () {
+  // ── ตัวแปร ──
+  const MASK_MODELS = {
+    giant:  '#model-giant',
+    monkey: '#model-monkey',
+    human:  '#model-human',
+    nang:   '#model-nang',
+    rishi:  '#model-rishi',
+  };
+
+  let sceneReady = false;   // A-Frame scene โหลดเสร็จแล้ว
+  let arRunning  = false;
+  window.capturedImages = window.capturedImages || [];
+
+  // ── รอ scene พร้อม ──
+  function waitForScene(cb) {
+    const scene = document.querySelector('#ar-scene');
+    if (!scene) return;
+
+    if (scene.hasLoaded) {
+      sceneReady = true;
+      setStatus('✅ พร้อมใช้งาน — กด "เปิดกล้อง AR"');
+      cb && cb(scene);
+      return;
+    }
+    scene.addEventListener('loaded', () => {
+      sceneReady = true;
+      setStatus('✅ พร้อมใช้งาน — กด "เปิดกล้อง AR"');
+      cb && cb(scene);
+    }, { once: true });
+  }
+
+  // ── เรียก waitForScene ทันทีที่ DOM พร้อม ──
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => waitForScene());
+  } else {
+    waitForScene();
+  }
+
+  // ── เปิดกล้อง AR ──
+  window.startAR = function () {
+    setStatus('⏳ กำลังเริ่มกล้อง...');
+
+    // ถ้า scene ยังไม่พร้อม → รอก่อนแล้วค่อยเรียกอีกครั้ง
+    if (!sceneReady) {
+      setStatus('⌛ กำลังโหลด กรุณารอสักครู่...');
+      waitForScene(() => setTimeout(window.startAR, 200));
+      return;
+    }
+
+    const scene = document.querySelector('#ar-scene');
+    const sys   = scene.systems && scene.systems['mindar-face-system'];
+
+    if (!sys) {
+      // MindAR system อาจยังไม่ register — retry อีก 500ms
+      setStatus('⌛ รอ MindAR...');
+      setTimeout(window.startAR, 500);
+      return;
+    }
+
+    // ขออนุญาตกล้องก่อน แล้วค่อย start
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+      .then(() => {
+        sys.start();
+        arRunning = true;
+        setStatus('🟢 Face Tracking Active');
+        hideFaceGuide();
+        document.getElementById('start-ar-btn').style.display   = 'none';
+        document.getElementById('capture-ar-btn').style.display = '';
+        document.getElementById('stop-ar-btn').style.display    = '';
+      })
+      .catch(err => {
+        console.error(err);
+        setStatus('❌ ไม่สามารถเข้าถึงกล้องได้');
+        alert('กรุณาอนุญาตการใช้กล้องในเบราว์เซอร์ แล้วลองใหม่อีกครั้ง');
+      });
+  };
+
+  // ── ปิดกล้อง AR ──
+  window.stopAR = function () {
+    const scene = document.querySelector('#ar-scene');
+    const sys   = scene && scene.systems && scene.systems['mindar-face-system'];
+    if (sys && arRunning) sys.stop();
+    arRunning = false;
+    setStatus('⏸ หยุดแล้ว');
+    showFaceGuide();
+    document.getElementById('start-ar-btn').style.display   = '';
+    document.getElementById('capture-ar-btn').style.display = 'none';
+    document.getElementById('stop-ar-btn').style.display    = 'none';
+  };
+
+  // ── สลับโมเดล ──
+  window.changeARMask = function (type) {
+    if (!MASK_MODELS[type]) return;
+    const model = document.getElementById('ar-khon-mask');
+    if (model) model.setAttribute('src', MASK_MODELS[type]);
+    document.querySelectorAll('.mask-sel-btn').forEach(b => b.classList.remove('active-sel'));
+    const btn = document.getElementById('sel-' + type);
+    if (btn) btn.classList.add('active-sel');
+  };
+
+  // ── Sliders ──
+  window.tuneMask = function () {
+    const model = document.getElementById('ar-khon-mask');
+    if (!model) return;
+    const s = parseFloat(document.getElementById('sl-scale').value);
+    const y = parseFloat(document.getElementById('sl-y').value);
+    const z = parseFloat(document.getElementById('sl-z').value);
+    model.setAttribute('scale', `${s} ${s} ${s}`);
+    model.setAttribute('position', `0 ${y} ${z}`);
+    document.getElementById('lbl-scale').textContent = s.toFixed(2);
+    document.getElementById('lbl-y').textContent     = y.toFixed(2);
+    document.getElementById('lbl-z').textContent     = z.toFixed(2);
+  };
+
+  // ── ถ่ายรูป ──
+  window.captureARPhoto = function () {
+    const flash = document.getElementById('flash-effect');
+    flash.style.opacity = '1';
+    setTimeout(() => flash.style.opacity = '0', 100);
+
+    const video   = document.querySelector('#ar-scene video');
+    const aCanvas = document.querySelector('#ar-scene canvas.a-canvas')
+                 || document.querySelector('#ar-scene canvas');
+
+    if (!video && !aCanvas) { alert('ไม่พบกล้อง'); return; }
+
+    const w = (video && video.videoWidth)  || (aCanvas && aCanvas.width)  || 720;
+    const h = (video && video.videoHeight) || (aCanvas && aCanvas.height) || 960;
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (video && video.readyState >= 2) ctx.drawImage(video, 0, 0, w, h);
+    if (aCanvas) ctx.drawImage(aCanvas, 0, 0, w, h);
+    ctx.fillStyle = 'rgba(201,146,42,0.75)';
+    ctx.font = 'bold 18px serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('KHON LAB · AR', w - 12, h - 12);
+
+    window.capturedImages.push(canvas.toDataURL('image/png'));
+    setTimeout(() => {
+      typeof updateBubbleWall === 'function' && updateBubbleWall();
+      showPage('p5');
+    }, 350);
+  };
+
+  // ── Helpers ──
+  function setStatus(msg) {
+    const el = document.getElementById('ar-status');
+    if (el) el.textContent = msg;
+  }
+  function hideFaceGuide() {
+    const svg = document.querySelector('#face-guide svg');
+    if (svg) svg.style.opacity = '0';
+  }
+  function showFaceGuide() {
+    const svg = document.querySelector('#face-guide svg');
+    if (svg) svg.style.opacity = '0.35';
+  }
+})();
+</script>
 
 <!-- ── Styles เพิ่มเติมสำหรับ p4 ── -->
 <style>
