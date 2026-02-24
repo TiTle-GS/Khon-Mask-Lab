@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI–AR Sustainable Khon Mask Lab | สานศิลป์ ถิ่นศึกษา</title>
     
+    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
     
@@ -50,13 +51,20 @@
         }
         .btn-gold:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--gold); }
 
-        /* ── 3D Viewer Area ── */
+        /* ── P2 Designer Styles ── */
+        .studio-bg { background-color: #0a0a0a; background-image: radial-gradient(#1a1a1a 1px, transparent 1px), radial-gradient(#1a1a1a 1px, transparent 1px); background-size: 40px 40px; background-position: 0 0, 20px 20px; }
+        .canvas-area { background: radial-gradient(circle, #222 0%, #000 100%); border: 1px solid #333; }
+        .sidebar-right { border-left: 1px solid #c5a05933; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); }
+        .color-input-wrapper { position: relative; width: 38px; height: 38px; overflow: hidden; border-radius: 10px; border: 2px solid #333; }
+        .color-input-wrapper input { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; cursor: pointer; }
+        .active-btn { background: #c5a059 !important; color: #000 !important; font-weight: bold; }
+
+        /* ── P4 Viewer Styles ── */
         #ar-wrapper {
             position: relative; width: 100%; max-width: 600px; aspect-ratio: 1/1;
             border-radius: 28px; overflow: hidden; border: 2px solid var(--gold);
             background: radial-gradient(circle, #222 0%, #000 100%); margin: 0 auto;
         }
-
         .khon-btn { 
             padding: 10px 18px; background: #1a1a1a; border: 1px solid var(--gold); 
             color: #fff; border-radius: 12px; cursor: pointer; font-size: 13px; transition: 0.3s;
@@ -71,6 +79,7 @@
         <div class="n-links">
             <span class="n-link" onclick="showPage('p0')">หน้าแรก</span>
             <span class="n-link" onclick="showPage('p1')">ความรู้โขน</span>
+            <span class="n-link" onclick="showPage('p2')">ออกแบบหัวโขน</span>
             <span class="n-link" onclick="showPage('p4')">AR Exhibition</span>
         </div>
     </nav>
@@ -88,52 +97,74 @@
         <h1>KNOWLEDGE HUB</h1>
         <div style="max-width: 800px; text-align: left; background: rgba(255,255,255,0.03); padding: 40px; border-radius: 20px; border: 1px solid rgba(201,146,42,0.2);">
             <img src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/khon-3.jpg" style="width: 100%; border-radius: 10px; margin-bottom: 20px;">
-            <p>"โขน" เป็นมรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติที่น่าภาคภูมิใจ</p>
-            <div class="btn-wrap" style="display: flex; gap: 20px; margin-top: 2rem;">
-                <button class="btn-gold" onclick="showPage('p0')">กลับหน้าแรก</button>
-                <button class="btn-gold" onclick="showPage('p4')">ไปหน้า AR Exhibition →</button>
-            </div>
+            <p>"โขน" ศิลปะการแสดงชั้นสูงของไทยที่หลอมรวมหัตถศิลป์เข้ากับนาฏศิลป์อย่างงดงาม</p>
+            <button class="btn-gold mt-8" onclick="showPage('p2')" style="margin-top:20px;">ไปหน้าออกแบบ →</button>
         </div>
+    </section>
+
+    <section id="p2" class="page studio-bg !p-0 !pt-[64px]">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <main class="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden w-full h-[calc(100vh-64px)]">
+            <div class="flex-1 flex flex-col items-center justify-center p-6 relative">
+                <div class="canvas-area h-[70vh] lg:h-[80%] aspect-square rounded-[2.5rem] flex items-center justify-center relative shadow-2xl overflow-hidden border border-zinc-800">
+                    <svg id="main-svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-2xl">
+                        <path id="part-face" d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 Z" fill="#16a34a" />
+                        <path id="part-crown" d="M140 80 L260 80 L200 10 Z" fill="#FFD700" />
+                        <circle cx="165" cy="212" r="6" fill="black"/><circle cx="235" cy="212" r="6" fill="black"/>
+                    </svg>
+                </div>
+                <button class="btn-gold mt-4" onclick="randomizeAll()">🎲 สุ่มสี</button>
+            </div>
+            <aside class="w-full lg:w-[380px] sidebar-right p-8 overflow-y-auto">
+                <h2 class="text-[#c5a059] mb-6">แผงควบคุมการออกแบบ</h2>
+                <span class="text-xs text-zinc-500 uppercase block mb-4">ปรับแต่งสีใบหน้า</span>
+                <div class="color-input-wrapper"><input type="color" id="c-skin" oninput="applyColors()"></div>
+            </aside>
+        </main>
     </section>
 
     <section id="p4" class="page">
         <h1>AR EXHIBITION</h1>
-        <div class="sub-t">นิทรรศการหัวโขนไทยเสมือนจริง (3D & AR Viewer)</div>
-
+        <div class="sub-t">นิทรรศการหัวโขนไทยในรูปแบบ 3D & AR</div>
         <div id="ar-wrapper">
             <model-viewer 
                 id="khonViewer" 
                 src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/1-v1.glb" 
                 ar ar-modes="webxr scene-viewer quick-look" 
-                camera-controls 
-                shadow-intensity="1" 
-                auto-rotate 
+                camera-controls shadow-intensity="1" auto-rotate 
                 style="width: 100%; height: 100%; background-color: transparent;">
-                
-                <button slot="ar-button" style="background-color: var(--gold); border-radius: 10px; border: none; position: absolute; bottom: 16px; right: 16px; padding: 10px 20px; font-weight: bold; color: #000;">
-                    📸 ส่อง AR ในพื้นที่จริง
-                </button>
+                <button slot="ar-button" style="background-color: var(--gold); border-radius: 10px; border: none; position: absolute; bottom: 16px; right: 16px; padding: 10px 20px; font-weight: bold; color: #000;">📸 ส่อง AR</button>
             </model-viewer>
         </div>
-
         <div style="display: flex; gap: 8px; margin-top: 25px; flex-wrap: wrap; justify-content: center; width: 100%; padding: 0 20px;">
-            <button onclick="changeKhonModel(1)" class="khon-btn active" id="btn-1">แบบที่ 1</button>
-            <button onclick="changeKhonModel(2)" class="khon-btn" id="btn-2">แบบที่ 2</button>
-            <button onclick="changeKhonModel(3)" class="khon-btn" id="btn-3">แบบที่ 3</button>
-            <button onclick="changeKhonModel(4)" class="khon-btn" id="btn-4">แบบที่ 4</button>
-            <button onclick="changeKhonModel(5)" class="khon-btn" id="btn-5">แบบที่ 5</button>
+            <button onclick="changeKhon(1)" class="khon-btn active" id="kb-1">พระฤาษี</button>
+            <button onclick="changeKhon(2)" class="khon-btn" id="kb-2">พระปัญจสิงขร</button>
+            <button onclick="changeKhon(3)" class="khon-btn" id="kb-3">พระพิราพ</button>
+            <button onclick="changeKhon(4)" class="khon-btn" id="kb-4">พระพรหม</button>
+            <button onclick="changeKhon(5)" class="khon-btn" id="kb-5">พระวิศณุกรรม</button>
         </div>
     </section>
 
     <script>
-        // รวมฟังก์ชันจัดการหน้า
+        // ── NAVIGATION ──
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             window.scrollTo(0, 0);
         }
 
-        // ลิงก์โมเดลจาก GitHub (Raw Link)
+        // ── P2 LOGIC ──
+        function applyColors() {
+            const color = document.getElementById('c-skin').value;
+            document.getElementById('part-face').setAttribute('fill', color);
+        }
+        function randomizeAll() {
+            const rnd = '#' + Math.floor(Math.random()*16777215).toString(16);
+            document.getElementById('c-skin').value = rnd;
+            applyColors();
+        }
+
+        // ── P4 LOGIC (ดึงไฟล์จาก GitHub แบบ Raw Link) ──
         const modelLinks = {
             1: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/1-v1.glb",
             2: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/2-v5.glb",
@@ -142,14 +173,11 @@
             5: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/5-v1.glb"
         };
 
-        // เปลี่ยนโมเดล
-        function changeKhonModel(id) {
+        function changeKhon(id) {
             const viewer = document.getElementById('khonViewer');
             viewer.src = modelLinks[id];
-
-            // อัปเดตสถานะปุ่ม
-            document.querySelectorAll('.khon-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-' + id).classList.add('active');
+            document.querySelectorAll('.khon-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('kb-' + id).classList.add('active');
         }
     </script>
 </body>
