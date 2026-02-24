@@ -63,6 +63,15 @@
     #ar-status{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);border:1px solid var(--gold);color:var(--gold);font-size:0.7rem;letter-spacing:0.1em;padding:5px 16px;border-radius:20px;white-space:nowrap;backdrop-filter:blur(6px);z-index:10;}
     #flash-effect{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity 0.08s;z-index:9;}
 
+    /* ป้ายแสดงหน้ากากที่เลือกจาก P2 */
+    #ar-mask-preview-bar{
+      display:flex;align-items:center;gap:12px;padding:10px 18px;
+      background:rgba(201,146,42,0.1);border:1px solid rgba(201,146,42,0.3);
+      border-radius:12px;margin-top:12px;max-width:500px;width:100%;
+    }
+    #ar-mask-preview-bar canvas{border-radius:8px;border:1px solid var(--gold);}
+    #ar-mask-preview-label{font-size:0.78rem;color:var(--gl);}
+
     .mask-sel-btn{padding:8px 18px;background:rgba(255,255,255,0.05);border:1px solid rgba(201,146,42,0.3);color:var(--cream);border-radius:50px;cursor:pointer;font-size:0.8rem;font-family:'Noto Serif Thai',serif;transition:all 0.25s;}
     .mask-sel-btn:hover{border-color:var(--gold);color:var(--gold);}
     .mask-sel-btn.active-sel{background:linear-gradient(135deg,var(--gold),#8A641A);border-color:var(--gold);color:#000;font-weight:700;box-shadow:0 0 16px rgba(201,146,42,0.4);}
@@ -70,6 +79,14 @@
     /* Bubble */
     .bubble-photo{position:absolute;border-radius:50%;border:4px solid #c5a059;object-fit:cover;animation:floatBubble var(--dur) ease-in-out infinite;box-shadow:0 10px 30px rgba(197,160,89,0.4);}
     @keyframes floatBubble{0%,100%{transform:translateY(0) translateX(0);}33%{transform:translateY(-25px) translateX(12px);}66%{transform:translateY(12px) translateX(-12px);}}
+
+    /* badge custom mask */
+    .custom-mask-badge{
+      display:inline-flex;align-items:center;gap:6px;padding:4px 12px 4px 6px;
+      background:rgba(201,146,42,0.2);border:1px solid rgba(201,146,42,0.5);
+      border-radius:20px;font-size:0.72rem;color:var(--gl);
+    }
+    .custom-mask-badge canvas{border-radius:50%;border:1px solid var(--gold);}
   </style>
 </head>
 <body>
@@ -234,6 +251,15 @@
   <h1 style="font-size:2.2rem;">AR EXPERIENCE</h1>
   <div class="sub-t">สวมหน้ากากโขนผ่านกล้องหน้า · Face Tracking</div>
 
+  <!-- แถบแสดงหน้ากากที่โหลดอยู่ -->
+  <div id="ar-mask-preview-bar" style="display:none;">
+    <canvas id="ar-mask-thumb" width="44" height="44" style="border-radius:8px;border:1px solid var(--gold);"></canvas>
+    <div>
+      <div id="ar-mask-preview-label" style="color:var(--gl);font-size:0.78rem;">🎨 หน้ากากจาก AI Designer</div>
+      <div id="ar-mask-preview-name" style="color:var(--cream);font-size:0.7rem;opacity:0.7;"></div>
+    </div>
+  </div>
+
   <div id="ar-viewport">
     <video id="ar-video" autoplay playsinline muted></video>
     <canvas id="ar-overlay-canvas"></canvas>
@@ -251,12 +277,15 @@
     <div id="flash-effect"></div>
   </div>
 
-  <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;justify-content:center;max-width:500px;">
+  <!-- ปุ่ม preset — ซ่อนถ้าใช้ custom mask จาก P2 -->
+  <div id="preset-btns" style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;justify-content:center;max-width:500px;">
     <button onclick="selectPreset('giant')"  id="sel-giant"  class="mask-sel-btn active-sel">👺 ยักษ์</button>
     <button onclick="selectPreset('monkey')" id="sel-monkey" class="mask-sel-btn">🐒 ลิง</button>
     <button onclick="selectPreset('human')"  id="sel-human"  class="mask-sel-btn">🌟 เทวดา</button>
     <button onclick="selectPreset('nang')"   id="sel-nang"   class="mask-sel-btn">🌸 นาง</button>
     <button onclick="selectPreset('rishi')"  id="sel-rishi"  class="mask-sel-btn">🔱 ฤๅษี</button>
+    <!-- ปุ่ม custom — แสดงเมื่อมาจาก P2 -->
+    <button onclick="revertToPreset()" id="sel-clear-custom" class="mask-sel-btn" style="display:none;border-color:rgba(255,100,100,0.4);color:#fcc;">✕ ยกเลิก custom</button>
   </div>
 
   <div style="max-width:500px;width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(201,146,42,0.2);border-radius:16px;padding:16px 20px;margin-top:14px;">
@@ -392,30 +421,78 @@ function closeModal() { document.getElementById('modal').classList.add('opacity-
 
 /* ═══════════════════════════════════════
    SVG → Image สำหรับ AR
+   ใช้ SVG element ปัจจุบันเสมอ (ไม่ clone)
 ═══════════════════════════════════════ */
 function svgToImage(size=600) {
   return new Promise(resolve => {
     const svg = document.getElementById('main-svg');
+    // serialize ณ ปัจจุบัน (รับทั้ง style inline + attribute)
     const src = new XMLSerializer().serializeToString(svg);
+    // ต้อง encode ให้ถูกต้อง (รองรับ Unicode / Thai)
     const b64 = btoa(unescape(encodeURIComponent(src)));
+    const dataURL = 'data:image/svg+xml;base64,' + b64;
+
     const img = new Image();
     img.onload = () => {
-      const c = document.createElement('canvas'); c.width = c.height = size;
-      c.getContext('2d').drawImage(img, 0, 0, size, size);
-      const out = new Image(); out.src = c.toDataURL('image/png');
+      const c = document.createElement('canvas');
+      c.width = c.height = size;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(img, 0, 0, size, size);
+      const out = new Image();
       out.onload = () => resolve(out);
+      out.onerror = () => resolve(null);
+      out.src = c.toDataURL('image/png');
     };
-    img.src = 'data:image/svg+xml;base64,' + b64;
+    img.onerror = () => resolve(null);
+    img.src = dataURL;
   });
 }
 
 /* ═══════════════════════════════════════
+   custom mask flag — เพื่อแยก P2 vs P4 preset
+═══════════════════════════════════════ */
+let usingCustomMask = false;   // true = ใช้หน้ากากจาก P2
+let customMaskLabel = '';
+
+function setCustomMaskUI(charName) {
+  usingCustomMask = true;
+  customMaskLabel = charName;
+  // แสดงปุ่มยกเลิก
+  document.getElementById('sel-clear-custom').style.display = '';
+  // ปิด highlight preset ทั้งหมด
+  document.querySelectorAll('.mask-sel-btn').forEach(b => b.classList.remove('active-sel'));
+  // อัปเดต preview bar
+  updatePreviewBar();
+}
+
+function revertToPreset() {
+  usingCustomMask = false;
+  document.getElementById('sel-clear-custom').style.display = 'none';
+  document.getElementById('ar-mask-preview-bar').style.display = 'none';
+  // คืน preset default
+  selectPreset('giant');
+}
+
+async function updatePreviewBar() {
+  const bar = document.getElementById('ar-mask-preview-bar');
+  bar.style.display = 'flex';
+  document.getElementById('ar-mask-preview-name').textContent = `ตัวละคร: ${customMaskLabel}  |  สีหน้า: ${maskState.colors.skin}`;
+  // วาด thumbnail
+  const thumb = document.getElementById('ar-mask-thumb');
+  const img = await svgToImage(88);
+  if (img) {
+    const ctx = thumb.getContext('2d');
+    ctx.clearRect(0, 0, 44, 44);
+    ctx.drawImage(img, 0, 0, 44, 44);
+  }
+}
+
+/* ═══════════════════════════════════════
    P4 — AR (face-api.js + getUserMedia)
-   ไม่ต้องการไฟล์ .glb เลย
 ═══════════════════════════════════════ */
 let arRunning = false, stream = null, rafId = null, maskImg = null, faceApiReady = false;
 
-// โหลด face-api.js + model
 async function loadFaceApi() {
   if (faceApiReady) return true;
   return new Promise(resolve => {
@@ -444,7 +521,6 @@ async function startAR() {
   setStatus('📷 กำลังเปิดกล้อง...');
   document.getElementById('start-ar-btn').disabled = true;
 
-  // ขอกล้อง
   try {
     stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user', width:{ideal:640}, height:{ideal:480} }, audio:false });
   } catch(e) {
@@ -458,15 +534,15 @@ async function startAR() {
   await new Promise(r => video.onloadedmetadata = r);
   await video.play();
 
-  // ตั้ง canvas
   const overlay = document.getElementById('ar-overlay-canvas');
   overlay.width = video.videoWidth || 640;
   overlay.height = video.videoHeight || 480;
 
-  // สร้าง mask image จาก SVG
+  // ══ KEY FIX: สร้าง maskImg จาก SVG ณ ขณะนี้ (ไม่ว่าจะเป็น custom หรือ preset) ══
+  setStatus('🎨 สร้างหน้ากาก...');
   maskImg = await svgToImage(600);
+  if (!maskImg) { setStatus('❌ สร้างหน้ากากไม่สำเร็จ'); }
 
-  // โหลด face-api
   setStatus('⏳ โหลด Face Detection model...');
   const ok = await loadFaceApi();
 
@@ -500,7 +576,6 @@ function runTrackingLoop() {
         const box  = det.detection.box;
         const lms  = det.landmarks;
 
-        // คำนวณมุมเอียงจากตา
         const eyeL  = lms.getLeftEye(),  eyeR = lms.getRightEye();
         const lCx   = eyeL.reduce((s,p)=>s+p.x,0)/eyeL.length;
         const rCx   = eyeR.reduce((s,p)=>s+p.x,0)/eyeR.length;
@@ -528,7 +603,7 @@ function runTrackingLoop() {
   loop();
 }
 
-/* Loop fallback (ไม่มี tracking) */
+/* Loop fallback */
 function runFallbackLoop() {
   const overlay = document.getElementById('ar-overlay-canvas');
   const ctx     = overlay.getContext('2d');
@@ -560,22 +635,46 @@ function stopAR() {
   document.getElementById('stop-ar-btn').style.display = 'none';
 }
 
+/* ══ KEY FIX: selectPreset ใน P4 ต้องไม่ทำงานถ้าใช้ custom mask จาก P2
+      และต้อง rebuild maskImg หลัง updateState ══ */
 function selectPreset(type) {
+  usingCustomMask = false;
+  document.getElementById('sel-clear-custom').style.display = 'none';
+  document.getElementById('ar-mask-preview-bar').style.display = 'none';
+
+  // อัปเดต SVG ด้วย preset
   updateState({ char: type });
+
+  // highlight ปุ่มที่เลือก
   document.querySelectorAll('.mask-sel-btn').forEach(b=>b.classList.remove('active-sel'));
   document.getElementById('sel-'+type)?.classList.add('active-sel');
-  // อัปเดต maskImg ถ้า AR กำลังรัน
-  if (arRunning) svgToImage(600).then(img => { maskImg = img; });
+
+  // ══ rebuild maskImg ด้วย SVG ที่ update แล้ว ══
+  svgToImage(600).then(img => { maskImg = img; });
 }
 
-function applyToAR() {
-  document.querySelectorAll('.mask-sel-btn').forEach(b=>b.classList.remove('active-sel'));
-  document.getElementById('sel-'+maskState.char)?.classList.add('active-sel');
+/* ══ KEY FIX: applyToAR — ส่งหน้ากากจาก P2 พร้อม snapshot SVG ══ */
+async function applyToAR() {
+  // 1. snapshot SVG ก่อนเปลี่ยนหน้า (สำคัญมาก!)
+  const snapshot = await svgToImage(600);
+  maskImg = snapshot;
+
+  // 2. ตั้ง flag custom
+  const charNames = { giant:'ยักษ์', monkey:'ลิง', human:'เทวดา', nang:'ตัวนาง', rishi:'ฤๅษี' };
+  const label = charNames[maskState.char] || maskState.char;
+
+  // 3. ไปหน้า AR
   showPage('p4');
-  if (arRunning) svgToImage(600).then(img => { maskImg = img; });
+
+  // 4. อัปเดต UI ใน P4 ว่ากำลังใช้ custom mask
+  setCustomMaskUI(label);
+  await updatePreviewBar();
+
+  // 5. ถ้า AR กำลังรันอยู่ — maskImg ถูกอัปเดตแล้ว (step 1)
+  // ไม่ต้องทำอะไรเพิ่ม เพราะ loop อ่าน maskImg ตรงๆ
 }
 
-// sync slider labels
+/* อัปเดต maskImg เมื่อ slider เปลี่ยน (ไม่จำเป็นแต่ไว้ในกรณี custom) */
 document.addEventListener('input', e => {
   if (e.target.id === 'sl-size') document.getElementById('lbl-size').textContent = parseFloat(e.target.value).toFixed(2);
   if (e.target.id === 'sl-oy')   document.getElementById('lbl-oy').textContent   = e.target.value;
@@ -624,7 +723,7 @@ function clearBubbles() {
 ═══════════════════════════════════════ */
 window.onload = () => {
   updateState({ char:'giant' });
-  // preload face-api เงียบๆ เพื่อให้เร็วขึ้นตอนเปิดกล้อง
+  // preload face-api เงียบๆ
   loadFaceApi().then(ok => setStatus(ok ? '✅ พร้อมใช้งาน — กด "เปิดกล้อง AR"' : '⚠️ โหลด Face Model ไม่สำเร็จ (จะใช้ fallback)'));
 };
 </script>
