@@ -5,189 +5,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI–AR Sustainable Khon Mask Lab | สานศิลป์ ถิ่นศึกษา</title>
 
-  <!-- A-Frame + MindAR (ต้องโหลดก่อนเสมอ) -->
-  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.1/dist/mindar-face-aframe.prod.js"></script>
-
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --gold: #C9922A; --gl: #F5C842; --red: #8B1A1A;
-      --blk: #0A0806; --cream: #F7F0E0; --glass: rgba(255,255,255,0.05);
+      --gold:#C9922A; --gl:#F5C842; --red:#8B1A1A;
+      --blk:#0A0806; --cream:#F7F0E0; --glass:rgba(255,255,255,0.05);
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      background:var(--blk); color:var(--cream);
-      font-family:'Noto Serif Thai',serif; overflow-x:hidden; line-height:1.6;
-      display:flex; flex-direction:column; align-items:center;
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      background:var(--blk);color:var(--cream);
+      font-family:'Noto Serif Thai',serif;overflow-x:hidden;line-height:1.6;
+      display:flex;flex-direction:column;align-items:center;
     }
-
-    /* ── Nav ── */
-    .tnav {
-      position:fixed; top:0; width:100%; padding:1rem 5%; z-index:1000;
-      display:flex; justify-content:space-between; align-items:center;
-      background:rgba(10,8,6,0.95); border-bottom:1px solid rgba(201,146,42,0.2);
+    .tnav{
+      position:fixed;top:0;width:100%;padding:1rem 5%;z-index:1000;
+      display:flex;justify-content:space-between;align-items:center;
+      background:rgba(10,8,6,0.95);border-bottom:1px solid rgba(201,146,42,0.2);
       backdrop-filter:blur(10px);
     }
-    .n-logo { font-family:'Cinzel Decorative',cursive; color:var(--gold); font-size:1.2rem; }
-    .n-links { display:flex; gap:20px; }
-    .n-link { color:var(--gold); text-decoration:none; font-size:0.85rem; cursor:pointer; transition:0.3s; }
-    .n-link:hover { color:var(--gl); }
+    .n-logo{font-family:'Cinzel Decorative',cursive;color:var(--gold);font-size:1.2rem;}
+    .n-links{display:flex;gap:20px;}
+    .n-link{color:var(--gold);font-size:0.85rem;cursor:pointer;transition:0.3s;}
+    .n-link:hover{color:var(--gl);}
+    .page{
+      display:none;width:100%;min-height:100vh;
+      padding:120px 10% 60px;opacity:0;transition:opacity 0.5s ease;
+      flex-direction:column;align-items:center;text-align:center;
+    }
+    .page.active{display:flex;opacity:1;}
+    h1,h2{font-family:'Cinzel Decorative',cursive;color:var(--gold);margin-bottom:1.5rem;width:100%;}
+    .sub-t{font-size:0.9rem;color:var(--gl);margin-bottom:2rem;letter-spacing:1px;width:100%;}
+    .img-container{width:100%;max-width:450px;margin:0 auto 2rem;border-radius:15px;overflow:hidden;border:2px solid var(--gold);}
+    .img-container img{width:100%;display:block;}
+    .card{background:var(--glass);border:1px solid rgba(201,146,42,0.15);padding:2rem;border-radius:15px;backdrop-filter:blur(5px);}
+    .btn-wrap{display:flex;width:100%;justify-content:center;margin-top:3rem;gap:20px;flex-wrap:wrap;}
+    .btn-gold{padding:12px 40px;background:linear-gradient(135deg,var(--gold),#8A641A);border:none;color:#000;font-weight:900;border-radius:50px;cursor:pointer;transition:0.3s;}
+    .btn-gold:hover{transform:scale(1.05);box-shadow:0 0 20px var(--gold);}
 
-    /* ── Pages ── */
-    .page {
-      display:none; width:100%; min-height:100vh;
-      padding:120px 10% 60px; opacity:0; transition:opacity 0.5s ease;
-      flex-direction:column; align-items:center; text-align:center;
-    }
-    .page.active { display:flex; opacity:1; }
+    /* P2 */
+    .canvas-area{background:radial-gradient(circle,#222 0%,#000 100%);box-shadow:inset 0 0 100px rgba(0,0,0,0.8);border:1px solid #333;}
+    .sidebar-right{border-left:1px solid #c5a05933;background:rgba(15,15,15,0.95);backdrop-filter:blur(10px);}
+    .color-input-wrapper{position:relative;width:38px;height:38px;overflow:hidden;border-radius:10px;border:2px solid #333;transition:all 0.2s;}
+    .color-input-wrapper:hover{border-color:#c5a059;transform:scale(1.05);}
+    .color-input-wrapper input{position:absolute;top:-50%;left:-50%;width:200%;height:200%;cursor:pointer;}
+    .custom-scrollbar::-webkit-scrollbar{width:5px;}
+    .custom-scrollbar::-webkit-scrollbar-track{background:#0a0a0a;}
+    .custom-scrollbar::-webkit-scrollbar-thumb{background:#c5a059;border-radius:10px;}
+    .active-btn{background:#c5a059!important;color:#000!important;font-weight:bold;box-shadow:0 0 15px rgba(197,160,89,0.3);}
 
-    h1,h2 { font-family:'Cinzel Decorative',cursive; color:var(--gold); margin-bottom:1.5rem; width:100%; }
-    .sub-t { font-size:0.9rem; color:var(--gl); margin-bottom:2rem; letter-spacing:1px; width:100%; }
+    /* P4 */
+    #ar-viewport{position:relative;width:100%;max-width:480px;aspect-ratio:3/4;border-radius:28px;overflow:hidden;border:2px solid var(--gold);box-shadow:0 0 60px rgba(201,146,42,0.25);background:#000;margin:0 auto;}
+    #ar-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;transform:scaleX(-1);}
+    #ar-overlay-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;}
+    #face-guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;}
+    #ar-status{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);border:1px solid var(--gold);color:var(--gold);font-size:0.7rem;letter-spacing:0.1em;padding:5px 16px;border-radius:20px;white-space:nowrap;backdrop-filter:blur(6px);z-index:10;}
+    #flash-effect{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity 0.08s;z-index:9;}
 
-    /* ── Cards / Buttons ── */
-    .img-container {
-      width:100%; max-width:450px; margin:0 auto 2rem;
-      border-radius:15px; overflow:hidden; border:2px solid var(--gold);
-      box-shadow:0 10px 40px rgba(201,146,42,0.2);
-    }
-    .img-container img { width:100%; display:block; transition:0.6s; }
-    .img-container:hover img { transform:scale(1.05); }
-    .card {
-      background:var(--glass); border:1px solid rgba(201,146,42,0.15);
-      padding:2rem; border-radius:15px; transition:0.4s; backdrop-filter:blur(5px);
-    }
-    .btn-wrap { display:flex; width:100%; justify-content:center; margin-top:3rem; gap:20px; }
-    .btn-gold {
-      padding:12px 40px; background:linear-gradient(135deg,var(--gold),#8A641A);
-      border:none; color:#000; font-weight:900; border-radius:50px; cursor:pointer; transition:0.3s;
-    }
-    .btn-gold:hover { transform:scale(1.1); box-shadow:0 0 20px var(--gold); }
+    .mask-sel-btn{padding:8px 18px;background:rgba(255,255,255,0.05);border:1px solid rgba(201,146,42,0.3);color:var(--cream);border-radius:50px;cursor:pointer;font-size:0.8rem;font-family:'Noto Serif Thai',serif;transition:all 0.25s;}
+    .mask-sel-btn:hover{border-color:var(--gold);color:var(--gold);}
+    .mask-sel-btn.active-sel{background:linear-gradient(135deg,var(--gold),#8A641A);border-color:var(--gold);color:#000;font-weight:700;box-shadow:0 0 16px rgba(201,146,42,0.4);}
 
-    /* ── AR Scene Container (อยู่นอก .page เพื่อให้ MindAR init ได้) ── */
-    #ar-scene-wrapper {
-      position:fixed;
-      /* ซ่อนไว้ก่อน แต่ไม่ใช้ display:none เพราะจะทำให้ MindAR init ไม่ได้ */
-      width:1px; height:1px; overflow:hidden;
-      opacity:0; pointer-events:none;
-      top:0; left:0; z-index:-1;
-    }
-    #ar-scene-wrapper.ar-visible {
-      position:absolute;
-      width:100%; height:100%;
-      top:0; left:0; z-index:1;
-      opacity:1; pointer-events:all;
-    }
-
-    /* ── P4 AR Viewport ── */
-    #ar-viewport {
-      position:relative; width:100%; max-width:560px;
-      aspect-ratio:3/4; border-radius:28px; overflow:hidden;
-      border:2px solid var(--gold); box-shadow:0 0 60px rgba(201,146,42,0.25);
-      background:#111; margin:0 auto;
-    }
-
-    /* ── Mask Selector Buttons ── */
-    .mask-sel-btn {
-      padding:8px 18px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(201,146,42,0.3);
-      color:var(--cream); border-radius:50px;
-      cursor:pointer; font-size:0.8rem;
-      font-family:'Noto Serif Thai',serif; transition:all 0.25s;
-    }
-    .mask-sel-btn:hover { border-color:var(--gold); color:var(--gold); }
-    .mask-sel-btn.active-sel {
-      background:linear-gradient(135deg,var(--gold),#8A641A);
-      border-color:var(--gold); color:#000; font-weight:700;
-      box-shadow:0 0 16px rgba(201,146,42,0.4);
-    }
-
-    /* ── Bubble Wall ── */
-    .bubble-photo {
-      position:absolute; border-radius:50%;
-      border:4px solid #c5a059; object-fit:cover;
-      animation:floatBubble var(--duration) ease-in-out infinite;
-      box-shadow:0 10px 30px rgba(197,160,89,0.4);
-    }
-    @keyframes floatBubble {
-      0%,100% { transform:translateY(0) translateX(0) rotate(0deg); }
-      33%      { transform:translateY(-30px) translateX(15px) rotate(5deg); }
-      66%      { transform:translateY(15px) translateX(-15px) rotate(-5deg); }
-    }
-
-    /* ── p2 styles ── */
-    .studio-bg { background:#0a0a0a; }
-    .canvas-area {
-      background:radial-gradient(circle,#222 0%,#000 100%);
-      box-shadow:inset 0 0 100px rgba(0,0,0,0.8); border:1px solid #333;
-    }
-    .sidebar-right {
-      border-left:1px solid #c5a05933;
-      background:rgba(15,15,15,0.95); backdrop-filter:blur(10px);
-    }
-    .color-input-wrapper {
-      position:relative; width:38px; height:38px; overflow:hidden;
-      border-radius:10px; border:2px solid #333; transition:all 0.2s;
-    }
-    .color-input-wrapper:hover { border-color:#c5a059; transform:scale(1.05); }
-    .color-input-wrapper input {
-      position:absolute; top:-50%; left:-50%; width:200%; height:200%; cursor:pointer;
-    }
-    .custom-scrollbar::-webkit-scrollbar { width:5px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background:#0a0a0a; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background:#c5a059; border-radius:10px; }
-    .active-btn {
-      background:#c5a059 !important; color:#000 !important;
-      font-weight:bold; box-shadow:0 0 15px rgba(197,160,89,0.3);
-    }
+    /* Bubble */
+    .bubble-photo{position:absolute;border-radius:50%;border:4px solid #c5a059;object-fit:cover;animation:floatBubble var(--dur) ease-in-out infinite;box-shadow:0 10px 30px rgba(197,160,89,0.4);}
+    @keyframes floatBubble{0%,100%{transform:translateY(0) translateX(0);}33%{transform:translateY(-25px) translateX(12px);}66%{transform:translateY(12px) translateX(-12px);}}
   </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════
-  A-SCENE อยู่นอก .page ทุกส่วน
-  วิธีนี้ทำให้ MindAR init ได้ตั้งแต่ตอน load
-  โดยซ่อนด้วย visibility แทน display:none
-════════════════════════════════════════════ -->
-<div id="ar-scene-wrapper">
-  <a-scene
-    id="ar-scene"
-    mindar-face="autoStart: false; uiLoading: no; uiScanning: no; uiError: no"
-    embedded
-    color-space="sRGB"
-    renderer="colorManagement: true; alpha: true"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false"
-    style="width:100%;height:100%;"
-  >
-    <a-assets timeout="30000">
-      <a-asset-item id="model-giant"  src="giant.glb"></a-asset-item>
-      <a-asset-item id="model-monkey" src="monkey.glb"></a-asset-item>
-      <a-asset-item id="model-human"  src="human.glb"></a-asset-item>
-      <a-asset-item id="model-nang"   src="nang.glb"></a-asset-item>
-      <a-asset-item id="model-rishi"  src="rishi.glb"></a-asset-item>
-    </a-assets>
-
-    <a-camera active="false" position="0 0 0" look-controls="enabled:false"></a-camera>
-
-    <a-entity mindar-face-target="anchorIndex: 168">
-      <a-gltf-model
-        id="ar-khon-mask"
-        src="#model-giant"
-        position="0 -0.3 0.1"
-        scale="0.45 0.45 0.45"
-        animation-mixer
-      ></a-gltf-model>
-    </a-entity>
-  </a-scene>
-</div>
-
-<!-- ════════════════════════════════════════════ NAV ════ -->
+<!-- NAV -->
 <nav class="tnav">
   <div class="n-logo">KHON LAB</div>
   <div class="n-links">
@@ -198,85 +85,57 @@
   </div>
 </nav>
 
-<!-- ════════════════════════════════════════════ P0 ════ -->
+<!-- P0 -->
 <section id="p0" class="page active">
   <h1 style="font-size:2.5rem;">THE ROYAL CONNECTION</h1>
   <div class="sub-t">สมเด็จพระพันปีหลวงกับมรดกโขนไทย</div>
-  <div class="img-container">
-    <img src="queen.webp" alt="สมเด็จพระพันปีหลวง">
+  <div class="img-container"><img src="queen.webp" alt="สมเด็จพระพันปีหลวง"></div>
+  <div class="card" style="max-width:800px;">
+    <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง<br>ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง</p>
   </div>
-  <div class="card" style="max-width:800px; cursor:default;">
-    <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง<br>
-    ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง</p>
-  </div>
-  <div class="btn-wrap">
-    <button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button>
-  </div>
+  <div class="btn-wrap"><button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button></div>
 </section>
 
-<!-- ════════════════════════════════════════════ P1 ════ -->
+<!-- P1 -->
 <section id="p1" class="page">
   <h1 style="font-size:2.5rem;">KNOWLEDGE HUB</h1>
   <div class="sub-t">มรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ (UNESCO)</div>
-
-  <div style="max-width:900px; text-align:left; background:rgba(255,255,255,0.03); padding:40px; border-radius:20px; border:1px solid rgba(201,146,42,0.2);">
-    <h2 style="text-align:left; color:var(--gl); font-family:'Noto Serif Thai'; font-weight:700; border-left:5px solid var(--gold); padding-left:15px; margin-bottom:20px;">โขนพระราชทาน</h2>
+  <div style="max-width:900px;text-align:left;background:rgba(255,255,255,0.03);padding:40px;border-radius:20px;border:1px solid rgba(201,146,42,0.2);">
+    <h2 style="text-align:left;color:var(--gl);font-family:'Noto Serif Thai';font-weight:700;border-left:5px solid var(--gold);padding-left:15px;margin-bottom:20px;">โขนพระราชทาน</h2>
     <img src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/khon-3.jpg" alt="โขน" style="width:100%;border-radius:10px;margin-bottom:20px;">
-
-    <div style="font-size:1.1rem; line-height:2; color:var(--cream);">
-      <p style="margin-bottom:20px; text-indent:2em;">
-        ประเทศไทย <strong>"โขน"</strong> เป็นศาสตร์และศิลปะการแสดงชั้นสูงของไทยที่หลอมรวมศิลปะของชาติหลากหลายแขนง นับแต่วรรณกรรม วรรณศิลป์ นาฏศิลป์ คีตศิลป์ หัตถศิลป์ และพัสตราภรณ์อันงดงามตามแบบฉบับโบราณ รวมถึงการจัดฉากและแสง เสียง ที่ยิ่งใหญ่
-      </p>
-      <p style="margin-bottom:20px; text-indent:2em;">
-        โขนพระราชทานเริ่มขึ้นในปี พ.ศ. ๒๕๕๐ เป็นการแสดงเรื่องรามเกียรติ์ ตอนพรหมาศ ในรูปแบบการบรรเลงคอนเสิร์ตโดยวงโยธวาทิต กองดุริยางค์กองทัพบก เพื่อเฉลิมฉลองพระบาทสมเด็จพระบรมชนกาธิเบศร มหาภูมิพลอดุลยเดชมหาราช บรมนาถบพิตร ทรงเจริญพระชนมพรรษา ๘๐ พรรษา
-      </p>
-      <div class="card" style="background:rgba(201,146,42,0.1); border:1px solid var(--gold); margin:30px 0;">
-        <h3 style="color:var(--gl); margin-bottom:10px;">UNESCO</h3>
-        <p style="font-size:1rem;">
-          องค์การยูเนสโกได้ประกาศขึ้นทะเบียน <strong>"โขน"</strong>ของไทย เป็นรายการตัวแทนมรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ เมื่อวันที่ ๒๙ พฤศจิกายน ๒๕๖๑
-        </p>
-      </div>
+    <p style="margin-bottom:20px;text-indent:2em;font-size:1.05rem;line-height:2;"><strong>"โขน"</strong> เป็นศาสตร์และศิลปะการแสดงชั้นสูงของไทย หลอมรวมนาฏศิลป์ คีตศิลป์ หัตถศิลป์ และพัสตราภรณ์อันงดงาม</p>
+    <p style="margin-bottom:20px;text-indent:2em;font-size:1.05rem;line-height:2;">โขนพระราชทานเริ่มขึ้นในปี พ.ศ. ๒๕๕๐ สมเด็จพระนางเจ้าสิริกิติ์ฯ ทรงพระกรุณาโปรดเกล้าให้จัดสร้างเครื่องแต่งกายโขนขึ้นใหม่</p>
+    <div class="card" style="background:rgba(201,146,42,0.1);border:1px solid var(--gold);margin:20px 0;">
+      <h3 style="color:var(--gl);margin-bottom:10px;">UNESCO</h3>
+      <p>ประกาศขึ้นทะเบียน <strong>"โขน"</strong> เป็นมรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ วันที่ ๒๙ พฤศจิกายน ๒๕๖๑</p>
     </div>
-
-    <div class="btn-wrap">
+    <div class="btn-wrap" style="margin-top:1rem;">
       <button class="btn-gold" onclick="showPage('p0')">กลับหน้าแรก</button>
       <button class="btn-gold" onclick="showPage('p2')">ไปหน้า AI ออกแบบ →</button>
     </div>
   </div>
 </section>
 
-<!-- ════════════════════════════════════════════ P2 ════ -->
-<section id="p2" class="page" style="padding:80px 0 0; overflow:hidden;">
+<!-- P2 -->
+<section id="p2" class="page" style="padding:80px 0 0;overflow:hidden;">
   <main class="flex-1 flex flex-col lg:flex-row w-full" style="height:calc(100vh - 80px);">
-
-    <!-- Canvas Area -->
-    <div class="flex-1 flex flex-col items-center justify-center p-6 md:p-12 relative">
-      <div id="capture-area" class="canvas-area h-[70vh] lg:h-[80%] aspect-square rounded-[2.5rem] flex items-center justify-center relative shadow-2xl overflow-hidden border border-zinc-800">
+    <div class="flex-1 flex flex-col items-center justify-center p-6 md:p-10">
+      <div class="canvas-area h-[70vh] lg:h-[80%] aspect-square rounded-[2.5rem] flex items-center justify-center relative shadow-2xl overflow-hidden border border-zinc-800">
         <svg id="main-svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-[0_35px_60px_rgba(0,0,0,0.8)]">
           <path d="M140 85 L260 85 L255 135 L145 135 Z" fill="rgba(0,0,0,0.4)" transform="translate(8,8)"/>
           <g id="crown-group">
-            <path id="part-crown-top"     d="M200 10 L215 85 L185 85 Z" fill="#FFD700"/>
+            <path id="part-crown-top" d="M200 10 L215 85 L185 85 Z" fill="#FFD700"/>
             <circle id="part-crown-ornament" cx="200" cy="50" r="4" fill="#FFD700" stroke="#000" stroke-width="0.5"/>
-            <path id="part-crown-base"    d="M140 80 L260 80 L250 130 L150 130 Z" fill="#FFD700" stroke="#b08d4a" stroke-width="1"/>
+            <path id="part-crown-base" d="M140 80 L260 80 L250 130 L150 130 Z" fill="#FFD700" stroke="#b08d4a" stroke-width="1"/>
           </g>
-          <path id="part-face"  d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 L120 130" fill="#16a34a"/>
+          <path id="part-face"  d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 Z" fill="#16a34a"/>
           <path id="part-ear-l" d="M100 200 C80 200 70 240 90 260 Q100 240 100 220" fill="#16a34a"/>
           <path id="part-ear-r" d="M300 200 C320 200 330 240 310 260 Q300 240 300 220" fill="#16a34a"/>
           <g id="details-layer">
             <g id="patterns-container" fill="none" stroke-width="1.5" stroke-linecap="round">
-              <g id="pattern-basic" class="hidden">
-                <path d="M130 260 Q150 270 150 290"/><path d="M270 260 Q250 270 250 290"/><path d="M190 350 Q200 330 210 350"/>
-              </g>
-              <g id="pattern-kanok" class="hidden">
-                <path d="M120 240 Q140 230 150 250 T160 270"/><path d="M280 240 Q260 230 250 250 T240 270"/>
-                <path d="M180 150 Q200 140 220 150"/><path d="M195 160 Q200 155 205 160"/>
-              </g>
-              <g id="pattern-royal" class="hidden">
-                <path d="M110 230 Q130 210 160 240 T180 280"/><path d="M290 230 Q270 210 240 240 T220 280"/>
-                <path d="M200 140 L200 180 M185 160 L215 160"/>
-                <circle cx="200" cy="160" r="3" fill="currentColor"/>
-                <path d="M85 220 Q75 220 80 240"/><path d="M315 220 Q325 220 320 240"/>
-              </g>
+              <g id="pattern-basic" class="hidden"><path d="M130 260 Q150 270 150 290"/><path d="M270 260 Q250 270 250 290"/><path d="M190 350 Q200 330 210 350"/></g>
+              <g id="pattern-kanok" class="hidden"><path d="M120 240 Q140 230 150 250 T160 270"/><path d="M280 240 Q260 230 250 250 T240 270"/><path d="M180 150 Q200 140 220 150"/><path d="M195 160 Q200 155 205 160"/></g>
+              <g id="pattern-royal" class="hidden"><path d="M110 230 Q130 210 160 240 T180 280"/><path d="M290 230 Q270 210 240 240 T220 280"/><path d="M200 140 L200 180 M185 160 L215 160"/><circle cx="200" cy="160" r="3" fill="currentColor"/><path d="M85 220 Q75 220 80 240"/><path d="M315 220 Q325 220 320 240"/></g>
             </g>
             <g id="eye-group">
               <path id="part-eye-l" d="M140 215 Q165 195 190 215" fill="white" stroke="black" stroke-width="1.5"/>
@@ -289,34 +148,25 @@
             <path id="part-mouth"  d="M170 300 Q200 330 230 300" fill="none" stroke="black" stroke-width="2.5"/>
             <path id="part-fang-l" d="M175 305 L170 325 L185 310 Z" fill="white" stroke="black" stroke-width="0.5"/>
             <path id="part-fang-r" d="M225 305 L230 325 L215 310 Z" fill="white" stroke="black" stroke-width="0.5"/>
-            <circle id="part-gem"  cx="200" cy="105" r="7" fill="#dc2626" stroke="#fff" stroke-width="1"/>
+            <circle id="part-gem" cx="200" cy="105" r="7" fill="#dc2626" stroke="#fff" stroke-width="1"/>
           </g>
         </svg>
       </div>
-      <div class="flex md:hidden mt-8 gap-3 w-full max-w-sm">
-        <button onclick="randomizeAll()" class="flex-1 py-3 bg-zinc-800 rounded-xl text-xs font-bold border border-zinc-700">สุ่มสี</button>
-        <button onclick="exportMask()"   class="flex-1 py-3 bg-[#c5a059] text-black rounded-xl text-xs font-bold shadow-lg">บันทึกรูป</button>
+      <div class="flex md:hidden mt-6 gap-3 w-full max-w-sm">
+        <button onclick="randomizeAll()" class="flex-1 py-3 bg-zinc-800 rounded-xl text-xs font-bold border border-zinc-700">🎲 สุ่มสี</button>
+        <button onclick="exportMask()"   class="flex-1 py-3 bg-[#c5a059] text-black rounded-xl text-xs font-bold">💾 บันทึก</button>
       </div>
     </div>
 
-    <!-- Sidebar -->
-    <aside class="w-full lg:w-[400px] sidebar-right custom-scrollbar overflow-y-auto p-8" style="height:100%;">
-      <div class="hidden md:flex items-center gap-6 justify-end">
-        <button onclick="randomizeAll()" class="text-sm text-zinc-400 hover:text-[#c5a059] transition-colors flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-          สุ่มรูปแบบ
-        </button>
-        <button onclick="exportMask()" class="bg-[#c5a059] text-black px-6 py-2 rounded-full text-sm font-bold hover:bg-[#b08d4a] transition-all shadow-lg active:scale-95">บันทึกรูปภาพ</button>
+    <aside class="w-full lg:w-[380px] sidebar-right custom-scrollbar overflow-y-auto p-8" style="height:100%;">
+      <div class="hidden md:flex items-center gap-4 justify-end mb-4">
+        <button onclick="randomizeAll()" class="text-sm text-zinc-400 hover:text-[#c5a059]">🎲 สุ่มรูปแบบ</button>
+        <button onclick="exportMask()" class="bg-[#c5a059] text-black px-5 py-2 rounded-full text-sm font-bold hover:bg-[#b08d4a]">💾 บันทึกรูปภาพ</button>
       </div>
-
-      <h2 class="text-[#c5a059] font-bold text-xl mb-6 mt-4 flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        แผงควบคุมการออกแบบ
-      </h2>
-
-      <div class="space-y-8">
-        <section>
-          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">หมวดหมู่ตัวละคร</label>
+      <h2 class="text-[#c5a059] font-bold text-lg mb-5">✏️ แผงควบคุมการออกแบบ</h2>
+      <div class="space-y-6">
+        <div>
+          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-3">หมวดหมู่ตัวละคร</label>
           <div class="grid grid-cols-3 gap-2">
             <button onclick="updateState({char:'giant'})"  id="btn-giant"  class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ยักษ์</button>
             <button onclick="updateState({char:'monkey'})" id="btn-monkey" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ลิง</button>
@@ -324,21 +174,21 @@
             <button onclick="updateState({char:'nang'})"   id="btn-nang"   class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ตัวนาง</button>
             <button onclick="updateState({char:'rishi'})"  id="btn-rishi"  class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ฤๅษี</button>
           </div>
-        </section>
-        <section>
-          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">ลวดลายใบหน้า</label>
+        </div>
+        <div>
+          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-3">ลวดลายใบหน้า</label>
           <div class="grid grid-cols-2 gap-2">
             <button onclick="updateState({pattern:'none'})"  id="pat-none"  class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ไม่มีลาย</button>
             <button onclick="updateState({pattern:'basic'})" id="pat-basic" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายเส้นพื้นฐาน</button>
             <button onclick="updateState({pattern:'kanok'})" id="pat-kanok" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายกนกแก้ม</button>
             <button onclick="updateState({pattern:'royal'})" id="pat-royal" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายประดับเครื่องสูง</button>
           </div>
-        </section>
-        <section>
-          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">รูปทรงมงกุฎและดวงตา</label>
-          <div class="grid grid-cols-1 gap-4">
+        </div>
+        <div>
+          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-3">มงกุฎ & ดวงตา</label>
+          <div class="grid gap-3">
             <div class="bg-zinc-900/40 p-3 rounded-xl border border-zinc-800">
-              <p class="text-[10px] text-zinc-500 mb-2">มงกุฎ (Crown)</p>
+              <p class="text-[10px] text-zinc-500 mb-2">มงกุฎ</p>
               <div class="flex gap-2">
                 <button onclick="updateState({crown:'spike'})" id="crown-spike" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ยอดแหลม</button>
                 <button onclick="updateState({crown:'round'})" id="crown-round" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ยอดบายศรี</button>
@@ -346,129 +196,99 @@
               </div>
             </div>
             <div class="bg-zinc-900/40 p-3 rounded-xl border border-zinc-800">
-              <p class="text-[10px] text-zinc-500 mb-2">ดวงตา (Eyes)</p>
+              <p class="text-[10px] text-zinc-500 mb-2">ดวงตา</p>
               <div class="flex gap-2">
                 <button onclick="updateState({eye:'normal'})" id="eye-normal" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ตาจระเข้</button>
                 <button onclick="updateState({eye:'wide'})"   id="eye-wide"   class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ตาโพลง</button>
               </div>
             </div>
           </div>
-        </section>
-        <section>
-          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">พาเลทสี</label>
-          <div class="grid grid-cols-1 gap-3">
-            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800">
-              <span class="text-xs text-[#c5a059]">สีหน้า (Skin)</span>
-              <div class="color-input-wrapper"><input type="color" id="c-skin" oninput="applyColors()"></div>
-            </div>
-            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800">
-              <span class="text-xs text-[#c5a059]">สีลวดลาย (Pattern)</span>
-              <div class="color-input-wrapper"><input type="color" id="c-line" oninput="applyColors()"></div>
-            </div>
-            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800">
-              <span class="text-xs text-[#c5a059]">สีมงกุฎ (Gold)</span>
-              <div class="color-input-wrapper"><input type="color" id="c-crown" oninput="applyColors()"></div>
-            </div>
-            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800">
-              <span class="text-xs text-[#c5a059]">อัญมณี (Gem)</span>
-              <div class="color-input-wrapper"><input type="color" id="c-gem" oninput="applyColors()"></div>
-            </div>
+        </div>
+        <div>
+          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-3">พาเลทสี</label>
+          <div class="grid gap-3">
+            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800"><span class="text-xs text-[#c5a059]">สีหน้า</span><div class="color-input-wrapper"><input type="color" id="c-skin" oninput="applyColors()"></div></div>
+            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800"><span class="text-xs text-[#c5a059]">สีลวดลาย</span><div class="color-input-wrapper"><input type="color" id="c-line" oninput="applyColors()"></div></div>
+            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800"><span class="text-xs text-[#c5a059]">สีมงกุฎ</span><div class="color-input-wrapper"><input type="color" id="c-crown" oninput="applyColors()"></div></div>
+            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800"><span class="text-xs text-[#c5a059]">อัญมณี</span><div class="color-input-wrapper"><input type="color" id="c-gem" oninput="applyColors()"></div></div>
           </div>
-        </section>
+        </div>
+        <button onclick="applyToAR()" class="w-full py-3 rounded-xl text-sm font-bold" style="background:linear-gradient(135deg,var(--gold),#8A641A);color:#000;">
+          🎭 นำหน้ากากนี้ไปใช้ใน AR →
+        </button>
       </div>
     </aside>
   </main>
 
-  <!-- Modal -->
   <div id="modal" class="fixed inset-0 bg-black/90 flex items-center justify-center opacity-0 pointer-events-none transition-all z-50 px-4">
-    <div class="bg-zinc-900 border-2 border-[#c5a059] p-8 md:p-12 rounded-[2rem] text-center max-w-sm">
-      <div class="w-20 h-20 bg-[#c5a059] text-black rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(197,160,89,0.5)]">
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      </div>
-      <h2 class="text-2xl font-bold mb-4 text-[#c5a059]">การออกแบบสำเร็จ!</h2>
-      <button onclick="closeModal()" class="w-full py-4 bg-[#c5a059] text-black font-black rounded-2xl hover:bg-white hover:text-black transition-all shadow-xl uppercase tracking-widest text-xs">เสร็จสิ้น</button>
+    <div class="bg-zinc-900 border-2 border-[#c5a059] p-10 rounded-[2rem] text-center max-w-sm">
+      <div class="w-20 h-20 bg-[#c5a059] text-black rounded-full flex items-center justify-center mx-auto mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <h2 class="text-2xl font-bold mb-4 text-[#c5a059]">บันทึกสำเร็จ!</h2>
+      <button onclick="closeModal()" class="w-full py-4 bg-[#c5a059] text-black font-black rounded-2xl">เสร็จสิ้น</button>
     </div>
   </div>
 </section>
 
-<!-- ════════════════════════════════════════════ P4 ════ -->
+<!-- P4 -->
 <section id="p4" class="page">
   <h1 style="font-size:2.2rem;">AR EXPERIENCE</h1>
-  <div class="sub-t">สวมหน้ากากโขนผ่านกล้องหน้า · Face Tracking Technology</div>
+  <div class="sub-t">สวมหน้ากากโขนผ่านกล้องหน้า · Face Tracking</div>
 
-  <!-- Viewport: แสดงภาพกล้อง + โมเดล AR -->
   <div id="ar-viewport">
-    <!-- video + canvas จาก a-scene จะถูก clone มาแสดงที่นี่ -->
-    <canvas id="ar-display-canvas" style="width:100%;height:100%;display:block;object-fit:cover;"></canvas>
-
-    <!-- เส้นไกด์ -->
-    <div id="face-guide" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-      <svg width="200" height="260" viewBox="0 0 200 260" fill="none" style="opacity:0.35;transition:opacity 0.5s;">
-        <ellipse cx="100" cy="130" rx="72" ry="95" stroke="#c9922a" stroke-width="1.5" stroke-dasharray="6 4"/>
-        <path d="M28 60 L28 40 L48 40"    stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
-        <path d="M172 60 L172 40 L152 40" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
-        <path d="M28 200 L28 220 L48 220" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
-        <path d="M172 200 L172 220 L152 220" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
+    <video id="ar-video" autoplay playsinline muted></video>
+    <canvas id="ar-overlay-canvas"></canvas>
+    <div id="face-guide">
+      <svg width="180" height="240" viewBox="0 0 180 240" fill="none" id="guide-svg" style="opacity:0.4;transition:opacity 0.5s;">
+        <ellipse cx="90" cy="120" rx="65" ry="88" stroke="#c9922a" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <path d="M25 55 L25 35 L45 35" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
+        <path d="M155 55 L155 35 L135 35" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
+        <path d="M25 185 L25 205 L45 205" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
+        <path d="M155 185 L155 205 L135 205" stroke="#c9922a" stroke-width="2" stroke-linecap="round"/>
+        <text x="90" y="125" text-anchor="middle" fill="#c9922a88" font-size="10" font-family="serif">วางใบหน้าตรงนี้</text>
       </svg>
     </div>
-
-    <!-- Flash -->
-    <div id="flash-effect" style="position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity 0.08s;z-index:5;"></div>
-
-    <!-- Status -->
-    <div id="ar-status" style="position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);border:1px solid var(--gold);color:var(--gold);font-size:0.7rem;letter-spacing:0.1em;padding:5px 16px;border-radius:20px;white-space:nowrap;backdrop-filter:blur(6px);z-index:10;">
-      ⏳ กำลังโหลด...
-    </div>
+    <div id="ar-status">⏳ กำลังโหลด face-api...</div>
+    <div id="flash-effect"></div>
   </div>
 
-  <!-- Mask Selector -->
-  <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;justify-content:center;max-width:560px;">
-    <button onclick="changeARMask('giant')"  id="sel-giant"  class="mask-sel-btn active-sel">👺 ยักษ์</button>
-    <button onclick="changeARMask('monkey')" id="sel-monkey" class="mask-sel-btn">🐒 ลิง</button>
-    <button onclick="changeARMask('human')"  id="sel-human"  class="mask-sel-btn">🌟 เทวดา</button>
-    <button onclick="changeARMask('nang')"   id="sel-nang"   class="mask-sel-btn">🌸 นาง</button>
-    <button onclick="changeARMask('rishi')"  id="sel-rishi"  class="mask-sel-btn">🔱 ฤๅษี</button>
+  <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;justify-content:center;max-width:500px;">
+    <button onclick="selectPreset('giant')"  id="sel-giant"  class="mask-sel-btn active-sel">👺 ยักษ์</button>
+    <button onclick="selectPreset('monkey')" id="sel-monkey" class="mask-sel-btn">🐒 ลิง</button>
+    <button onclick="selectPreset('human')"  id="sel-human"  class="mask-sel-btn">🌟 เทวดา</button>
+    <button onclick="selectPreset('nang')"   id="sel-nang"   class="mask-sel-btn">🌸 นาง</button>
+    <button onclick="selectPreset('rishi')"  id="sel-rishi"  class="mask-sel-btn">🔱 ฤๅษี</button>
   </div>
 
-  <!-- Sliders -->
-  <div style="max-width:560px;width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(201,146,42,0.2);border-radius:16px;padding:18px 22px;margin-top:16px;">
-    <p style="color:var(--gl);font-size:0.75rem;letter-spacing:0.15em;margin-bottom:14px;">🔧 ปรับตำแหน่งหน้ากาก</p>
-    <div style="display:grid;gap:10px;">
-      <label style="font-size:0.75rem;color:var(--cream);display:flex;align-items:center;gap:10px;">
-        <span style="width:70px;color:var(--gold);">ขนาด</span>
-        <input type="range" id="sl-scale" min="0.1" max="1.5" step="0.01" value="0.45" oninput="tuneMask()" style="flex:1;accent-color:var(--gold);">
-        <span id="lbl-scale" style="width:38px;text-align:right;">0.45</span>
+  <div style="max-width:500px;width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(201,146,42,0.2);border-radius:16px;padding:16px 20px;margin-top:14px;">
+    <p style="color:var(--gl);font-size:0.75rem;margin-bottom:12px;">🔧 ปรับหน้ากาก</p>
+    <div style="display:grid;gap:8px;">
+      <label style="font-size:0.75rem;color:var(--cream);display:flex;align-items:center;gap:8px;">
+        <span style="width:55px;color:var(--gold);">ขนาด</span>
+        <input type="range" id="sl-size" min="0.5" max="2.5" step="0.05" value="1.2" style="flex:1;accent-color:var(--gold);">
+        <span id="lbl-size" style="width:35px;text-align:right;">1.20</span>
       </label>
-      <label style="font-size:0.75rem;color:var(--cream);display:flex;align-items:center;gap:10px;">
-        <span style="width:70px;color:var(--gold);">ขึ้น/ลง</span>
-        <input type="range" id="sl-y" min="-1.5" max="1.5" step="0.01" value="-0.3" oninput="tuneMask()" style="flex:1;accent-color:var(--gold);">
-        <span id="lbl-y" style="width:38px;text-align:right;">-0.30</span>
-      </label>
-      <label style="font-size:0.75rem;color:var(--cream);display:flex;align-items:center;gap:10px;">
-        <span style="width:70px;color:var(--gold);">หน้า/หลัง</span>
-        <input type="range" id="sl-z" min="-0.5" max="0.8" step="0.01" value="0.1" oninput="tuneMask()" style="flex:1;accent-color:var(--gold);">
-        <span id="lbl-z" style="width:38px;text-align:right;">0.10</span>
+      <label style="font-size:0.75rem;color:var(--cream);display:flex;align-items:center;gap:8px;">
+        <span style="width:55px;color:var(--gold);">ขึ้น/ลง</span>
+        <input type="range" id="sl-oy" min="-200" max="200" step="2" value="-30" style="flex:1;accent-color:var(--gold);">
+        <span id="lbl-oy" style="width:35px;text-align:right;">-30</span>
       </label>
     </div>
   </div>
 
-  <!-- Buttons -->
-  <div class="btn-wrap" style="margin-top:24px;gap:16px;flex-wrap:wrap;">
-    <button id="start-ar-btn"   onclick="startAR()"        class="btn-gold">📷 เปิดกล้อง AR</button>
-    <button id="capture-ar-btn" onclick="captureARPhoto()"  class="btn-gold" style="display:none;background:linear-gradient(135deg,#fff,#ddd);color:#000;">⬤ ถ่ายรูป</button>
-    <button id="stop-ar-btn"    onclick="stopAR()"          class="btn-gold" style="display:none;background:rgba(80,20,20,0.8);color:#fcc;">✕ ปิดกล้อง</button>
+  <div class="btn-wrap" style="margin-top:20px;gap:14px;">
+    <button id="start-ar-btn"   onclick="startAR()"       class="btn-gold">📷 เปิดกล้อง AR</button>
+    <button id="capture-ar-btn" onclick="capturePhoto()"   class="btn-gold" style="display:none;background:linear-gradient(135deg,#fff,#ddd);color:#000;">⬤ ถ่ายรูป</button>
+    <button id="stop-ar-btn"    onclick="stopAR()"         class="btn-gold" style="display:none;background:rgba(80,20,20,0.8);color:#fcc;">✕ ปิดกล้อง</button>
   </div>
-  <p style="color:rgba(255,255,255,0.25);font-size:0.72rem;margin-top:14px;">* ต้องเปิดใน Chrome / Safari และอนุญาตการใช้กล้อง</p>
+  <p style="color:rgba(255,255,255,0.2);font-size:0.7rem;margin-top:12px;">* Chrome / Safari · อนุญาตการใช้กล้อง</p>
 </section>
 
-<!-- ════════════════════════════════════════════ P5 ════ -->
+<!-- P5 -->
 <section id="p5" class="page">
   <h1>BUBBLE WALL</h1>
   <div class="sub-t">คลังภาพมรดกไทยดิจิทัลจากฝีมือคุณ</div>
   <div id="bubble-container" style="position:relative;width:100%;height:65vh;background:rgba(9,9,11,0.5);border-radius:3rem;border:1px solid #27272a;overflow:hidden;">
-    <div id="empty-msg" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#71717a;">
-      ยังไม่มีรูปถ่าย... ลองไปถ่ายที่หน้า AR Experience สิ!
-    </div>
+    <div id="empty-msg" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#71717a;">ยังไม่มีรูปถ่าย... ไปถ่ายที่หน้า AR Experience ก่อนนะครับ!</div>
   </div>
   <div class="btn-wrap">
     <button class="btn-gold" onclick="showPage('p4')">กลับไปหน้า AR</button>
@@ -477,221 +297,250 @@
 </section>
 
 
-<!-- ════════════════════════════════════════ SCRIPTS ════ -->
 <script>
-/* ──────────────────────────────────────────────────────
-   SHARED STATE
-────────────────────────────────────────────────────── */
-const capturedImages = [];
-
-/* ──────────────────────────────────────────────────────
-   PAGE NAVIGATION (ฟังก์ชันเดียว ไม่ซ้ำ)
-────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════
+   PAGE NAV
+═══════════════════════════════════════ */
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
 
-/* ──────────────────────────────────────────────────────
-   P2 — SVG MASK DESIGNER
-────────────────────────────────────────────────────── */
-const state = {
-  char:'giant', eye:'normal', crown:'spike', pattern:'none',
-  colors:{ skin:'#16a34a', line:'#064e3b', crown:'#FFD700', gem:'#dc2626' }
-};
+/* ═══════════════════════════════════════
+   P2 — SVG DESIGNER
+═══════════════════════════════════════ */
+const maskState = { char:'giant', eye:'wide', crown:'spike', pattern:'basic', colors:{ skin:'#16a34a', line:'#064e3b', crown:'#FFD700', gem:'#dc2626' } };
 const presets = {
-  giant:  { skin:'#16a34a', line:'#064e3b', crown:'#FFD700', gem:'#dc2626', eye:'wide',   crownStyle:'spike', pattern:'basic' },
-  monkey: { skin:'#ffffff', line:'#cbd5e1', crown:'#FFD700', gem:'#3b82f6', eye:'normal', crownStyle:'round', pattern:'none'  },
-  human:  { skin:'#16a34a', line:'#052e16', crown:'#FFD700', gem:'#dc2626', eye:'normal', crownStyle:'spike', pattern:'kanok' },
-  nang:   { skin:'#fef3c7', line:'#d97706', crown:'#FFD700', gem:'#ec4899', eye:'normal', crownStyle:'spike', pattern:'royal' },
-  rishi:  { skin:'#f97316', line:'#7c2d12', crown:'#7c2d12', gem:'#ffffff', eye:'normal', crownStyle:'round', pattern:'basic' }
+  giant:  { skin:'#16a34a', line:'#064e3b', crown:'#FFD700', gem:'#dc2626', eye:'wide',   crownStyle:'spike', pattern:'basic'  },
+  monkey: { skin:'#ffffff', line:'#94a3b8', crown:'#FFD700', gem:'#3b82f6', eye:'normal', crownStyle:'round', pattern:'none'   },
+  human:  { skin:'#16a34a', line:'#052e16', crown:'#FFD700', gem:'#dc2626', eye:'normal', crownStyle:'spike', pattern:'kanok'  },
+  nang:   { skin:'#fef3c7', line:'#d97706', crown:'#FFD700', gem:'#ec4899', eye:'normal', crownStyle:'spike', pattern:'royal'  },
+  rishi:  { skin:'#f97316', line:'#7c2d12', crown:'#7c2d12', gem:'#ffffff', eye:'normal', crownStyle:'round', pattern:'basic'  }
 };
+
 function updateState(u) {
   if (u.char) {
-    state.char = u.char;
-    const p = presets[state.char];
-    state.colors = { skin:p.skin, line:p.line, crown:p.crown, gem:p.gem };
-    state.eye = p.eye; state.crown = p.crownStyle; state.pattern = p.pattern;
-    syncInputs();
+    maskState.char = u.char;
+    const p = presets[u.char];
+    maskState.colors = {...p}; maskState.eye = p.eye; maskState.crown = p.crownStyle; maskState.pattern = p.pattern;
+    document.getElementById('c-skin').value = p.skin; document.getElementById('c-line').value = p.line;
+    document.getElementById('c-crown').value = p.crown; document.getElementById('c-gem').value = p.gem;
   }
-  if (u.eye)     state.eye = u.eye;
-  if (u.crown)   state.crown = u.crown;
-  if (u.pattern) state.pattern = u.pattern;
-  render();
+  if (u.eye)     maskState.eye = u.eye;
+  if (u.crown)   maskState.crown = u.crown;
+  if (u.pattern) maskState.pattern = u.pattern;
+  renderSVG();
 }
-function syncInputs() {
-  document.getElementById('c-skin').value  = state.colors.skin;
-  document.getElementById('c-line').value  = state.colors.line;
-  document.getElementById('c-crown').value = state.colors.crown;
-  document.getElementById('c-gem').value   = state.colors.gem;
-}
+
 function applyColors() {
-  state.colors.skin  = document.getElementById('c-skin').value;
-  state.colors.line  = document.getElementById('c-line').value;
-  state.colors.crown = document.getElementById('c-crown').value;
-  state.colors.gem   = document.getElementById('c-gem').value;
-  render();
+  maskState.colors.skin=document.getElementById('c-skin').value; maskState.colors.line=document.getElementById('c-line').value;
+  maskState.colors.crown=document.getElementById('c-crown').value; maskState.colors.gem=document.getElementById('c-gem').value;
+  renderSVG();
 }
-function render() {
-  document.querySelectorAll('.char-btn').forEach(b => b.classList.remove('active-btn'));
-  document.getElementById(`btn-${state.char}`).classList.add('active-btn');
-  document.querySelectorAll('.pat-btn').forEach(b => b.classList.remove('active-btn','bg-zinc-800'));
-  document.getElementById(`pat-${state.pattern}`).classList.add('active-btn');
-  document.querySelectorAll('[id^="eye-"]').forEach(b => b.classList.remove('active-btn','bg-zinc-800'));
-  document.getElementById(`eye-${state.eye}`).classList.add('active-btn');
-  document.querySelectorAll('[id^="crown-"]').forEach(b => b.classList.remove('active-btn','bg-zinc-800'));
-  document.getElementById(`crown-${state.crown}`).classList.add('active-btn');
 
-  document.getElementById('part-face').setAttribute('fill', state.colors.skin);
-  document.getElementById('part-ear-l').setAttribute('fill', state.colors.skin);
-  document.getElementById('part-ear-r').setAttribute('fill', state.colors.skin);
-  document.getElementById('part-crown-top').setAttribute('fill', state.colors.crown);
-  document.getElementById('part-crown-base').setAttribute('fill', state.colors.crown);
-  document.getElementById('part-gem').setAttribute('fill', state.colors.gem);
-  const pc = document.getElementById('patterns-container');
-  pc.setAttribute('stroke', state.colors.line);
-  pc.setAttribute('color',  state.colors.line);
+function renderSVG() {
+  document.querySelectorAll('.char-btn').forEach(b=>b.classList.remove('active-btn'));
+  document.getElementById(`btn-${maskState.char}`)?.classList.add('active-btn');
+  document.querySelectorAll('.pat-btn').forEach(b=>b.classList.remove('active-btn'));
+  document.getElementById(`pat-${maskState.pattern}`)?.classList.add('active-btn');
+  document.querySelectorAll('[id^="eye-"]').forEach(b=>b.classList.remove('active-btn'));
+  document.getElementById(`eye-${maskState.eye}`)?.classList.add('active-btn');
+  document.querySelectorAll('[id^="crown-"]').forEach(b=>b.classList.remove('active-btn'));
+  document.getElementById(`crown-${maskState.crown}`)?.classList.add('active-btn');
 
-  ['basic','kanok','royal'].forEach(p => {
-    document.getElementById(`pattern-${p}`).classList.toggle('hidden', state.pattern !== p);
-  });
+  document.getElementById('part-face').setAttribute('fill',maskState.colors.skin);
+  document.getElementById('part-ear-l').setAttribute('fill',maskState.colors.skin);
+  document.getElementById('part-ear-r').setAttribute('fill',maskState.colors.skin);
+  document.getElementById('part-crown-top').setAttribute('fill',maskState.colors.crown);
+  document.getElementById('part-crown-base').setAttribute('fill',maskState.colors.crown);
+  document.getElementById('part-gem').setAttribute('fill',maskState.colors.gem);
+  const pc=document.getElementById('patterns-container');
+  pc.setAttribute('stroke',maskState.colors.line); pc.setAttribute('color',maskState.colors.line);
+  ['basic','kanok','royal'].forEach(p=>document.getElementById(`pattern-${p}`)?.classList.toggle('hidden',maskState.pattern!==p));
 
-  const eyeL = document.getElementById('part-eye-l');
-  const eyeR = document.getElementById('part-eye-r');
-  const pL   = document.getElementById('pupil-l');
-  const pR   = document.getElementById('pupil-r');
-  if (state.eye === 'wide') {
-    eyeL.setAttribute('d','M135 210 Q165 180 190 215 L190 225 Q165 240 135 210 Z');
-    eyeR.setAttribute('d','M210 215 Q235 180 265 210 L265 210 Q235 240 210 225 Z');
-    pL.setAttribute('r','8'); pR.setAttribute('r','8');
-  } else {
-    eyeL.setAttribute('d','M140 215 Q165 200 190 215');
-    eyeR.setAttribute('d','M210 215 Q235 200 260 215');
-    pL.setAttribute('r','5'); pR.setAttribute('r','5');
-  }
+  const eL=document.getElementById('part-eye-l'),eR=document.getElementById('part-eye-r');
+  const pL=document.getElementById('pupil-l'),pR=document.getElementById('pupil-r');
+  if (maskState.eye==='wide') { eL.setAttribute('d','M135 210 Q165 180 190 215 L190 225 Q165 240 135 210 Z'); eR.setAttribute('d','M210 215 Q235 180 265 210 L265 210 Q235 240 210 225 Z'); pL.setAttribute('r','8');pR.setAttribute('r','8'); }
+  else { eL.setAttribute('d','M140 215 Q165 200 190 215'); eR.setAttribute('d','M210 215 Q235 200 260 215'); pL.setAttribute('r','5');pR.setAttribute('r','5'); }
 
-  const cg = document.getElementById('crown-group');
-  const ct = document.getElementById('part-crown-top');
-  const co = document.getElementById('part-crown-ornament');
-  const gem = document.getElementById('part-gem');
-  if (state.crown === 'none') { cg.style.display='none'; gem.style.display='none'; }
-  else {
-    cg.style.display='block'; gem.style.display='block';
-    if (state.crown==='spike') { ct.setAttribute('d','M200 10 L220 85 L180 85 Z'); co.setAttribute('cy','45'); }
-    else                       { ct.setAttribute('d','M200 30 Q230 50 200 85 Q170 50 200 30'); co.setAttribute('cy','55'); }
-  }
-  [document.getElementById('part-fang-l'), document.getElementById('part-fang-r')]
-    .forEach(f => f.style.display = state.char==='giant' ? 'block' : 'none');
-  document.getElementById('part-mouth').setAttribute('d',
-    state.char==='nang' ? 'M180 305 Q200 315 220 305' : 'M170 300 Q200 330 230 300');
+  const cg=document.getElementById('crown-group'),ct=document.getElementById('part-crown-top'),co=document.getElementById('part-crown-ornament'),gem=document.getElementById('part-gem');
+  if (maskState.crown==='none') { cg.style.display='none'; gem.style.display='none'; }
+  else { cg.style.display=''; gem.style.display=''; ct.setAttribute('d', maskState.crown==='spike'?'M200 10 L220 85 L180 85 Z':'M200 30 Q230 50 200 85 Q170 50 200 30'); co.setAttribute('cy', maskState.crown==='spike'?'45':'55'); }
+  ['part-fang-l','part-fang-r'].forEach(id=>document.getElementById(id).style.display=maskState.char==='giant'?'':'none');
+  document.getElementById('part-mouth').setAttribute('d',maskState.char==='nang'?'M180 305 Q200 315 220 305':'M170 300 Q200 330 230 300');
 }
+
 function randomizeAll() {
-  const keys = Object.keys(presets);
-  const rnd  = () => '#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
-  updateState({ char:keys[Math.floor(Math.random()*keys.length)], pattern:['none','basic','kanok','royal'][Math.floor(Math.random()*4)] });
-  state.colors.skin=rnd(); state.colors.line=rnd(); state.colors.crown=rnd(); state.colors.gem=rnd();
-  syncInputs(); render();
+  const keys=Object.keys(presets), rnd=()=>'#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
+  updateState({char:keys[Math.floor(Math.random()*keys.length)],pattern:['none','basic','kanok','royal'][Math.floor(Math.random()*4)]});
+  maskState.colors={skin:rnd(),line:rnd(),crown:rnd(),gem:rnd()};
+  document.getElementById('c-skin').value=maskState.colors.skin; document.getElementById('c-line').value=maskState.colors.line;
+  document.getElementById('c-crown').value=maskState.colors.crown; document.getElementById('c-gem').value=maskState.colors.gem;
+  renderSVG();
 }
+
 async function exportMask() {
-  const svg = document.getElementById('main-svg');
-  const src = new XMLSerializer().serializeToString(svg);
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = 1200;
-  const ctx = canvas.getContext('2d');
-  const g = ctx.createRadialGradient(600,600,0,600,600,900);
-  g.addColorStop(0,'#1a1a1a'); g.addColorStop(1,'#000');
-  ctx.fillStyle=g; ctx.fillRect(0,0,1200,1200);
-  const img = new Image();
-  img.src = 'data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(src)));
-  img.onload = () => {
-    ctx.drawImage(img,100,100,1000,1000);
-    ctx.fillStyle='#c5a059'; ctx.font='bold 36px serif'; ctx.textAlign='center';
-    ctx.fillText(`KHON MASK STUDIO: ${state.char.toUpperCase()}`,600,1140);
-    const a = document.createElement('a');
-    a.download=`khon-mask-${Date.now()}.png`;
-    a.href=canvas.toDataURL('image/png'); a.click();
-    document.getElementById('modal').classList.remove('opacity-0','pointer-events-none');
-  };
+  const svg=document.getElementById('main-svg'), src=new XMLSerializer().serializeToString(svg);
+  const cvs=document.createElement('canvas'); cvs.width=cvs.height=1200;
+  const ctx=cvs.getContext('2d'), g=ctx.createRadialGradient(600,600,0,600,600,900);
+  g.addColorStop(0,'#1a1a1a'); g.addColorStop(1,'#000'); ctx.fillStyle=g; ctx.fillRect(0,0,1200,1200);
+  const img=new Image(); img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(src)));
+  img.onload=()=>{ ctx.drawImage(img,100,100,1000,1000); ctx.fillStyle='#c5a059'; ctx.font='bold 32px serif'; ctx.textAlign='center'; ctx.fillText(`KHON MASK · ${maskState.char.toUpperCase()}`,600,1140); const a=document.createElement('a'); a.download=`khon-mask-${Date.now()}.png`; a.href=cvs.toDataURL('image/png'); a.click(); document.getElementById('modal').classList.remove('opacity-0','pointer-events-none'); };
 }
 function closeModal() { document.getElementById('modal').classList.add('opacity-0','pointer-events-none'); }
 
-/* ──────────────────────────────────────────────────────
-   P4 — AR FACE TRACKING
-   แก้ไขหลัก: a-scene อยู่นอก .page จึง init ได้ปกติ
-   เราใช้ requestAnimationFrame วาดภาพจาก a-scene canvas
-   มาแสดงใน #ar-display-canvas ภายใน p4
-────────────────────────────────────────────────────── */
-let arRunning   = false;
-let arSceneReady = false;
-let rafId       = null;
-
-// รอ a-scene โหลดเสร็จ
-(function waitScene() {
-  const scene = document.getElementById('ar-scene');
-  if (!scene) return;
-  const check = () => {
-    if (scene.hasLoaded) {
-      arSceneReady = true;
-      setStatus('✅ พร้อมใช้งาน — กด "เปิดกล้อง AR"');
-    } else {
-      scene.addEventListener('loaded', () => {
-        arSceneReady = true;
-        setStatus('✅ พร้อมใช้งาน — กด "เปิดกล้อง AR"');
-      }, { once:true });
-    }
-  };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', check);
-  else check();
-})();
-
-function startAR() {
-  if (!arSceneReady) {
-    setStatus('⌛ กำลังโหลด กรุณารอสักครู่...');
-    setTimeout(startAR, 600);
-    return;
-  }
-
-  const scene = document.getElementById('ar-scene');
-  const sys   = scene.systems && scene.systems['mindar-face-system'];
-
-  if (!sys) {
-    setStatus('⌛ รอ MindAR system...');
-    setTimeout(startAR, 500);
-    return;
-  }
-
-  navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false })
-    .then(() => {
-      sys.start();
-      arRunning = true;
-      setStatus('🟢 Face Tracking Active');
-      document.querySelector('#face-guide svg').style.opacity = '0';
-      document.getElementById('start-ar-btn').style.display   = 'none';
-      document.getElementById('capture-ar-btn').style.display = '';
-      document.getElementById('stop-ar-btn').style.display    = '';
-
-      // วาดภาพจาก a-scene ลงใน display canvas ด้วย rAF
-      startMirrorLoop();
-    })
-    .catch(err => {
-      console.error('Camera error:', err);
-      setStatus('❌ ไม่สามารถเข้าถึงกล้องได้ — กรุณาอนุญาต');
-    });
+/* ═══════════════════════════════════════
+   SVG → Image สำหรับ AR
+═══════════════════════════════════════ */
+function svgToImage(size=600) {
+  return new Promise(resolve => {
+    const svg = document.getElementById('main-svg');
+    const src = new XMLSerializer().serializeToString(svg);
+    const b64 = btoa(unescape(encodeURIComponent(src)));
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas'); c.width = c.height = size;
+      c.getContext('2d').drawImage(img, 0, 0, size, size);
+      const out = new Image(); out.src = c.toDataURL('image/png');
+      out.onload = () => resolve(out);
+    };
+    img.src = 'data:image/svg+xml;base64,' + b64;
+  });
 }
 
-function startMirrorLoop() {
-  const displayCanvas = document.getElementById('ar-display-canvas');
-  const ctx = displayCanvas.getContext('2d');
+/* ═══════════════════════════════════════
+   P4 — AR (face-api.js + getUserMedia)
+   ไม่ต้องการไฟล์ .glb เลย
+═══════════════════════════════════════ */
+let arRunning = false, stream = null, rafId = null, maskImg = null, faceApiReady = false;
 
+// โหลด face-api.js + model
+async function loadFaceApi() {
+  if (faceApiReady) return true;
+  return new Promise(resolve => {
+    if (window.faceapi) { initModels().then(resolve); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js';
+    s.onload = () => initModels().then(resolve);
+    s.onerror = () => resolve(false);
+    document.head.appendChild(s);
+  });
+}
+
+async function initModels() {
+  try {
+    const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+    await Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+      faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL_URL)
+    ]);
+    faceApiReady = true;
+    return true;
+  } catch(e) { console.warn('model load failed',e); return false; }
+}
+
+async function startAR() {
+  setStatus('📷 กำลังเปิดกล้อง...');
+  document.getElementById('start-ar-btn').disabled = true;
+
+  // ขอกล้อง
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user', width:{ideal:640}, height:{ideal:480} }, audio:false });
+  } catch(e) {
+    setStatus('❌ กรุณาอนุญาตการใช้กล้อง');
+    document.getElementById('start-ar-btn').disabled = false;
+    return;
+  }
+
+  const video = document.getElementById('ar-video');
+  video.srcObject = stream;
+  await new Promise(r => video.onloadedmetadata = r);
+  await video.play();
+
+  // ตั้ง canvas
+  const overlay = document.getElementById('ar-overlay-canvas');
+  overlay.width = video.videoWidth || 640;
+  overlay.height = video.videoHeight || 480;
+
+  // สร้าง mask image จาก SVG
+  maskImg = await svgToImage(600);
+
+  // โหลด face-api
+  setStatus('⏳ โหลด Face Detection model...');
+  const ok = await loadFaceApi();
+
+  arRunning = true;
+  document.getElementById('guide-svg').style.opacity = '0';
+  document.getElementById('start-ar-btn').style.display = 'none';
+  document.getElementById('start-ar-btn').disabled = false;
+  document.getElementById('capture-ar-btn').style.display = '';
+  document.getElementById('stop-ar-btn').style.display = '';
+
+  if (ok) { setStatus('🟢 Face Tracking Active'); runTrackingLoop(); }
+  else    { setStatus('⚠️ ไม่มี Face Tracking — กลางจอ'); runFallbackLoop(); }
+}
+
+/* Loop พร้อม face tracking */
+function runTrackingLoop() {
+  const video   = document.getElementById('ar-video');
+  const overlay = document.getElementById('ar-overlay-canvas');
+  const ctx     = overlay.getContext('2d');
+
+  async function loop() {
+    if (!arRunning) return;
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+    try {
+      const det = await faceapi
+        .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ scoreThreshold:0.35, inputSize:224 }))
+        .withFaceLandmarks(true);
+
+      if (det && maskImg) {
+        const box  = det.detection.box;
+        const lms  = det.landmarks;
+
+        // คำนวณมุมเอียงจากตา
+        const eyeL  = lms.getLeftEye(),  eyeR = lms.getRightEye();
+        const lCx   = eyeL.reduce((s,p)=>s+p.x,0)/eyeL.length;
+        const rCx   = eyeR.reduce((s,p)=>s+p.x,0)/eyeR.length;
+        const lCy   = eyeL.reduce((s,p)=>s+p.y,0)/eyeL.length;
+        const rCy   = eyeR.reduce((s,p)=>s+p.y,0)/eyeR.length;
+        const angle = Math.atan2(rCy-lCy, rCx-lCx);
+
+        const scale = parseFloat(document.getElementById('sl-size').value);
+        const offY  = parseFloat(document.getElementById('sl-oy').value);
+        const mW = box.width  * 1.8 * scale;
+        const mH = box.height * 2.0 * scale;
+        const cX = box.x + box.width  / 2;
+        const cY = box.y + box.height / 2 + offY;
+
+        ctx.save();
+        ctx.translate(cX, cY);
+        ctx.rotate(angle);
+        ctx.drawImage(maskImg, -mW/2, -mH/2, mW, mH);
+        ctx.restore();
+      }
+    } catch(e) {}
+
+    rafId = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+/* Loop fallback (ไม่มี tracking) */
+function runFallbackLoop() {
+  const overlay = document.getElementById('ar-overlay-canvas');
+  const ctx     = overlay.getContext('2d');
   function loop() {
     if (!arRunning) return;
-
-    const srcCanvas = document.querySelector('#ar-scene canvas');
-    if (srcCanvas && srcCanvas.width > 0) {
-      displayCanvas.width  = srcCanvas.width;
-      displayCanvas.height = srcCanvas.height;
-      ctx.drawImage(srcCanvas, 0, 0);
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    if (maskImg) {
+      const s  = parseFloat(document.getElementById('sl-size').value);
+      const oy = parseFloat(document.getElementById('sl-oy').value);
+      const w  = overlay.width  * 0.65 * s;
+      const h  = overlay.height * 0.80 * s;
+      ctx.drawImage(maskImg, (overlay.width-w)/2, (overlay.height-h)/2+oy, w, h);
     }
     rafId = requestAnimationFrame(loop);
   }
@@ -699,88 +548,85 @@ function startMirrorLoop() {
 }
 
 function stopAR() {
-  const scene = document.getElementById('ar-scene');
-  const sys   = scene && scene.systems && scene.systems['mindar-face-system'];
-  if (sys && arRunning) sys.stop();
   arRunning = false;
   if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-  setStatus('⏸ หยุดแล้ว');
-  document.querySelector('#face-guide svg').style.opacity = '0.35';
-  document.getElementById('start-ar-btn').style.display   = '';
+  if (stream) { stream.getTracks().forEach(t=>t.stop()); stream = null; }
+  const video = document.getElementById('ar-video'); video.srcObject = null;
+  document.getElementById('ar-overlay-canvas').getContext('2d').clearRect(0,0,9999,9999);
+  document.getElementById('guide-svg').style.opacity = '0.4';
+  setStatus('⏸ หยุดแล้ว — กด "เปิดกล้อง AR" อีกครั้ง');
+  document.getElementById('start-ar-btn').style.display = '';
   document.getElementById('capture-ar-btn').style.display = 'none';
-  document.getElementById('stop-ar-btn').style.display    = 'none';
+  document.getElementById('stop-ar-btn').style.display = 'none';
 }
 
-function changeARMask(type) {
-  const modelMap = {
-    giant:'#model-giant', monkey:'#model-monkey',
-    human:'#model-human', nang:'#model-nang', rishi:'#model-rishi'
-  };
-  const model = document.getElementById('ar-khon-mask');
-  if (model && modelMap[type]) model.setAttribute('src', modelMap[type]);
-  document.querySelectorAll('.mask-sel-btn').forEach(b => b.classList.remove('active-sel'));
-  const btn = document.getElementById('sel-'+type);
-  if (btn) btn.classList.add('active-sel');
+function selectPreset(type) {
+  updateState({ char: type });
+  document.querySelectorAll('.mask-sel-btn').forEach(b=>b.classList.remove('active-sel'));
+  document.getElementById('sel-'+type)?.classList.add('active-sel');
+  // อัปเดต maskImg ถ้า AR กำลังรัน
+  if (arRunning) svgToImage(600).then(img => { maskImg = img; });
 }
 
-function tuneMask() {
-  const model = document.getElementById('ar-khon-mask');
-  if (!model) return;
-  const s = parseFloat(document.getElementById('sl-scale').value);
-  const y = parseFloat(document.getElementById('sl-y').value);
-  const z = parseFloat(document.getElementById('sl-z').value);
-  model.setAttribute('scale',    `${s} ${s} ${s}`);
-  model.setAttribute('position', `0 ${y} ${z}`);
-  document.getElementById('lbl-scale').textContent = s.toFixed(2);
-  document.getElementById('lbl-y').textContent     = y.toFixed(2);
-  document.getElementById('lbl-z').textContent     = z.toFixed(2);
+function applyToAR() {
+  document.querySelectorAll('.mask-sel-btn').forEach(b=>b.classList.remove('active-sel'));
+  document.getElementById('sel-'+maskState.char)?.classList.add('active-sel');
+  showPage('p4');
+  if (arRunning) svgToImage(600).then(img => { maskImg = img; });
 }
 
-function captureARPhoto() {
-  const flash = document.getElementById('flash-effect');
-  flash.style.opacity = '1';
-  setTimeout(() => flash.style.opacity = '0', 100);
+// sync slider labels
+document.addEventListener('input', e => {
+  if (e.target.id === 'sl-size') document.getElementById('lbl-size').textContent = parseFloat(e.target.value).toFixed(2);
+  if (e.target.id === 'sl-oy')   document.getElementById('lbl-oy').textContent   = e.target.value;
+});
 
-  const displayCanvas = document.getElementById('ar-display-canvas');
-  if (!displayCanvas || displayCanvas.width === 0) { alert('กรุณาเปิดกล้อง AR ก่อน'); return; }
+function setStatus(msg) { const el=document.getElementById('ar-status'); if(el) el.textContent=msg; }
 
-  capturedImages.push(displayCanvas.toDataURL('image/png'));
-  setTimeout(() => { updateBubbleWall(); showPage('p5'); }, 350);
+/* ═══════════════════════════════════════
+   ถ่ายรูป
+═══════════════════════════════════════ */
+const capturedImages = [];
+function capturePhoto() {
+  const flash=document.getElementById('flash-effect'); flash.style.opacity='1'; setTimeout(()=>flash.style.opacity='0',120);
+  const video=document.getElementById('ar-video'), overlay=document.getElementById('ar-overlay-canvas');
+  const c=document.createElement('canvas'); c.width=overlay.width||640; c.height=overlay.height||480;
+  const ctx=c.getContext('2d');
+  if (video.readyState>=2) ctx.drawImage(video,0,0,c.width,c.height);
+  ctx.drawImage(overlay,0,0,c.width,c.height);
+  ctx.fillStyle='rgba(201,146,42,0.8)'; ctx.font='bold 14px serif'; ctx.textAlign='right';
+  ctx.fillText('KHON LAB · AR',c.width-8,c.height-8);
+  capturedImages.push(c.toDataURL('image/png'));
+  setTimeout(()=>{ addBubble(); showPage('p5'); },350);
 }
 
-function setStatus(msg) {
-  const el = document.getElementById('ar-status');
-  if (el) el.textContent = msg;
-}
-
-/* ──────────────────────────────────────────────────────
+/* ═══════════════════════════════════════
    P5 — BUBBLE WALL
-────────────────────────────────────────────────────── */
-function updateBubbleWall() {
-  const container = document.getElementById('bubble-container');
-  document.getElementById('empty-msg').style.display = 'none';
-  const img = document.createElement('img');
-  img.src       = capturedImages[capturedImages.length - 1];
-  img.className = 'bubble-photo';
-  const size = Math.random() * 60 + 100;
-  img.style.width    = `${size}px`;
-  img.style.height   = `${size}px`;
-  img.style.left     = `${Math.random() * (container.clientWidth  - size)}px`;
-  img.style.top      = `${Math.random() * (container.clientHeight - size)}px`;
-  img.style.setProperty('--duration', `${Math.random() * 3 + 4}s`);
+═══════════════════════════════════════ */
+function addBubble() {
+  const container=document.getElementById('bubble-container');
+  document.getElementById('empty-msg').style.display='none';
+  const img=document.createElement('img');
+  img.src=capturedImages[capturedImages.length-1]; img.className='bubble-photo';
+  const sz=Math.random()*60+100;
+  img.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*(container.clientWidth-sz)}px;top:${Math.random()*(container.clientHeight-sz)}px;--dur:${Math.random()*3+4}s`;
   container.appendChild(img);
 }
 function clearBubbles() {
   if (!confirm('ล้างรูปภาพทั้งหมด?')) return;
-  capturedImages.length = 0;
-  document.querySelectorAll('.bubble-photo').forEach(b => b.remove());
-  document.getElementById('empty-msg').style.display = 'flex';
+  capturedImages.length=0;
+  document.querySelectorAll('.bubble-photo').forEach(b=>b.remove());
+  document.getElementById('empty-msg').style.display='flex';
 }
 
-/* ──────────────────────────────────────────────────────
+/* ═══════════════════════════════════════
    INIT
-────────────────────────────────────────────────────── */
-window.onload = () => updateState({ char:'giant' });
+═══════════════════════════════════════ */
+window.onload = () => {
+  updateState({ char:'giant' });
+  // preload face-api เงียบๆ เพื่อให้เร็วขึ้นตอนเปิดกล้อง
+  loadFaceApi().then(ok => setStatus(ok ? '✅ พร้อมใช้งาน — กด "เปิดกล้อง AR"' : '⚠️ โหลด Face Model ไม่สำเร็จ (จะใช้ fallback)'));
+};
 </script>
 
 </body>
