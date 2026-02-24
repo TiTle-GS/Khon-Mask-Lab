@@ -1088,6 +1088,40 @@
 
     // ลบระบบ Bubble และ Face Tracking ออกทั้งหมดตามคำสั่ง
 </script>
+
+    <script>
+    // รายชื่อลิงก์ Raw จาก GitHub ของคุณครู
+    const modelLinks = {
+        1: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/1-v1.glb",
+        2: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/2-v5.glb",
+        3: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/3-v1.glb",
+        4: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/4-v1.glb",
+        5: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/5-v1.glb"
+    };
+
+    // ฟังก์ชันเปลี่ยนหน้า
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    // ฟังก์ชันเปลี่ยนโมเดลหัวโขน
+    function changeKhonModel(id) {
+        const viewer = document.getElementById('khonViewer');
+        
+        // เปลี่ยน source โมเดลตาม ID ที่เลือก
+        viewer.src = modelLinks[id];
+
+        // อัปเดตสถานะปุ่ม
+        document.querySelectorAll('.khon-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if(btn.getAttribute('data-id') == id) {
+                btn.classList.add('active');
+            }
+        });
+    }
+</script>
     
 </body>
 </html>
