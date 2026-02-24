@@ -661,11 +661,17 @@ function svgToImage(size=600) {
 }
 
 /* ═══════════════════════
+   AR STATE — ต้อง declare ก่อน applyToAR
+═══════════════════════ */
+let arRunning=false, stream=null, rafId=null, maskImg=null, faceApiReady=false;
+
+/* ═══════════════════════
    applyToAR — ส่งหน้ากาก P2 → P4
 ═══════════════════════ */
 async function applyToAR() {
   // snapshot SVG ก่อนเปลี่ยนหน้า
   maskImg = await svgToImage(600);
+  console.log('[applyToAR] maskImg created:', maskImg ? 'OK' : 'FAIL');
 
   showPage('p4');
 
@@ -685,9 +691,8 @@ async function applyToAR() {
 }
 
 /* ═══════════════════════
-   P4 — AR
+   P4 — AR functions
 ═══════════════════════ */
-let arRunning=false, stream=null, rafId=null, maskImg=null, faceApiReady=false;
 
 async function loadFaceApi() {
   if (faceApiReady) return true;
@@ -822,8 +827,7 @@ function stopAR() {
   document.getElementById('start-ar-btn').style.display   = '';
   document.getElementById('capture-ar-btn').style.display = 'none';
   document.getElementById('stop-ar-btn').style.display    = 'none';
-  // reset maskImg เพื่อให้ startAR ดึงใหม่จาก SVG ปัจจุบัน
-  maskImg = null;
+  // ไม่ reset maskImg เพื่อให้หน้ากากจาก P2 ยังคงอยู่เมื่อเปิดกล้องใหม่
 }
 
 // sync slider labels
