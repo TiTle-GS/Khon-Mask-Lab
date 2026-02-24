@@ -920,39 +920,70 @@ async function startAR() {
   });
 }
 
+/* ═══════════════════════
+   ปรับปรุงฟังก์ชัน Tracking Loop ให้แม่นยำ
+═══════════════════════ */
 function runTrackingLoop() {
-  const video   = document.getElementById('ar-video');
+  const video = document.getElementById('ar-video');
   const overlay = document.getElementById('ar-overlay-canvas');
-  const ctx     = overlay.getContext('2d');
+  const ctx = overlay.getContext('2d');
+
   async function loop() {
     if (!arRunning) return;
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+    // ตรวจสอบความพร้อมของวิดีโอ
+    if (video.paused || video.ended || video.readyState < 2) {
+      rafId = requestAnimationFrame(loop);
+      return;
+    }
+
     try {
       const det = await faceapi
-        .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ scoreThreshold:0.35, inputSize:224 }))
+        .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.35, inputSize: 224 }))
         .withFaceLandmarks(true);
+
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+
       if (det && maskImg) {
         const box = det.detection.box;
         const lms = det.landmarks;
-        const eyeL = lms.getLeftEye(),  eyeR = lms.getRightEye();
-        const lCx  = eyeL.reduce((s,p)=>s+p.x,0)/eyeL.length;
-        const rCx  = eyeR.reduce((s,p)=>s+p.x,0)/eyeR.length;
-        const lCy  = eyeL.reduce((s,p)=>s+p.y,0)/eyeL.length;
-        const rCy  = eyeR.reduce((s,p)=>s+p.y,0)/eyeR.length;
-        const angle = Math.atan2(rCy-lCy, rCx-lCx);
+
+        // คำนวณจุดกึ่งกลางระหว่างตาทั้งสองข้าง
+        const eyeL = lms.getLeftEye();
+        const eyeR = lms.getRightEye();
+        const lCx = eyeL.reduce((s, p) => s + p.x, 0) / eyeL.length;
+        const rCx = eyeR.reduce((s, p) => s + p.x, 0) / eyeR.length;
+        const lCy = eyeL.reduce((s, p) => s + p.y, 0) / eyeL.length;
+        const rCy = eyeR.reduce((s, p) => s + p.y, 0) / eyeR.length;
+
+        // คำนวณมุมเอียงของใบหน้า
+        const angle = Math.atan2(rCy - lCy, rCx - lCx);
+
+        // ดึงค่าการปรับแต่งจาก Sliders
         const scale = parseFloat(document.getElementById('sl-size').value);
-        const offY  = parseFloat(document.getElementById('sl-oy').value);
-        const mW = box.width  * 1.8 * scale;
-        const mH = box.height * 2.0 * scale;
-        const cX = box.x + box.width  / 2;
-        const cY = box.y + box.height / 2 + offY;
+        const offY = parseFloat(document.getElementById('sl-oy').value);
+
+        // คำนวณขนาดหน้ากากตามขนาดใบหน้าที่ตรวจจับได้
+        const mW = box.width * 1.8 * scale;
+        const mH = mW * (maskImg.height / maskImg.width); // รักษาสัดส่วนภาพหน้ากาก
+
+        // ตำแหน่งกึ่งกลาง (จัดการเรื่อง Mirror โดยใช้ความกว้าง Overlay ลบค่า X)
+        const cX = box.x + box.width / 2;
+        const cY = box.y + box.height / 2 + (offY * (box.height / 200));
+
         ctx.save();
-        ctx.translate(cX, cY);
-        ctx.rotate(angle);
-        ctx.drawImage(maskImg, -mW/2, -mH/2, mW, mH);
+        
+        // กลับด้านการวาดเฉพาะหน้ากากเพื่อให้ตรงกับวิดีโอที่ถูก Mirror
+        ctx.translate(overlay.width - cX, cY); 
+        ctx.rotate(-angle); // กลับทิศทางมุมเอียงตามการ Mirror
+        
+        // วาดหน้ากากลงไป
+        ctx.drawImage(maskImg, -mW / 2, -mH / 2, mW, mH);
         ctx.restore();
       }
-    } catch(e) {}
+    } catch (e) {
+      console.error("Tracking Error:", e);
+    }
     rafId = requestAnimationFrame(loop);
   }
   loop();
