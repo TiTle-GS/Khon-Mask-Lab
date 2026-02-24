@@ -584,59 +584,54 @@
     </section>
 
 <section id="p4" class="page">
-    <h1 style="font-family:'Cinzel Decorative'; color:var(--gold); font-size:2.2rem;">AR EXHIBITION</h1>
-    <div class="sub-t">ส่องกล้องชมมรดกหัวโขนไทยในรูปแบบ AR</div>
+    <h1 style="font-family:'Cinzel Decorative'; color:var(--gold); font-size:2.5rem;">AR EXHIBITION</h1>
+    <div class="sub-t">นิทรรศการหัวโขนเสมือนจริง (3D & AR Viewer)</div>
 
-    <div id="ar-wrapper" style="position: relative; width: 100%; max-width: 600px; aspect-ratio: 3/4; border-radius: 28px; overflow: hidden; border: 2px solid var(--gold); background: #000; margin: 0 auto;">
+    <div id="ar-wrapper" style="position: relative; width: 100%; max-width: 600px; aspect-ratio: 1/1; border-radius: 28px; overflow: hidden; border: 2px solid var(--gold); background: radial-gradient(circle, #222 0%, #000 100%); margin: 0 auto;">
         
-        <a-scene 
-            embedded 
-            color-space="sRGB" 
-            renderer="colorManagement: true, physicallyCorrectLights" 
-            vr-mode-ui="enabled: false" 
-            device-orientation-permission-ui="enabled: false">
+        <model-viewer 
+            id="khonViewer" 
+            src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/1-v1.glb" 
+            ar 
+            ar-modes="webxr scene-viewer quick-look" 
+            camera-controls 
+            poster="poster.webp" 
+            shadow-intensity="1" 
+            auto-rotate 
+            style="width: 100%; height: 100%; background-color: transparent;">
             
-            <a-assets>
-                <a-asset-item id="model1" src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/1-v1.glb"></a-asset-item>
-                <a-asset-item id="model2" src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/2-v5.glb"></a-asset-item>
-                <a-asset-item id="model3" src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/3-v1.glb"></a-asset-item>
-                <a-asset-item id="model4" src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/4-v1.glb"></a-asset-item>
-                <a-asset-item id="model5" src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/5-v1.glb"></a-asset-item>
-            </a-assets>
+            <button slot="ar-button" style="background-color: var(--gold); border-radius: 10px; border: none; position: absolute; bottom: 16px; right: 16px; padding: 10px 20px; font-family: 'Noto Serif Thai'; font-weight: bold; color: #000;">
+                📸 ส่อง AR ในพื้นที่จริง
+            </button>
+        </model-viewer>
 
-            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-            <a-entity id="targetModel" 
-                      gltf-model="#model1" 
-                      position="0 -0.5 -2.5" 
-                      scale="1.5 1.5 1.5" 
-                      rotation="0 0 0"
-                      animation="property: rotation; to: 0 360 0; loop: true; dur: 15000; easing: linear">
-            </a-entity>
-
-            <a-light type="ambient" intensity="1"></a-light>
-            <a-light type="directional" position="1 2 1" intensity="1.5"></a-light>
-        </a-scene>
-
-        <div id="ar-status" style="position: absolute; top: 16px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); border: 1px solid var(--gold); color: var(--gold); font-size: 0.7rem; padding: 5px 16px; border-radius: 20px; z-index: 10;">พร้อมแสดงผล</div>
     </div>
 
-    <div id="mask-selector" style="display: flex; gap: 10px; margin-top: 25px; flex-wrap: wrap; justify-content: center;">
-        <button onclick="changeShowModel(1)" class="mask-btn active">แบบที่ 1</button>
-        <button onclick="changeShowModel(2)" class="mask-btn">แบบที่ 2</button>
-        <button onclick="changeShowModel(3)" class="mask-btn">แบบที่ 3</button>
-        <button onclick="changeShowModel(4)" class="mask-btn">แบบที่ 4</button>
-        <button onclick="changeShowModel(5)" class="mask-btn">แบบที่ 5</button>
-    </div>
-
-    <div style="width:90%; max-width:400px; margin-top:20px; background:rgba(255,255,255,0.05); padding:15px; border-radius:15px;">
-        <label style="font-size:12px; color:var(--gold);">ย่อ/ขยายหัวโขน</label>
-        <input type="range" id="sizeSlider" min="0.5" max="5" step="0.1" value="1.5" oninput="updateModelSize()" style="width:100%; accent-color:var(--gold);">
+    <div style="display: flex; gap: 8px; margin-top: 25px; flex-wrap: wrap; justify-content: center; width: 100%; padding: 0 20px;">
+        <button onclick="changeKhonModel(1)" class="khon-btn active" data-id="1">แบบที่ 1</button>
+        <button onclick="changeKhonModel(2)" class="khon-btn" data-id="2">แบบที่ 2</button>
+        <button onclick="changeKhonModel(3)" class="khon-btn" data-id="3">แบบที่ 3</button>
+        <button onclick="changeKhonModel(4)" class="khon-btn" data-id="4">แบบที่ 4</button>
+        <button onclick="changeKhonModel(5)" class="khon-btn" data-id="5">แบบที่ 5</button>
     </div>
 
     <style>
-        .mask-btn { padding: 10px 20px; background: #1a1a1a; border: 1px solid var(--gold); color: #fff; border-radius: 12px; cursor: pointer; font-size: 13px; transition: 0.3s; }
-        .mask-btn.active { background: var(--gold); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--gold); }
+        .khon-btn { 
+            padding: 10px 18px; 
+            background: #1a1a1a; 
+            border: 1px solid var(--gold); 
+            color: #fff; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-size: 13px; 
+            transition: all 0.3s;
+        }
+        .khon-btn.active { 
+            background: var(--gold); 
+            color: #000; 
+            font-weight: bold; 
+            box-shadow: 0 0 15px var(--gold);
+        }
     </style>
 </section>
 
