@@ -5,19 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI–AR Sustainable Khon Mask Lab | สานศิลป์ ถิ่นศึกษา</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --gold:#C9922A; --gl:#F5C842;
+      --gold:#C9922A; --gl:#F5C842; --red:#8B1A1A;
       --blk:#0A0806; --cream:#F7F0E0; --glass:rgba(255,255,255,0.05);
     }
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:var(--blk);color:var(--cream);font-family:'Noto Serif Thai',serif;overflow-x:hidden;line-height:1.6;display:flex;flex-direction:column;align-items:center;}
-    .tnav{position:fixed;top:0;width:100%;padding:1rem 5%;z-index:1000;display:flex;justify-content:space-between;align-items:center;background:rgba(10,8,6,0.95);border-bottom:1px solid rgba(201,146,42,0.2);backdrop-filter:blur(10px);}
+    body{
+      background:var(--blk);color:var(--cream);
+      font-family:'Noto Serif Thai',serif;overflow-x:hidden;line-height:1.6;
+      display:flex;flex-direction:column;align-items:center;
+    }
+
+    /* ── NAV ── */
+    .tnav{
+      position:fixed;top:0;width:100%;padding:1rem 5%;z-index:1000;
+      display:flex;justify-content:space-between;align-items:center;
+      background:rgba(10,8,6,0.95);border-bottom:1px solid rgba(201,146,42,0.2);
+      backdrop-filter:blur(10px);
+    }
     .n-logo{font-family:'Cinzel Decorative',cursive;color:var(--gold);font-size:1.2rem;}
     .n-links{display:flex;gap:20px;}
     .n-link{color:var(--gold);font-size:0.85rem;cursor:pointer;transition:0.3s;}
     .n-link:hover{color:var(--gl);}
-    .page{display:none;width:100%;min-height:100vh;padding:120px 10% 60px;opacity:0;transition:opacity 0.5s ease;flex-direction:column;align-items:center;text-align:center;}
+
+    /* ── PAGES ── */
+    .page{
+      display:none;width:100%;min-height:100vh;
+      padding:120px 10% 60px;opacity:0;transition:opacity 0.5s ease;
+      flex-direction:column;align-items:center;text-align:center;
+    }
     .page.active{display:flex;opacity:1;}
     h1,h2{font-family:'Cinzel Decorative',cursive;color:var(--gold);margin-bottom:1.5rem;width:100%;}
     .sub-t{font-size:0.9rem;color:var(--gl);margin-bottom:2rem;letter-spacing:1px;width:100%;}
@@ -29,92 +47,215 @@
     .btn-gold:hover{transform:scale(1.05);box-shadow:0 0 20px var(--gold);}
     .hidden{display:none!important;}
 
-    /* P2 */
+    /* ── P2 LAYOUT ── */
     #p2{padding:80px 0 0;overflow:hidden;}
-    .p2-main{display:flex;flex-direction:column;width:100%;height:calc(100vh - 80px);}
-    @media(min-width:1024px){.p2-main{flex-direction:row;}}
-    .p2-canvas-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 40px;}
-    .canvas-area{background:radial-gradient(circle,#222 0%,#000 100%);box-shadow:inset 0 0 100px rgba(0,0,0,0.8);border:1px solid #333;border-radius:2.5rem;aspect-ratio:1/1;width:min(70vh,100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+    .p2-main{
+      display:flex;flex-direction:column;width:100%;
+      height:calc(100vh - 80px);
+    }
+    @media(min-width:1024px){
+      .p2-main{flex-direction:row;}
+    }
+    .p2-canvas-wrap{
+      flex:1;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;padding:24px 40px;
+    }
+    .canvas-area{
+      background:radial-gradient(circle,#222 0%,#000 100%);
+      box-shadow:inset 0 0 100px rgba(0,0,0,0.8);
+      border:1px solid #333;border-radius:2.5rem;
+      aspect-ratio:1/1;width:min(70vh,100%);
+      display:flex;align-items:center;justify-content:center;
+      position:relative;overflow:hidden;
+    }
     .canvas-area svg{width:100%;height:100%;filter:drop-shadow(0 35px 60px rgba(0,0,0,0.8));}
-    .p2-mobile-btns{display:flex;margin-top:24px;gap:12px;width:100%;max-width:360px;}
+    .p2-mobile-btns{
+      display:flex;margin-top:24px;gap:12px;width:100%;max-width:360px;
+    }
     @media(min-width:768px){.p2-mobile-btns{display:none;}}
-    .p2-mobile-btn{flex:1;padding:12px;background:#27272a;border-radius:12px;font-size:12px;font-weight:700;border:1px solid #3f3f46;color:var(--cream);cursor:pointer;}
+    .p2-mobile-btn{
+      flex:1;padding:12px;background:#27272a;border-radius:12px;
+      font-size:12px;font-weight:700;border:1px solid #3f3f46;
+      color:var(--cream);cursor:pointer;
+    }
     .p2-mobile-btn-gold{background:#c5a059;color:#000;border-color:#c5a059;}
-    .sidebar-right{width:100%;border-top:1px solid rgba(197,160,89,0.2);background:rgba(15,15,15,0.95);backdrop-filter:blur(10px);overflow-y:auto;padding:32px;}
-    @media(min-width:1024px){.sidebar-right{width:380px;height:100%;border-top:none;border-left:1px solid rgba(197,160,89,0.2);}}
+
+    /* ── SIDEBAR ── */
+    .sidebar-right{
+      width:100%;border-top:1px solid rgba(197,160,89,0.2);
+      background:rgba(15,15,15,0.95);backdrop-filter:blur(10px);
+      overflow-y:auto;padding:32px;
+    }
+    @media(min-width:1024px){
+      .sidebar-right{
+        width:380px;height:100%;
+        border-top:none;border-left:1px solid rgba(197,160,89,0.2);
+      }
+    }
     .sidebar-right::-webkit-scrollbar{width:5px;}
     .sidebar-right::-webkit-scrollbar-track{background:#0a0a0a;}
     .sidebar-right::-webkit-scrollbar-thumb{background:#c5a059;border-radius:10px;}
-    .sb-top{display:none;align-items:center;gap:16px;justify-content:flex-end;margin-bottom:16px;}
+
+    .sb-top{
+      display:none;align-items:center;gap:16px;justify-content:flex-end;margin-bottom:16px;
+    }
     @media(min-width:768px){.sb-top{display:flex;}}
     .sb-rnd{font-size:14px;color:#a1a1aa;background:none;border:none;cursor:pointer;}
     .sb-rnd:hover{color:#c5a059;}
-    .sb-save{background:#c5a059;color:#000;padding:8px 20px;border-radius:9999px;font-size:14px;font-weight:700;border:none;cursor:pointer;}
+    .sb-save{
+      background:#c5a059;color:#000;padding:8px 20px;
+      border-radius:9999px;font-size:14px;font-weight:700;border:none;cursor:pointer;
+    }
+    .sb-save:hover{background:#b08d4a;}
+
     .sb-title{color:#c5a059;font-weight:700;font-size:18px;margin-bottom:20px;}
     .sb-section{margin-bottom:24px;}
-    .sb-label{font-size:10px;color:#71717a;text-transform:uppercase;letter-spacing:0.2em;font-weight:700;display:block;margin-bottom:12px;}
+    .sb-label{
+      font-size:10px;color:#71717a;text-transform:uppercase;
+      letter-spacing:0.2em;font-weight:700;display:block;margin-bottom:12px;
+    }
+
+    /* char/pattern/crown/eye button grids */
     .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
     .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
     .grid-1{display:grid;gap:12px;}
-    .sb-btn{padding:10px 8px;background:rgba(39,39,42,0.5);border:1px solid #27272a;border-radius:12px;font-size:11px;color:var(--cream);cursor:pointer;font-family:'Noto Serif Thai',serif;transition:all 0.2s;}
+    .sb-btn{
+      padding:10px 8px;background:rgba(39,39,42,0.5);
+      border:1px solid #27272a;border-radius:12px;
+      font-size:11px;color:var(--cream);cursor:pointer;
+      font-family:'Noto Serif Thai',serif;transition:all 0.2s;
+    }
     .sb-btn:hover{border-color:#c5a059;}
     .sb-btn.active-btn{background:#c5a059!important;color:#000!important;font-weight:bold;box-shadow:0 0 15px rgba(197,160,89,0.3);}
-    .sb-btn-sm{flex:1;padding:8px 4px;background:#27272a;border-radius:8px;font-size:10px;color:var(--cream);cursor:pointer;border:1px solid transparent;font-family:'Noto Serif Thai',serif;transition:all 0.2s;}
+    .sb-btn-sm{
+      flex:1;padding:8px 4px;background:#27272a;
+      border-radius:8px;font-size:10px;color:var(--cream);
+      cursor:pointer;border:1px solid transparent;
+      font-family:'Noto Serif Thai',serif;transition:all 0.2s;
+    }
     .sb-btn-sm.active-btn{background:#c5a059!important;color:#000!important;font-weight:bold;}
-    .sb-box{background:rgba(9,9,11,0.4);padding:12px;border-radius:12px;border:1px solid #27272a;}
+    .sb-box{
+      background:rgba(9,9,11,0.4);padding:12px;
+      border-radius:12px;border:1px solid #27272a;
+    }
     .sb-box-label{font-size:10px;color:#71717a;margin-bottom:8px;}
     .sb-flex{display:flex;gap:8px;}
-    .color-row{display:flex;align-items:center;justify-content:space-between;background:rgba(39,39,42,0.3);padding:12px;border-radius:12px;border:1px solid #27272a;margin-bottom:8px;}
+
+    /* color pickers */
+    .color-row{
+      display:flex;align-items:center;justify-content:space-between;
+      background:rgba(39,39,42,0.3);padding:12px;
+      border-radius:12px;border:1px solid #27272a;margin-bottom:8px;
+    }
     .color-label{font-size:12px;color:#c5a059;}
-    .color-input-wrapper{position:relative;width:38px;height:38px;overflow:hidden;border-radius:10px;border:2px solid #333;transition:all 0.2s;}
+    .color-input-wrapper{
+      position:relative;width:38px;height:38px;overflow:hidden;
+      border-radius:10px;border:2px solid #333;transition:all 0.2s;
+    }
     .color-input-wrapper:hover{border-color:#c5a059;transform:scale(1.05);}
-    .color-input-wrapper input{position:absolute;top:-50%;left:-50%;width:200%;height:200%;cursor:pointer;}
-    .btn-apply-ar{width:100%;padding:12px;border-radius:12px;font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--gold),#8A641A);color:#000;border:none;cursor:pointer;margin-top:8px;font-family:'Noto Serif Thai',serif;transition:0.2s;}
+    .color-input-wrapper input{
+      position:absolute;top:-50%;left:-50%;width:200%;height:200%;cursor:pointer;
+    }
+
+    /* apply to AR button */
+    .btn-apply-ar{
+      width:100%;padding:12px;border-radius:12px;font-size:14px;font-weight:700;
+      background:linear-gradient(135deg,var(--gold),#8A641A);color:#000;
+      border:none;cursor:pointer;margin-top:8px;
+      font-family:'Noto Serif Thai',serif;transition:0.2s;
+    }
     .btn-apply-ar:hover{transform:scale(1.02);box-shadow:0 0 20px var(--gold);}
 
-    /* Modal */
-    #modal{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all 0.3s;z-index:50;padding:16px;}
+    /* ── MODAL ── */
+    #modal{
+      position:fixed;inset:0;background:rgba(0,0,0,0.9);
+      display:flex;align-items:center;justify-content:center;
+      opacity:0;pointer-events:none;transition:all 0.3s;z-index:50;padding:16px;
+    }
     #modal.open{opacity:1;pointer-events:all;}
-    .modal-box{background:#18181b;border:2px solid #c5a059;padding:40px;border-radius:2rem;text-align:center;max-width:360px;width:100%;}
-    .modal-icon{width:80px;height:80px;background:#c5a059;color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
+    .modal-box{
+      background:#18181b;border:2px solid #c5a059;padding:40px;
+      border-radius:2rem;text-align:center;max-width:360px;width:100%;
+    }
+    .modal-icon{
+      width:80px;height:80px;background:#c5a059;color:#000;
+      border-radius:50%;display:flex;align-items:center;justify-content:center;
+      margin:0 auto 24px;
+    }
     .modal-title{font-size:24px;font-weight:700;margin-bottom:16px;color:#c5a059;}
-    .modal-close{width:100%;padding:16px;background:#c5a059;color:#000;font-weight:900;border-radius:16px;border:none;cursor:pointer;font-size:16px;font-family:'Noto Serif Thai',serif;}
+    .modal-close{
+      width:100%;padding:16px;background:#c5a059;color:#000;
+      font-weight:900;border-radius:16px;border:none;cursor:pointer;font-size:16px;
+      font-family:'Noto Serif Thai',serif;
+    }
 
-    /* P4 AR */
-    #ar-viewport{position:relative;width:100%;max-width:480px;aspect-ratio:3/4;border-radius:28px;overflow:hidden;border:2px solid var(--gold);box-shadow:0 0 60px rgba(201,146,42,0.25);background:#000;margin:0 auto;}
+    /* ── P4 AR ── */
+    #ar-viewport{
+      position:relative;width:100%;max-width:480px;aspect-ratio:3/4;
+      border-radius:28px;overflow:hidden;border:2px solid var(--gold);
+      box-shadow:0 0 60px rgba(201,146,42,0.25);background:#000;margin:0 auto;
+    }
     #ar-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;transform:scaleX(-1);}
-    /* overlay canvas ไม่ mirror — วาดพิกัดที่ถูก transform แล้ว */
     #ar-overlay-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;}
     #face-guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;}
-    #ar-status{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);border:1px solid var(--gold);color:var(--gold);font-size:0.7rem;letter-spacing:0.1em;padding:5px 16px;border-radius:20px;white-space:nowrap;backdrop-filter:blur(6px);z-index:10;}
+    #ar-status{
+      position:absolute;top:14px;left:50%;transform:translateX(-50%);
+      background:rgba(0,0,0,0.8);border:1px solid var(--gold);color:var(--gold);
+      font-size:0.7rem;letter-spacing:0.1em;padding:5px 16px;border-radius:20px;
+      white-space:nowrap;backdrop-filter:blur(6px);z-index:10;
+    }
     #flash-effect{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity 0.08s;z-index:9;}
 
-    #ar-mask-preview-bar{display:none;align-items:center;gap:12px;padding:10px 18px;background:rgba(201,146,42,0.1);border:1px solid rgba(201,146,42,0.3);border-radius:12px;margin-top:12px;max-width:500px;width:100%;}
+    /* mask preview bar */
+    #ar-mask-preview-bar{
+      display:none;align-items:center;gap:12px;padding:10px 18px;
+      background:rgba(201,146,42,0.1);border:1px solid rgba(201,146,42,0.3);
+      border-radius:12px;margin-top:12px;max-width:500px;width:100%;
+    }
     #ar-mask-thumb{border-radius:8px;border:1px solid var(--gold);}
     #ar-mask-preview-label{color:var(--gl);font-size:0.78rem;}
     #ar-mask-preview-name{color:var(--cream);font-size:0.7rem;opacity:0.7;}
 
-    .ar-sliders{max-width:500px;width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(201,146,42,0.2);border-radius:16px;padding:16px 20px;margin-top:14px;}
+    /* AR sliders panel */
+    .ar-sliders{
+      max-width:500px;width:100%;
+      background:rgba(255,255,255,0.03);border:1px solid rgba(201,146,42,0.2);
+      border-radius:16px;padding:16px 20px;margin-top:14px;
+    }
     .ar-sliders-title{color:var(--gl);font-size:0.75rem;margin-bottom:12px;}
-    .sl-row{display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--cream);margin-bottom:8px;}
+    .sl-row{
+      display:flex;align-items:center;gap:8px;
+      font-size:0.75rem;color:var(--cream);margin-bottom:8px;
+    }
     .sl-row span.lbl{width:55px;color:var(--gold);}
     .sl-row input[type=range]{flex:1;accent-color:var(--gold);}
     .sl-row span.val{width:35px;text-align:right;}
 
-    /* P5 Bubble */
-    #bubble-container{position:relative;width:100%;height:65vh;background:rgba(9,9,11,0.5);border-radius:3rem;border:1px solid #27272a;overflow:hidden;}
-    .bubble-photo{position:absolute;border-radius:50%;border:4px solid #c5a059;object-fit:cover;box-shadow:0 10px 30px rgba(197,160,89,0.4);animation:floatBubble var(--dur,5s) ease-in-out infinite;}
+    /* ── P5 BUBBLE ── */
+    #bubble-container{
+      position:relative;width:100%;height:65vh;
+      background:rgba(9,9,11,0.5);border-radius:3rem;
+      border:1px solid #27272a;overflow:hidden;
+    }
+    .bubble-photo{
+      position:absolute;border-radius:50%;border:4px solid #c5a059;
+      object-fit:cover;
+      box-shadow:0 10px 30px rgba(197,160,89,0.4);
+      animation:floatBubble var(--dur,5s) ease-in-out infinite;
+      /* ใช้ transform เท่านั้น ไม่ขยับ left/top */
+    }
     @keyframes floatBubble{
-      0%  {transform:translate(0,0);}
-      25% {transform:translate(10px,-15px);}
-      50% {transform:translate(-8px,-22px);}
-      75% {transform:translate(-12px,-8px);}
-      100%{transform:translate(0,0);}
+      0%  { transform: translate(0,    0   ); }
+      25% { transform: translate(12px, -18px); }
+      50% { transform: translate(-8px, -28px); }
+      75% { transform: translate(-14px,-10px); }
+      100%{ transform: translate(0,    0   ); }
     }
   </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav class="tnav">
   <div class="n-logo">KHON LAB</div>
   <div class="n-links">
@@ -130,8 +271,12 @@
   <h1 style="font-size:2.5rem;">THE ROYAL CONNECTION</h1>
   <div class="sub-t">สมเด็จพระพันปีหลวงกับมรดกโขนไทย</div>
   <div class="img-container"><img src="queen.webp" alt="สมเด็จพระพันปีหลวง"></div>
-  <div class="card" style="max-width:800px;"><p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง<br>ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง</p></div>
-  <div class="btn-wrap"><button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button></div>
+  <div class="card" style="max-width:800px;">
+    <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง<br>ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง</p>
+  </div>
+  <div class="btn-wrap">
+    <button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button>
+  </div>
 </section>
 
 <!-- P1 -->
@@ -157,6 +302,8 @@
 <!-- P2 -->
 <section id="p2" class="page">
   <div class="p2-main">
+
+    <!-- Canvas side -->
     <div class="p2-canvas-wrap">
       <div class="canvas-area">
         <svg id="main-svg" viewBox="0 0 400 400">
@@ -190,17 +337,23 @@
           </g>
         </svg>
       </div>
+      <!-- mobile buttons -->
       <div class="p2-mobile-btns">
         <button class="p2-mobile-btn" onclick="randomizeAll()">🎲 สุ่มสี</button>
         <button class="p2-mobile-btn p2-mobile-btn-gold" onclick="exportMask()">💾 บันทึก</button>
       </div>
     </div>
+
+    <!-- Sidebar -->
     <aside class="sidebar-right">
       <div class="sb-top">
         <button class="sb-rnd" onclick="randomizeAll()">🎲 สุ่มรูปแบบ</button>
         <button class="sb-save" onclick="exportMask()">💾 บันทึกรูปภาพ</button>
       </div>
+
       <div class="sb-title">✏️ แผงควบคุมการออกแบบ</div>
+
+      <!-- หมวดหมู่ -->
       <div class="sb-section">
         <span class="sb-label">หมวดหมู่ตัวละคร</span>
         <div class="grid-3">
@@ -211,6 +364,8 @@
           <button onclick="updateState({char:'rishi'})"  id="btn-rishi"  class="sb-btn">ฤๅษี</button>
         </div>
       </div>
+
+      <!-- ลวดลาย -->
       <div class="sb-section">
         <span class="sb-label">ลวดลายใบหน้า</span>
         <div class="grid-2">
@@ -220,6 +375,8 @@
           <button onclick="updateState({pattern:'royal'})" id="pat-royal" class="sb-btn">ลายประดับเครื่องสูง</button>
         </div>
       </div>
+
+      <!-- มงกุฎ & ตา -->
       <div class="sb-section">
         <span class="sb-label">มงกุฎ & ดวงตา</span>
         <div class="grid-1">
@@ -240,6 +397,8 @@
           </div>
         </div>
       </div>
+
+      <!-- สี -->
       <div class="sb-section">
         <span class="sb-label">พาเลทสี</span>
         <div class="color-row"><span class="color-label">สีหน้า</span><div class="color-input-wrapper"><input type="color" id="c-skin" oninput="applyColors()"></div></div>
@@ -247,22 +406,29 @@
         <div class="color-row"><span class="color-label">สีมงกุฎ</span><div class="color-input-wrapper"><input type="color" id="c-crown" oninput="applyColors()"></div></div>
         <div class="color-row" style="margin-bottom:0;"><span class="color-label">อัญมณี</span><div class="color-input-wrapper"><input type="color" id="c-gem" oninput="applyColors()"></div></div>
       </div>
+
       <button onclick="applyToAR()" class="btn-apply-ar">🎭 นำหน้ากากนี้ไปใช้ใน AR →</button>
     </aside>
   </div>
+
+  <!-- Modal -->
   <div id="modal">
     <div class="modal-box">
-      <div class="modal-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="modal-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
       <div class="modal-title">บันทึกสำเร็จ!</div>
       <button class="modal-close" onclick="closeModal()">เสร็จสิ้น</button>
     </div>
   </div>
 </section>
 
-<!-- P4 -->
+<!-- P4 AR Experience -->
 <section id="p4" class="page">
   <h1 style="font-size:2.2rem;">AR EXPERIENCE</h1>
   <div class="sub-t">สวมหน้ากากโขนผ่านกล้องหน้า · Face Tracking</div>
+
+  <!-- preview bar จาก P2 -->
   <div id="ar-mask-preview-bar">
     <canvas id="ar-mask-thumb" width="44" height="44"></canvas>
     <div>
@@ -270,6 +436,8 @@
       <div id="ar-mask-preview-name"></div>
     </div>
   </div>
+
+  <!-- viewport -->
   <div id="ar-viewport">
     <video id="ar-video" autoplay playsinline muted></video>
     <canvas id="ar-overlay-canvas"></canvas>
@@ -283,9 +451,11 @@
         <text x="90" y="125" text-anchor="middle" fill="#c9922a88" font-size="10" font-family="serif">วางใบหน้าตรงนี้</text>
       </svg>
     </div>
-    <div id="ar-status">กำลังเตรียมระบบ...</div>
+    <div id="ar-status">⏳ กำลังโหลด face-api...</div>
     <div id="flash-effect"></div>
   </div>
+
+  <!-- sliders -->
   <div class="ar-sliders">
     <div class="ar-sliders-title">🔧 ปรับหน้ากาก</div>
     <label class="sl-row">
@@ -299,15 +469,17 @@
       <span class="val" id="lbl-oy">-30</span>
     </label>
   </div>
+
+  <!-- ปุ่ม — เปิดกล้อง / ถ่ายรูป / ปิดกล้อง เท่านั้น -->
   <div class="btn-wrap" style="margin-top:20px;gap:14px;">
-    <button id="start-ar-btn"   onclick="startAR()"      class="btn-gold">📷 เปิดกล้อง AR</button>
-    <button id="capture-ar-btn" onclick="capturePhoto()"  class="btn-gold" style="display:none;background:linear-gradient(135deg,#fff,#ddd);color:#000;">⬤ ถ่ายรูป</button>
-    <button id="stop-ar-btn"    onclick="stopAR()"        class="btn-gold" style="display:none;background:rgba(80,20,20,0.8);color:#fcc;">✕ ปิดกล้อง</button>
+    <button id="start-ar-btn"   onclick="startAR()"     class="btn-gold">📷 เปิดกล้อง AR</button>
+    <button id="capture-ar-btn" onclick="capturePhoto()" class="btn-gold" style="display:none;background:linear-gradient(135deg,#fff,#ddd);color:#000;">⬤ ถ่ายรูป</button>
+    <button id="stop-ar-btn"    onclick="stopAR()"       class="btn-gold" style="display:none;background:rgba(80,20,20,0.8);color:#fcc;">✕ ปิดกล้อง</button>
   </div>
   <p style="color:rgba(255,255,255,0.2);font-size:0.7rem;margin-top:12px;">* Chrome / Safari · อนุญาตการใช้กล้อง</p>
 </section>
 
-<!-- P5 -->
+<!-- P5 Bubble Wall -->
 <section id="p5" class="page">
   <h1>BUBBLE WALL</h1>
   <div class="sub-t">คลังภาพมรดกไทยดิจิทัลจากฝีมือคุณ</div>
@@ -320,19 +492,20 @@
   </div>
 </section>
 
+
 <script>
-/* ══════════════════════════════
+/* ═══════════════════════
    PAGE NAV
-══════════════════════════════ */
+═══════════════════════ */
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
 
-/* ══════════════════════════════
-   MASK STATE
-══════════════════════════════ */
+/* ═══════════════════════
+   P2 — SVG DESIGNER
+═══════════════════════ */
 const maskState = {
   char:'giant', eye:'wide', crown:'spike', pattern:'basic',
   colors:{ skin:'#16a34a', line:'#064e3b', crown:'#FFD700', gem:'#dc2626' }
@@ -371,6 +544,7 @@ function applyColors() {
 }
 
 function renderSVG() {
+  // highlight buttons
   document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active-btn'));
   document.getElementById('btn-'+maskState.char)?.classList.add('active-btn');
   document.getElementById('pat-'+maskState.pattern)?.classList.add('active-btn');
@@ -378,6 +552,7 @@ function renderSVG() {
   document.getElementById('eye-'+maskState.eye)?.classList.add('active-btn');
   document.getElementById('crown-'+maskState.crown)?.classList.add('active-btn');
 
+  // colors
   document.getElementById('part-face').setAttribute('fill',   maskState.colors.skin);
   document.getElementById('part-ear-l').setAttribute('fill',  maskState.colors.skin);
   document.getElementById('part-ear-r').setAttribute('fill',  maskState.colors.skin);
@@ -387,10 +562,13 @@ function renderSVG() {
   const pc = document.getElementById('patterns-container');
   pc.setAttribute('stroke', maskState.colors.line);
   pc.setAttribute('color',  maskState.colors.line);
-  ['basic','kanok','royal'].forEach(p =>
-    document.getElementById('pattern-'+p)?.classList.toggle('hidden', maskState.pattern !== p)
-  );
 
+  // patterns
+  ['basic','kanok','royal'].forEach(p => {
+    document.getElementById('pattern-'+p)?.classList.toggle('hidden', maskState.pattern !== p);
+  });
+
+  // eyes
   const eL=document.getElementById('part-eye-l'), eR=document.getElementById('part-eye-r');
   const pL=document.getElementById('pupil-l'),    pR=document.getElementById('pupil-r');
   if (maskState.eye === 'wide') {
@@ -403,20 +581,27 @@ function renderSVG() {
     pL.setAttribute('r','5'); pR.setAttribute('r','5');
   }
 
+  // crown
   const cg=document.getElementById('crown-group');
   const ct=document.getElementById('part-crown-top');
   const co=document.getElementById('part-crown-ornament');
   const gem=document.getElementById('part-gem');
-  if (maskState.crown === 'none') { cg.style.display='none'; gem.style.display='none'; }
-  else {
+  if (maskState.crown === 'none') {
+    cg.style.display='none'; gem.style.display='none';
+  } else {
     cg.style.display=''; gem.style.display='';
-    ct.setAttribute('d', maskState.crown==='spike' ? 'M200 10 L220 85 L180 85 Z' : 'M200 30 Q230 50 200 85 Q170 50 200 30');
+    ct.setAttribute('d', maskState.crown==='spike'
+      ? 'M200 10 L220 85 L180 85 Z'
+      : 'M200 30 Q230 50 200 85 Q170 50 200 30');
     co.setAttribute('cy', maskState.crown==='spike' ? '45' : '55');
   }
 
+  // fangs
   ['part-fang-l','part-fang-r'].forEach(id =>
     document.getElementById(id).style.display = maskState.char==='giant' ? '' : 'none'
   );
+
+  // mouth
   document.getElementById('part-mouth').setAttribute('d',
     maskState.char==='nang' ? 'M180 305 Q200 315 220 305' : 'M170 300 Q200 330 230 300'
   );
@@ -426,7 +611,10 @@ function randomizeAll() {
   const keys = Object.keys(presets);
   const patterns = ['none','basic','kanok','royal'];
   const rnd = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
-  updateState({ char: keys[Math.floor(Math.random()*keys.length)], pattern: patterns[Math.floor(Math.random()*patterns.length)] });
+  updateState({
+    char: keys[Math.floor(Math.random()*keys.length)],
+    pattern: patterns[Math.floor(Math.random()*patterns.length)]
+  });
   maskState.colors = { skin:rnd(), line:rnd(), crown:rnd(), gem:rnd() };
   document.getElementById('c-skin').value  = maskState.colors.skin;
   document.getElementById('c-line').value  = maskState.colors.line;
@@ -436,68 +624,82 @@ function randomizeAll() {
 }
 
 async function exportMask() {
-  const c = await drawMaskToCanvas(1200);
-  if (!c) return;
-  // exportMask ต้องการ canvas ไม่ใช่ Image
+  const svg = document.getElementById('main-svg');
+  const src = new XMLSerializer().serializeToString(svg);
   const cvs = document.createElement('canvas'); cvs.width = cvs.height = 1200;
   const ctx = cvs.getContext('2d');
   const g = ctx.createRadialGradient(600,600,0,600,600,900);
   g.addColorStop(0,'#1a1a1a'); g.addColorStop(1,'#000');
   ctx.fillStyle=g; ctx.fillRect(0,0,1200,1200);
-  ctx.drawImage(c, 100, 100, 1000, 1000);
-  ctx.fillStyle='#c5a059'; ctx.font='bold 32px serif'; ctx.textAlign='center';
-  ctx.fillText('KHON MASK · '+maskState.char.toUpperCase(), 600, 1140);
-  const a = document.createElement('a');
-  a.download = 'khon-mask-'+Date.now()+'.png';
-  a.href = cvs.toDataURL('image/png');
-  a.click();
-  document.getElementById('modal').classList.add('open');
+  const img = new Image();
+  img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(src)));
+  img.onload = () => {
+    ctx.drawImage(img,100,100,1000,1000);
+    ctx.fillStyle='#c5a059'; ctx.font='bold 32px serif'; ctx.textAlign='center';
+    ctx.fillText('KHON MASK · '+maskState.char.toUpperCase(), 600, 1140);
+    const a = document.createElement('a');
+    a.download = 'khon-mask-'+Date.now()+'.png';
+    a.href = cvs.toDataURL('image/png');
+    a.click();
+    document.getElementById('modal').classList.add('open');
+  };
 }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
-/* ══════════════════════════════
-   DRAW MASK — วาดบน Canvas โดยตรง
-   คืน HTMLCanvasElement (ไม่ใช่ Image)
-   เพื่อให้ drawImage ทำงานได้ทันที
-══════════════════════════════ */
-function drawMaskToCanvas(size) {
+/* ═══════════════════════
+   วาดหน้ากากลง Canvas โดยตรง
+   คืน HTMLCanvasElement (ไม่ต้องแปลงเป็น Image)
+═══════════════════════ */
+function buildMaskCanvas(size) {
   size = size || 600;
   const c   = document.createElement('canvas');
   c.width   = size;
   c.height  = size;
   const ctx = c.getContext('2d');
+  const S   = size / 400; // scale: SVG viewBox 400×400
+
   const col = maskState.colors;
 
   ctx.save();
-  ctx.scale(size/400, size/400);   // viewBox 400×400
-
-  /* เงา */
-  ctx.shadowColor = 'rgba(0,0,0,0.55)';
-  ctx.shadowBlur  = 18;
-  ctx.shadowOffsetX = 6;
-  ctx.shadowOffsetY = 6;
+  ctx.scale(S, S);
 
   /* ── มงกุฎ ── */
   if (maskState.crown !== 'none') {
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur  = 12;
+    ctx.shadowOffsetX = 6; ctx.shadowOffsetY = 6;
     ctx.fillStyle = col.crown;
     ctx.beginPath();
     if (maskState.crown === 'spike') {
-      ctx.moveTo(200,10); ctx.lineTo(220,85); ctx.lineTo(180,85); ctx.closePath();
+      ctx.moveTo(200,10); ctx.lineTo(220,85); ctx.lineTo(180,85);
     } else {
       ctx.moveTo(200,30);
-      ctx.bezierCurveTo(232,42, 234,68, 200,85);
-      ctx.bezierCurveTo(166,68, 168,42, 200,30);
+      ctx.bezierCurveTo(230,40, 235,65, 200,85);
+      ctx.bezierCurveTo(165,65, 170,40, 200,30);
     }
-    ctx.fill();
+    ctx.closePath(); ctx.fill();
     ctx.beginPath();
-    ctx.moveTo(140,80); ctx.lineTo(260,80); ctx.lineTo(250,130); ctx.lineTo(150,130); ctx.closePath();
-    ctx.fill();
+    ctx.moveTo(140,80); ctx.lineTo(260,80); ctx.lineTo(250,130); ctx.lineTo(150,130);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+    /* อัญมณี */
+    ctx.fillStyle = col.gem;
+    ctx.beginPath(); ctx.arc(200, 105, 7, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
   }
 
   /* ── ใบหน้า + หู ── */
-  ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 12;
   ctx.fillStyle = col.skin;
-  /* หน้า */
+  /* หูซ้าย */
+  ctx.beginPath();
+  ctx.moveTo(100,200); ctx.bezierCurveTo(78,200, 68,242, 90,262);
+  ctx.quadraticCurveTo(100,242, 100,220); ctx.closePath(); ctx.fill();
+  /* หูขวา */
+  ctx.beginPath();
+  ctx.moveTo(300,200); ctx.bezierCurveTo(322,200, 332,242, 310,262);
+  ctx.quadraticCurveTo(300,242, 300,220); ctx.closePath(); ctx.fill();
+  /* ใบหน้า */
   ctx.beginPath();
   ctx.moveTo(120,130);
   ctx.bezierCurveTo(100,180, 100,220, 100,240);
@@ -505,154 +707,160 @@ function drawMaskToCanvas(size) {
   ctx.bezierCurveTo(240,360, 300,320, 300,240);
   ctx.bezierCurveTo(300,220, 300,180, 280,130);
   ctx.closePath(); ctx.fill();
-  /* หูซ้าย */
-  ctx.beginPath();
-  ctx.moveTo(100,200); ctx.bezierCurveTo(78,198, 68,238, 89,261);
-  ctx.quadraticCurveTo(100,242, 100,220); ctx.closePath(); ctx.fill();
-  /* หูขวา */
-  ctx.beginPath();
-  ctx.moveTo(300,200); ctx.bezierCurveTo(322,198, 332,238, 311,261);
-  ctx.quadraticCurveTo(300,242, 300,220); ctx.closePath(); ctx.fill();
-
-  ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 
   /* ── ลวดลาย ── */
   if (maskState.pattern !== 'none') {
-    ctx.strokeStyle = col.line; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    ctx.beginPath();
+    ctx.save();
+    ctx.strokeStyle = col.line; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin='round';
     if (maskState.pattern === 'basic') {
-      ctx.moveTo(130,260); ctx.quadraticCurveTo(140,272,150,290);
-      ctx.moveTo(270,260); ctx.quadraticCurveTo(260,272,250,290);
-      ctx.moveTo(190,350); ctx.quadraticCurveTo(200,332,210,350);
+      ctx.beginPath();
+      ctx.moveTo(130,260); ctx.quadraticCurveTo(150,270,150,290); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(270,260); ctx.quadraticCurveTo(250,270,250,290); ctx.stroke();
     } else if (maskState.pattern === 'kanok') {
-      ctx.moveTo(120,240); ctx.quadraticCurveTo(138,228,150,250); ctx.quadraticCurveTo(156,264,160,272);
-      ctx.moveTo(280,240); ctx.quadraticCurveTo(262,228,250,250); ctx.quadraticCurveTo(244,264,240,272);
-      ctx.moveTo(180,152); ctx.quadraticCurveTo(200,140,220,152);
+      ctx.beginPath();
+      ctx.moveTo(120,240); ctx.quadraticCurveTo(140,225,155,250); ctx.quadraticCurveTo(160,265,162,275); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(280,240); ctx.quadraticCurveTo(260,225,245,250); ctx.quadraticCurveTo(240,265,238,275); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(175,155); ctx.quadraticCurveTo(200,143,225,155); ctx.stroke();
     } else if (maskState.pattern === 'royal') {
-      ctx.moveTo(112,230); ctx.bezierCurveTo(130,210, 152,236, 160,242);
-      ctx.bezierCurveTo(170,252, 176,270, 180,280);
-      ctx.moveTo(288,230); ctx.bezierCurveTo(270,210, 248,236, 240,242);
-      ctx.bezierCurveTo(230,252, 224,270, 220,280);
-      ctx.moveTo(200,140); ctx.lineTo(200,178);
-      ctx.moveTo(186,160); ctx.lineTo(214,160);
+      ctx.beginPath();
+      ctx.moveTo(108,232); ctx.bezierCurveTo(128,210,152,236,162,244);
+      ctx.bezierCurveTo(172,252,177,272,180,282); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(292,232); ctx.bezierCurveTo(272,210,248,236,238,244);
+      ctx.bezierCurveTo(228,252,223,272,220,282); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(200,142); ctx.lineTo(200,180); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(184,161); ctx.lineTo(216,161); ctx.stroke();
     }
-    ctx.stroke();
+    ctx.restore();
   }
 
   /* ── คิ้ว ── */
-  ctx.strokeStyle = '#111'; ctx.lineWidth = 3.5; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(135,200); ctx.quadraticCurveTo(163,158, 190,205); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(210,205); ctx.quadraticCurveTo(237,158, 265,200); ctx.stroke();
+  ctx.save();
+  ctx.strokeStyle='#000'; ctx.lineWidth=3.5; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(132,202); ctx.quadraticCurveTo(163,158,190,206); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(210,206); ctx.quadraticCurveTo(237,158,268,202); ctx.stroke();
+  ctx.restore();
 
   /* ── ตา ── */
   if (maskState.eye === 'wide') {
-    /* ตาซ้าย */
+    /* ขาวตาซ้าย */
     ctx.fillStyle='white';
-    ctx.beginPath(); ctx.moveTo(135,210); ctx.quadraticCurveTo(163,178,190,215); ctx.lineTo(190,226); ctx.quadraticCurveTo(163,242,135,210); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(133,212); ctx.quadraticCurveTo(163,178,191,216);
+    ctx.lineTo(191,226); ctx.quadraticCurveTo(163,242,133,212); ctx.closePath(); ctx.fill();
     ctx.strokeStyle='#000'; ctx.lineWidth=1.5; ctx.stroke();
-    /* ตาขวา */
+    /* ขาวตาขวา */
     ctx.fillStyle='white';
-    ctx.beginPath(); ctx.moveTo(210,215); ctx.quadraticCurveTo(237,178,265,210); ctx.lineTo(265,212); ctx.quadraticCurveTo(237,242,210,226); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(209,216); ctx.quadraticCurveTo(237,178,267,212);
+    ctx.lineTo(267,212); ctx.quadraticCurveTo(237,242,209,226); ctx.closePath(); ctx.fill();
     ctx.strokeStyle='#000'; ctx.lineWidth=1.5; ctx.stroke();
-    /* ลูกตา */
+    /* รูม่านตา */
     ctx.fillStyle='#111';
-    ctx.beginPath(); ctx.arc(163,210,8,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(237,210,8,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(162,211,9,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(238,211,9,0,Math.PI*2); ctx.fill();
   } else {
     ctx.fillStyle='white';
-    ctx.beginPath(); ctx.moveTo(140,215); ctx.quadraticCurveTo(165,200,190,215); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(138,216); ctx.quadraticCurveTo(164,200,191,216); ctx.closePath(); ctx.fill();
     ctx.strokeStyle='#000'; ctx.lineWidth=1.5; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(210,215); ctx.quadraticCurveTo(235,200,260,215); ctx.fill();
+    ctx.fillStyle='white';
+    ctx.beginPath(); ctx.moveTo(209,216); ctx.quadraticCurveTo(236,200,262,216); ctx.closePath(); ctx.fill();
     ctx.strokeStyle='#000'; ctx.lineWidth=1.5; ctx.stroke();
     ctx.fillStyle='#111';
-    ctx.beginPath(); ctx.arc(165,212,5,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(235,212,5,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(164,213,5.5,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(236,213,5.5,0,Math.PI*2); ctx.fill();
   }
 
   /* ── ปาก ── */
-  ctx.strokeStyle='#111'; ctx.lineWidth=2.5; ctx.lineCap='round';
+  ctx.strokeStyle='#000'; ctx.lineWidth=2.5; ctx.lineCap='round';
   ctx.beginPath();
-  if (maskState.char==='nang') { ctx.moveTo(180,305); ctx.quadraticCurveTo(200,316,220,305); }
-  else                          { ctx.moveTo(170,300); ctx.quadraticCurveTo(200,332,230,300); }
+  if (maskState.char === 'nang') {
+    ctx.moveTo(178,306); ctx.quadraticCurveTo(200,316,222,306);
+  } else {
+    ctx.moveTo(168,302); ctx.quadraticCurveTo(200,332,232,302);
+  }
   ctx.stroke();
 
   /* ── เขี้ยว ── */
-  if (maskState.char==='giant') {
+  if (maskState.char === 'giant') {
     ctx.fillStyle='white';
-    ctx.beginPath(); ctx.moveTo(175,305); ctx.lineTo(170,326); ctx.lineTo(186,310); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle='#111'; ctx.lineWidth=0.8; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(225,305); ctx.lineTo(230,326); ctx.lineTo(214,310); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle='#111'; ctx.lineWidth=0.8; ctx.stroke();
+    ctx.strokeStyle='#333'; ctx.lineWidth=0.8;
+    ctx.beginPath(); ctx.moveTo(176,307); ctx.lineTo(170,328); ctx.lineTo(186,312); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(224,307); ctx.lineTo(230,328); ctx.lineTo(214,312); ctx.closePath(); ctx.fill(); ctx.stroke();
   }
 
-  /* ── อัญมณีบนมงกุฎ ── */
-  if (maskState.crown !== 'none') {
-    ctx.fillStyle = col.gem;
-    ctx.shadowColor='rgba(255,255,255,0.4)'; ctx.shadowBlur=8;
-    ctx.beginPath(); ctx.arc(200, 105, 7, 0, Math.PI*2); ctx.fill();
-    ctx.shadowColor='transparent'; ctx.shadowBlur=0;
-    ctx.strokeStyle='#fff'; ctx.lineWidth=1.2; ctx.stroke();
-  }
-
-  ctx.restore();
-  return c; /* คืน canvas element โดยตรง */
+  ctx.restore(); // restore scale
+  return c;      // คืน canvas element โดยตรง
 }
 
-/* ══════════════════════════════
-   AR STATE
-══════════════════════════════ */
-let arRunning = false, stream = null, rafId = null;
-let maskCanvas = null;   // เก็บ canvas element (ไม่ใช่ Image) วาดได้ทันที
-let faceApiReady = false;
+/* ═══════════════════════
+   สร้าง maskImg = canvas element
+   (drawImage รับ canvas ได้โดยตรง ไม่ต้องแปลงเป็น Image)
+═══════════════════════ */
+function svgToImage() {
+  return Promise.resolve(buildMaskCanvas(600));
+}
+function drawMaskToCanvas() {
+  return Promise.resolve(buildMaskCanvas(600));
+}
 
-/* ══════════════════════════════
-   applyToAR
-══════════════════════════════ */
-function applyToAR() {
-  maskCanvas = drawMaskToCanvas(600);  // sync — ได้ canvas ทันที ไม่ต้องรอ
+/* ═══════════════════════
+   AR STATE — ต้อง declare ก่อน applyToAR
+═══════════════════════ */
+let arRunning=false, stream=null, rafId=null, maskImg=null, faceApiReady=false;
+
+/* ═══════════════════════
+   applyToAR — ส่งหน้ากาก P2 → P4
+═══════════════════════ */
+async function applyToAR() {
+  // สร้าง maskImg จาก canvas โดยตรง (sync, ไม่ล้มเหลว)
+  maskImg = buildMaskCanvas(600);
+  console.log('[applyToAR] maskImg:', maskImg ? maskImg.width+'x'+maskImg.height : 'NULL');
 
   showPage('p4');
 
   const charNames = { giant:'ยักษ์', monkey:'ลิง', human:'เทวดา', nang:'ตัวนาง', rishi:'ฤๅษี' };
+  const label = charNames[maskState.char] || maskState.char;
   document.getElementById('ar-mask-preview-bar').style.display = 'flex';
-  document.getElementById('ar-mask-preview-name').textContent  =
-    'ตัวละคร: '+(charNames[maskState.char]||maskState.char)+'  |  '+maskState.colors.skin;
+  document.getElementById('ar-mask-preview-name').textContent = 'ตัวละคร: '+label+'  |  สีหน้า: '+maskState.colors.skin;
 
-  /* thumbnail */
+  // วาด thumbnail จาก canvas โดยตรง
   const thumb = document.getElementById('ar-mask-thumb');
-  thumb.getContext('2d').drawImage(maskCanvas, 0,0,44,44);
-
-  setStatus('✅ หน้ากากพร้อม — กด "เปิดกล้อง AR"');
+  const tctx  = thumb.getContext('2d');
+  tctx.clearRect(0,0,44,44);
+  tctx.drawImage(maskImg, 0,0,44,44);
 }
 
-/* ══════════════════════════════
-   face-api
-══════════════════════════════ */
+/* ═══════════════════════
+   P4 — AR functions
+═══════════════════════ */
+
 async function loadFaceApi() {
   if (faceApiReady) return true;
   return new Promise(resolve => {
     if (window.faceapi) { initModels().then(resolve); return; }
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js';
-    s.onload  = () => initModels().then(resolve);
+    s.onload = () => initModels().then(resolve);
     s.onerror = () => resolve(false);
     document.head.appendChild(s);
   });
 }
+
 async function initModels() {
   try {
-    const BASE = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+    const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
     await Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri(BASE),
-      faceapi.nets.faceLandmark68TinyNet.loadFromUri(BASE)
+      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+      faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL_URL)
     ]);
     faceApiReady = true; return true;
-  } catch(e) { return false; }
+  } catch(e) { console.warn('model load failed',e); return false; }
 }
 
-/* ══════════════════════════════
-   startAR
-══════════════════════════════ */
 async function startAR() {
   setStatus('📷 กำลังเปิดกล้อง...');
   document.getElementById('start-ar-btn').disabled = true;
@@ -669,30 +877,29 @@ async function startAR() {
 
   const video = document.getElementById('ar-video');
   video.srcObject = stream;
-  await new Promise(r => { video.onloadedmetadata = r; });
+  await new Promise(r => video.onloadedmetadata = r);
   await video.play();
 
-  /* ตั้ง canvas ให้ตรงกับ video */
   const overlay = document.getElementById('ar-overlay-canvas');
   overlay.width  = video.videoWidth  || 640;
   overlay.height = video.videoHeight || 480;
 
-  /* สร้าง / รีเฟรช maskCanvas จาก state ปัจจุบัน */
-  maskCanvas = drawMaskToCanvas(600);  // sync ได้ทันที
+  // ── สร้าง maskImg เสมอ (sync, canvas 2D โดยตรง ไม่ล้มเหลว) ──
+  maskImg = buildMaskCanvas(600);
+  console.log('[startAR] maskImg:', maskImg ? maskImg.width+'x'+maskImg.height : 'NULL');
 
-  /* UI */
+  // ── เริ่ม fallback loop ทันที ── 
   arRunning = true;
-  document.getElementById('guide-svg').style.opacity      = '0';
-  document.getElementById('start-ar-btn').style.display   = 'none';
-  document.getElementById('start-ar-btn').disabled        = false;
+  document.getElementById('guide-svg').style.opacity = '0';
+  document.getElementById('start-ar-btn').style.display  = 'none';
+  document.getElementById('start-ar-btn').disabled = false;
   document.getElementById('capture-ar-btn').style.display = '';
   document.getElementById('stop-ar-btn').style.display    = '';
 
-  /* เริ่ม fallback loop ก่อนเลย */
   setStatus('🎭 หน้ากากพร้อม — กำลังโหลด Face Tracking...');
-  runFallbackLoop();
+  runFallbackLoop(); // เริ่มแสดงหน้ากากทันที
 
-  /* โหลด face-api แบบ async แล้ว upgrade */
+  // ── พยายามโหลด face-api แบบ async (ถ้าสำเร็จค่อย upgrade) ──
   loadFaceApi().then(ok => {
     if (!arRunning) return;
     if (ok) {
@@ -700,89 +907,62 @@ async function startAR() {
       setStatus('🟢 Face Tracking Active');
       runTrackingLoop();
     } else {
-      setStatus('🎭 หน้ากากกลางจอ (ไม่มี Face Tracking)');
+      setStatus('🎭 Fallback mode (หน้ากากกลางจอ)');
     }
   });
 }
 
-/* ══════════════════════════════
-   FALLBACK LOOP — วาดกลางจอ sync
-══════════════════════════════ */
+function runTrackingLoop() {
+  const video   = document.getElementById('ar-video');
+  const overlay = document.getElementById('ar-overlay-canvas');
+  const ctx     = overlay.getContext('2d');
+  async function loop() {
+    if (!arRunning) return;
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    try {
+      const det = await faceapi
+        .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ scoreThreshold:0.35, inputSize:224 }))
+        .withFaceLandmarks(true);
+      if (det && maskImg) {
+        const box = det.detection.box;
+        const lms = det.landmarks;
+        const eyeL = lms.getLeftEye(),  eyeR = lms.getRightEye();
+        const lCx  = eyeL.reduce((s,p)=>s+p.x,0)/eyeL.length;
+        const rCx  = eyeR.reduce((s,p)=>s+p.x,0)/eyeR.length;
+        const lCy  = eyeL.reduce((s,p)=>s+p.y,0)/eyeL.length;
+        const rCy  = eyeR.reduce((s,p)=>s+p.y,0)/eyeR.length;
+        const angle = Math.atan2(rCy-lCy, rCx-lCx);
+        const scale = parseFloat(document.getElementById('sl-size').value);
+        const offY  = parseFloat(document.getElementById('sl-oy').value);
+        const mW = box.width  * 1.8 * scale;
+        const mH = box.height * 2.0 * scale;
+        const cX = box.x + box.width  / 2;
+        const cY = box.y + box.height / 2 + offY;
+        ctx.save();
+        ctx.translate(cX, cY);
+        ctx.rotate(angle);
+        ctx.drawImage(maskImg, -mW/2, -mH/2, mW, mH);
+        ctx.restore();
+      }
+    } catch(e) {}
+    rafId = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
 function runFallbackLoop() {
   const overlay = document.getElementById('ar-overlay-canvas');
   const ctx     = overlay.getContext('2d');
   function loop() {
     if (!arRunning) return;
     ctx.clearRect(0, 0, overlay.width, overlay.height);
-    if (maskCanvas) {
-      const scale = parseFloat(document.getElementById('sl-size').value);
-      const offY  = parseFloat(document.getElementById('sl-oy').value);
-      const w = overlay.width  * 0.65 * scale;
-      const h = overlay.height * 0.82 * scale;
-      const x = (overlay.width  - w) / 2;
-      const y = (overlay.height - h) / 2 + offY;
-      ctx.drawImage(maskCanvas, x, y, w, h);
+    if (maskImg) {
+      const s  = parseFloat(document.getElementById('sl-size').value);
+      const oy = parseFloat(document.getElementById('sl-oy').value);
+      const w  = overlay.width  * 0.65 * s;
+      const h  = overlay.height * 0.80 * s;
+      ctx.drawImage(maskImg, (overlay.width-w)/2, (overlay.height-h)/2+oy, w, h);
     }
-    rafId = requestAnimationFrame(loop);
-  }
-  loop();
-}
-
-/* ══════════════════════════════
-   TRACKING LOOP — face-api
-   video mirror: CSS scaleX(-1) บน #ar-video
-   canvas ไม่ mirror → ต้อง flip X เอง
-══════════════════════════════ */
-function runTrackingLoop() {
-  const video   = document.getElementById('ar-video');
-  const overlay = document.getElementById('ar-overlay-canvas');
-  const ctx     = overlay.getContext('2d');
-
-  async function loop() {
-    if (!arRunning) return;
-    if (video.paused || video.ended || video.readyState < 2) {
-      rafId = requestAnimationFrame(loop); return;
-    }
-
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
-
-    try {
-      const det = await faceapi
-        .detectSingleFace(video,
-          new faceapi.TinyFaceDetectorOptions({ scoreThreshold:0.35, inputSize:224 }))
-        .withFaceLandmarks(true);
-
-      if (det && maskCanvas) {
-        const box  = det.detection.box;
-        const lms  = det.landmarks;
-
-        const eyeL = lms.getLeftEye();
-        const eyeR = lms.getRightEye();
-        const lCx  = eyeL.reduce((s,p)=>s+p.x,0)/eyeL.length;
-        const rCx  = eyeR.reduce((s,p)=>s+p.x,0)/eyeR.length;
-        const lCy  = eyeL.reduce((s,p)=>s+p.y,0)/eyeL.length;
-        const rCy  = eyeR.reduce((s,p)=>s+p.y,0)/eyeR.length;
-        const angle = Math.atan2(rCy-lCy, rCx-lCx);
-
-        const scale = parseFloat(document.getElementById('sl-size').value);
-        const offY  = parseFloat(document.getElementById('sl-oy').value);
-        const mW = box.width  * 1.8 * scale;
-        const mH = box.height * 2.2 * scale;
-
-        /* video ถูก mirror ด้วย CSS scaleX(-1)
-           พิกัดจาก face-api เป็น pixel ของ video จริง (ไม่ mirror)
-           ต้อง flip X: cX_mirrored = width - cX */
-        const cX = overlay.width - (box.x + box.width / 2);
-        const cY = box.y + box.height / 2 + offY;
-
-        ctx.save();
-        ctx.translate(cX, cY);
-        ctx.rotate(-angle);  /* มุมกลับทิศเพราะ mirror */
-        ctx.drawImage(maskCanvas, -mW/2, -mH/2, mW, mH);
-        ctx.restore();
-      }
-    } catch(e) { /* ข้าม frame นี้ */ }
-
     rafId = requestAnimationFrame(loop);
   }
   loop();
@@ -794,16 +974,18 @@ function stopAR() {
   if (stream) { stream.getTracks().forEach(t=>t.stop()); stream = null; }
   document.getElementById('ar-video').srcObject = null;
   document.getElementById('ar-overlay-canvas').getContext('2d').clearRect(0,0,9999,9999);
-  document.getElementById('guide-svg').style.opacity      = '0.4';
+  document.getElementById('guide-svg').style.opacity = '0.4';
+  setStatus('⏸ หยุดแล้ว — กด "เปิดกล้อง AR" อีกครั้ง');
   document.getElementById('start-ar-btn').style.display   = '';
   document.getElementById('capture-ar-btn').style.display = 'none';
   document.getElementById('stop-ar-btn').style.display    = 'none';
-  setStatus('⏸ หยุดแล้ว — กด "เปิดกล้อง AR" อีกครั้ง');
+  // ไม่ reset maskImg เพื่อให้หน้ากากจาก P2 ยังคงอยู่เมื่อเปิดกล้องใหม่
 }
 
+// sync slider labels
 document.addEventListener('input', e => {
-  if (e.target.id==='sl-size') document.getElementById('lbl-size').textContent = parseFloat(e.target.value).toFixed(2);
-  if (e.target.id==='sl-oy')   document.getElementById('lbl-oy').textContent   = e.target.value;
+  if (e.target.id === 'sl-size') document.getElementById('lbl-size').textContent = parseFloat(e.target.value).toFixed(2);
+  if (e.target.id === 'sl-oy')   document.getElementById('lbl-oy').textContent   = e.target.value;
 });
 
 function setStatus(msg) {
@@ -811,77 +993,72 @@ function setStatus(msg) {
   if (el) el.textContent = msg;
 }
 
-/* ══════════════════════════════
-   CAPTURE
-══════════════════════════════ */
+/* ═══════════════════════
+   ถ่ายรูป
+═══════════════════════ */
 const capturedImages = [];
 function capturePhoto() {
-  const flash = document.getElementById('flash-effect');
+  const flash   = document.getElementById('flash-effect');
   flash.style.opacity = '1';
-  setTimeout(()=>{ flash.style.opacity='0'; }, 120);
+  setTimeout(() => flash.style.opacity = '0', 120);
 
   const video   = document.getElementById('ar-video');
   const overlay = document.getElementById('ar-overlay-canvas');
-  const c   = document.createElement('canvas');
-  c.width   = overlay.width  || 640;
-  c.height  = overlay.height || 480;
+  const c = document.createElement('canvas');
+  c.width  = overlay.width  || 640;
+  c.height = overlay.height || 480;
   const ctx = c.getContext('2d');
-
-  /* วาด video (mirror ด้วย CSS แต่ canvas ต้อง flip เอง) */
-  ctx.save();
-  ctx.scale(-1,1);
-  ctx.translate(-c.width, 0);
-  if (video.readyState >= 2) ctx.drawImage(video, 0,0,c.width,c.height);
-  ctx.restore();
-
-  /* overlay ทับ */
-  ctx.drawImage(overlay, 0,0,c.width,c.height);
-
-  ctx.fillStyle='rgba(201,146,42,0.85)';
-  ctx.font='bold 14px serif';
-  ctx.textAlign='right';
+  if (video.readyState >= 2) ctx.drawImage(video, 0, 0, c.width, c.height);
+  ctx.drawImage(overlay, 0, 0, c.width, c.height);
+  ctx.fillStyle = 'rgba(201,146,42,0.8)';
+  ctx.font = 'bold 14px serif';
+  ctx.textAlign = 'right';
   ctx.fillText('KHON LAB · AR', c.width-8, c.height-8);
-
   capturedImages.push(c.toDataURL('image/png'));
-  setTimeout(()=>{ addBubble(); showPage('p5'); }, 350);
+  setTimeout(() => { addBubble(); showPage('p5'); }, 350);
 }
 
-/* ══════════════════════════════
-   BUBBLE WALL
-══════════════════════════════ */
+/* ═══════════════════════
+   P5 BUBBLE WALL
+═══════════════════════ */
 function addBubble() {
   const container = document.getElementById('bubble-container');
   document.getElementById('empty-msg').style.display = 'none';
   const img = document.createElement('img');
-  img.src       = capturedImages[capturedImages.length-1];
+  img.src = capturedImages[capturedImages.length-1];
   img.className = 'bubble-photo';
 
-  const sz  = Math.random()*60+90;
-  const pad = 32;
-  const cW  = container.clientWidth  || 500;
-  const cH  = container.clientHeight || 400;
-  const left = pad + Math.random() * Math.max(0, cW - sz - pad*2);
-  const top  = pad + Math.random() * Math.max(0, cH - sz - pad*2);
+  const sz = Math.random()*60+90; // 90–150px
+  const pad = 30; // margin จากขอบ รองรับ animation float ±28px
+
+  const cW = container.clientWidth  || 500;
+  const cH = container.clientHeight || 400;
+
+  // clamp ให้ฟองสบู่ + padding อยู่ในกรอบ
+  const maxLeft = Math.max(0, cW - sz - pad);
+  const maxTop  = Math.max(0, cH - sz - pad);
+  const left = pad/2 + Math.random() * maxLeft;
+  const top  = pad/2 + Math.random() * maxTop;
   const dur  = (Math.random()*3+4).toFixed(1);
+
   img.style.cssText = `width:${sz}px;height:${sz}px;left:${left}px;top:${top}px;--dur:${dur}s`;
   container.appendChild(img);
 }
-
 function clearBubbles() {
   if (!confirm('ล้างรูปภาพทั้งหมด?')) return;
   capturedImages.length = 0;
-  document.querySelectorAll('.bubble-photo').forEach(b=>b.remove());
+  document.querySelectorAll('.bubble-photo').forEach(b => b.remove());
   document.getElementById('empty-msg').style.display = 'flex';
 }
 
-/* ══════════════════════════════
+/* ═══════════════════════
    INIT
-══════════════════════════════ */
+═══════════════════════ */
 window.onload = () => {
   updateState({ char:'giant' });
-  setStatus('✅ พร้อมใช้งาน — กด "เปิดกล้อง AR"');
-  /* preload face-api เงียบๆ */
-  loadFaceApi();
+  loadFaceApi().then(ok =>
+    setStatus(ok ? '✅ พร้อมใช้งาน — กด "เปิดกล้อง AR"' : '⚠️ โหลด Face Model ไม่สำเร็จ (จะใช้ fallback)')
+  );
 };
 </script>
 </body>
