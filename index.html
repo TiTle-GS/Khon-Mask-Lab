@@ -584,7 +584,7 @@
     </section>
 
 <section id="p4" class="page">
-    <h1 style="font-family:'Cinzel Decorative'; color:var(--gold); font-size:2.5rem;">AR EXHIBITION</h1>
+    <h1 style="font-family:'Cinzel Decorative'; color:var(--gold); font-size:2.2rem;">AR EXHIBITION</h1>
     <div class="sub-t">ส่องกล้องชมมรดกหัวโขนไทยในรูปแบบ AR</div>
 
     <div id="ar-wrapper" style="position: relative; width: 100%; max-width: 600px; aspect-ratio: 3/4; border-radius: 28px; overflow: hidden; border: 2px solid var(--gold); background: #000; margin: 0 auto;">
@@ -609,13 +609,13 @@
             <a-entity id="targetModel" 
                       gltf-model="#model1" 
                       position="0 -0.5 -2.5" 
-                      scale="1 1 1" 
+                      scale="1.5 1.5 1.5" 
                       rotation="0 0 0"
                       animation="property: rotation; to: 0 360 0; loop: true; dur: 15000; easing: linear">
             </a-entity>
 
-            <a-light type="ambient" intensity="0.8"></a-light>
-            <a-light type="directional" position="1 2 1" intensity="1"></a-light>
+            <a-light type="ambient" intensity="1"></a-light>
+            <a-light type="directional" position="1 2 1" intensity="1.5"></a-light>
         </a-scene>
 
         <div id="ar-status" style="position: absolute; top: 16px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); border: 1px solid var(--gold); color: var(--gold); font-size: 0.7rem; padding: 5px 16px; border-radius: 20px; z-index: 10;">พร้อมแสดงผล</div>
@@ -629,21 +629,15 @@
         <button onclick="changeShowModel(5)" class="mask-btn">แบบที่ 5</button>
     </div>
 
-    <div class="ar-sliders" style="max-width: 500px; width: 100%; background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px; margin-top: 20px; border: 1px solid rgba(201,146,42,0.2);">
-        <p style="color:var(--gold); font-size:12px; margin-bottom:15px; letter-spacing:1px;">🔧 ปรับแต่งโมเดล</p>
-        <div class="flex items-center gap-4 mb-3">
-            <span style="color:var(--gold); font-size:12px; width:50px;">ขนาด</span>
-            <input type="range" id="sl-scale" min="0.1" max="3" step="0.1" value="1" oninput="updateModelTransform()" style="flex:1; accent-color:var(--gold);">
-        </div>
-        <div class="flex items-center gap-4">
-            <span style="color:var(--gold); font-size:12px; width:50px;">ความสูง</span>
-            <input type="range" id="sl-y" min="-2" max="2" step="0.1" value="-0.5" oninput="updateModelTransform()" style="flex:1; accent-color:var(--gold);">
-        </div>
+    <div style="width:90%; max-width:400px; margin-top:20px; background:rgba(255,255,255,0.05); padding:15px; border-radius:15px;">
+        <label style="font-size:12px; color:var(--gold);">ย่อ/ขยายหัวโขน</label>
+        <input type="range" id="sizeSlider" min="0.5" max="5" step="0.1" value="1.5" oninput="updateModelSize()" style="width:100%; accent-color:var(--gold);">
     </div>
 
-    <div class="btn-wrap">
-        <button class="btn-gold" onclick="location.reload()">↺ รีเซ็ตระบบ</button>
-    </div>
+    <style>
+        .mask-btn { padding: 10px 20px; background: #1a1a1a; border: 1px solid var(--gold); color: #fff; border-radius: 12px; cursor: pointer; font-size: 13px; transition: 0.3s; }
+        .mask-btn.active { background: var(--gold); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--gold); }
+    </style>
 </section>
 
 <style>
@@ -1071,7 +1065,34 @@
         window.scrollTo(0, 0);
     }
 </script>
+<script>
+    // ── ฟังก์ชันเปลี่ยนหน้า (คงเดิมเพื่อให้ระบบไม่พัง) ──
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
 
+    // ── ฟังก์ชันเปลี่ยนโมเดล ──
+    function changeShowModel(id) {
+        const modelEl = document.getElementById('targetModel');
+        modelEl.setAttribute('gltf-model', '#model' + id);
+        
+        // อัปเดตสถานะปุ่ม
+        document.querySelectorAll('.mask-btn').forEach((btn, index) => {
+            btn.classList.toggle('active', index + 1 === id);
+        });
+    }
+
+    // ── ฟังก์ชันปรับขนาดโมเดล ──
+    function updateModelSize() {
+        const val = document.getElementById('sizeSlider').value;
+        const el = document.getElementById('targetModel');
+        el.setAttribute('scale', `${val} ${val} ${val}`);
+    }
+
+    // ลบระบบ Bubble และ Face Tracking ออกทั้งหมดตามคำสั่ง
+</script>
     
 </body>
 </html>
