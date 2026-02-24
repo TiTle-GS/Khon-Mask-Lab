@@ -7,10 +7,22 @@
     
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.1/dist/mindar-face-aframe.prod.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&family=Sarabun:wght@300;400;700&family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
+
+        /* บังคับให้วิดีโอกล้องอยู่ด้านหลังและเต็มจอ */
+#ar-container video {
+    position: absolute !important;
+    top: 0; left: 0;
+    width: 100% !important; height: 100% !important;
+    object-fit: cover !important;
+    z-index: -1;
+}
+/* ทำให้ฉากของ A-Frame โปร่งใส */
+.a-canvas { background-color: transparent !important; }
+
+        
         :root {
             --gold: #C9922A; --gl: #F5C842; --red: #8B1A1A;
             --blk: #0A0806; --cream: #F7F0E0; --glass: rgba(255, 255, 255, 0.05);
@@ -23,17 +35,7 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* ── AR FIX: ทำให้พื้นหลังเป็นกล้องจริง ── */
-        #ar-container video {
-            position: absolute !important;
-            top: 0; left: 0;
-            width: 100% !important; height: 100% !important;
-            object-fit: cover !important;
-            z-index: -1;
-        }
-        .a-canvas { background-color: transparent !important; }
-
-        /* ── UI Components ── */
+        /* ── Navigation (จัดกึ่งกลางเมนู) ── */
         .tnav { 
             position: fixed; top: 0; width: 100%; padding: 1rem 5%; 
             z-index: 1000; display: flex; justify-content: space-between; align-items: center;
@@ -42,8 +44,9 @@
         }
         .n-logo { font-family: 'Cinzel Decorative', cursive; color: var(--gold); font-size: 1.2rem; }
         .n-links { display: flex; gap: 20px; }
-        .n-link { color: var(--gold); text-decoration: none; font-size: 0.85rem; cursor: pointer; }
+        .n-link { color: var(--gold); text-decoration: none; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
 
+        /* ── Page Layout (บังคับเนื้อหาให้อยู่กลาง) ── */
         .page { 
             display: none; width: 100%; min-height: 100vh; 
             padding: 120px 10% 60px; opacity: 0; transition: opacity 0.5s ease;
@@ -51,30 +54,59 @@
         }
         .page.active { display: flex; opacity: 1; }
 
+        h1, h2 { font-family: 'Cinzel Decorative', cursive; color: var(--gold); margin-bottom: 1.5rem; width: 100%; }
+        .sub-t { font-size: 0.9rem; color: var(--gl); margin-bottom: 2rem; letter-spacing: 1px; width: 100%; }
+
+        /* ── Photo Frame (จัดกลางรูปภาพ) ── */
+        .img-container {
+            width: 100%; max-width: 450px; margin: 0 auto 2rem;
+            border-radius: 15px; overflow: hidden; border: 2px solid var(--gold);
+            box-shadow: 0 10px 40px rgba(201, 146, 42, 0.2);
+        }
+        .img-container img { width: 100%; display: block; transition: 0.6s; }
+        .img-container:hover img { transform: scale(1.05); }
+
+        /* ── Grid & Cards (จัดกึ่งกลางกลุ่ม Card) ── */
+        .grid-info { 
+            display: grid; width: 100%; max-width: 1000px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; margin-top: 2rem; justify-content: center;
+        }
+        .card { 
+            background: var(--glass); border: 1px solid rgba(201, 146, 42, 0.15); 
+            padding: 2rem; border-radius: 15px; transition: 0.4s;
+            backdrop-filter: blur(5px);
+        }
+
+        /* ── Center Buttons (บังคับปุ่มอยู่กลาง) ── */
+        .btn-wrap { 
+            display: flex; width: 100%; justify-content: center; 
+            margin-top: 3rem; gap: 20px;
+        }
         .btn-gold { 
             padding: 12px 40px; background: linear-gradient(135deg, var(--gold), #8A641A); 
             border: none; color: #000; font-weight: 900; border-radius: 50px; 
             cursor: pointer; transition: 0.3s;
         }
-        
-        /* Studio & Bubble Wall */
-        .studio-bg { background: #0a0a0a; background-image: radial-gradient(#1a1a1a 1px, transparent 1px); background-size: 40px 40px; }
-        .canvas-area { background: radial-gradient(circle, #222 0%, #000 100%); border: 1px solid #333; }
-        .sidebar-right { border-left: 1px solid #c5a05933; background: rgba(15, 15, 15, 0.95); }
-        .active-btn { background: #c5a059 !important; color: #000 !important; font-weight: bold; }
-        
-        .bubble-photo {
-            position: absolute; border-radius: 50%; border: 4px solid #c5a059;
-            object-fit: cover; animation: floatBubble var(--duration) ease-in-out infinite;
-        }
-        @keyframes floatBubble {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            33% { transform: translateY(-20px) translateX(10px); }
-            66% { transform: translateY(10px) translateX(-10px); }
-        }
+        .btn-gold:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--gold); }
+
+        /* ทำให้มองเห็นกล้องจริงเป็นพื้นหลัง */
+#ar-container video {
+    position: absolute !important;
+    top: 0; left: 0;
+    width: 100% !important; height: 100% !important;
+    object-fit: cover !important;
+    z-index: -1;
+}
+/* ทำให้ตัววาดโมเดลโปร่งใส */
+.a-canvas { background-color: transparent !important; }
+
+        /* Bubble Wall */
+        #bubbleWallOverlay { position: fixed; inset: 0; z-index: 2000; display: none; background: #000; }
+        .bubble { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(201,146,42,0.2)); }
     </style>
 </head>
-<body class="studio-bg">
+<body>
 
     <nav class="tnav">
         <div class="n-logo">KHON LAB</div>
@@ -87,126 +119,566 @@
     </nav>
 
     <section id="p0" class="page active">
-        <h1>THE ROYAL CONNECTION</h1>
+        <h1 style="font-family:'Cinzel Decorative'; color:var(--gold); font-size: 2.5rem;">THE ROYAL CONNECTION</h1>
         <div class="sub-t">สมเด็จพระพันปีหลวงกับมรดกโขนไทย</div>
-        <div class="img-container" style="max-width: 450px; border: 2px solid var(--gold); border-radius: 15px; overflow: hidden; margin-bottom: 2rem;">
-            <img src="queen.webp" style="width: 100%;" alt="Queen Sirikit">
+        
+        <div class="img-container">
+            <img src="queen.webp" alt="สมเด็จพระพันปีหลวง">
         </div>
-        <div class="card" style="max-width: 800px; padding: 2rem; background: var(--glass); border-radius: 15px;">
-            <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง ทรงฟื้นฟูมรดกโขนไทยให้ยั่งยืน</p>
-        </div>
-        <button class="btn-gold mt-8" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button>
-    </section>
 
-    <section id="p1" class="page">
-        <h1>KNOWLEDGE HUB</h1>
-        <div style="max-width: 900px; text-align: left; background: rgba(255,255,255,0.03); padding: 40px; border-radius: 20px; border: 1px solid rgba(201, 146, 42, 0.2);">
-            <h2 style="color: var(--gl);">โขนพระราชทาน</h2>
-            <img src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/khon-3.jpg" style="width:100%; border-radius:10px; margin: 20px 0;">
-            <p>โขนคือมรดกโลกที่ยูเนสโกประกาศรับรอง เป็นศาสตร์ที่รวมช่างสิบหมู่และนาฏศิลป์เข้าด้วยกันอย่างลงตัว</p>
-            <button class="btn-gold mt-8" onclick="showPage('p2')">ไปหน้า AI ออกแบบ →</button>
+        <div class="card" style="max-width: 800px; cursor: default;">
+            <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง <br> ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง</p>
+        </div>
+        
+        <div class="btn-wrap">
+            <button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button>
         </div>
     </section>
 
-    <section id="p2" class="page h-screen overflow-hidden p-0 pt-[64px]">
-        <main class="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden w-full">
-            <div class="flex-1 flex flex-col items-center justify-center p-6 relative">
-                <div id="capture-area" class="canvas-area h-[70vh] lg:h-[80%] aspect-square rounded-[2.5rem] flex items-center justify-center relative shadow-2xl overflow-hidden border border-zinc-800">
-                    <svg id="main-svg" viewBox="0 0 400 400" class="w-full h-full">
-                        <path id="part-face" d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 L120 130" fill="#16a34a" />
-                        <g id="crown-group">
-                            <path id="part-crown-top" d="M200 10 L215 85 L185 85 Z" fill="#FFD700" />
-                            <path id="part-crown-base" d="M140 80 L260 80 L250 130 L150 130 Z" fill="#FFD700" />
+    
+  <section id="p1" class="page">
+    <h1 style="font-family:'Cinzel Decorative'; color:var(--gold); font-size: 2.5rem;">KNOWLEDGE HUB</h1>
+    <div class="sub-t">มรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ (UNESCO)</div>
+
+    <div class="detail-container" style="max-width: 900px; text-align: left; background: rgba(255,255,255,0.03); padding: 40px; border-radius: 20px; border: 1px solid rgba(201, 146, 42, 0.2);">
+        <h2 style="text-align: left; color: var(--gl); font-family: 'Noto Serif Thai'; font-weight: 700; border-left: 5px solid var(--gold); padding-left: 15px; margin-bottom: 20px;">โขนพระราชทาน</h2>
+
+        <img src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/khon-3.jpg" alt="สมเด็จพระพันปีหลวง">
+        
+        <div class="detail-body" style="font-size: 1.1rem; line-height: 2; color: var(--cream);">
+            <p style="margin-bottom: 20px; text-indent: 2em;">
+                ประเทศไทย <strong>"โขน"</strong> เป็นศาสตร์และศิลปะการแสดงชั้นสูงของไทยที่หลอมรวมศิลปะของชาติหลากหลายแขนง นับแต่วรรณกรรม วรรณศิลป์ นาฏศิลป์ คีตศิลป์ หัตถศิลป์ และพัสตราภรณ์อันงดงามตามแบบฉบับโบราณ รวมถึงการจัดฉากและแสง เสียง ที่ยิ่งใหญ่
+            </p>
+
+          
+            <p style="margin-bottom: 20px; text-indent: 2em;">
+                โขนพระราชทานเริ่มขึ้นในปี พ.ศ. ๒๕๕๐ เป็นการแสดงเรื่องรามเกียรติ์ ตอนพรหมาศ ในรูปแบบการบรรเลงคอนเสิร์ตโดยวงโยธวาทิต กองดุริยางค์กองทัพบก เพื่อเฉลิมฉลองพระบาทสมเด็จพระบรมชนกาธิเบศร มหาภูมิพลอดุลยเดชมหาราช บรมนาถบพิตร ทรงเจริญพระชนมพรรษา ๘๐ พรรษา และสมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง ทรงเจริญพระชนมพรรษา ๗๕ พรรษา ณ หอประชุมใหญ่ ศูนย์วัฒนธรรมแห่งประเทศไทย และเมื่อวันที่ ๒๕ ธันวาคม ๒๕๕๐ สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง เสด็จพระราชดำเนินทอดพระเนตรการแสดงรอบปฐมทัศน์
+            </p>
+
+            <p style="margin-bottom: 20px;">
+               จากวันนั้น โขนพระราชทานที่สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนี พระบรมราชชนนีพันปีหลวง ได้ทอดพระเนตร จึงมีพระราชเสาวนีย์ว่า ทุกวันนี้ประชาชนชาวไทยไม่ใคร่มีโอกาสได้ชมโขน เนื่องจากการจัดการแสดงโขนแต่ละครั้งไม่ใช่เรื่องง่าย จึงทรงพระกรุณาโปรดเกล้าฯ ให้ประชุมผู้รู้ ผู้เชี่ยวชาญเกี่ยวกับโขน และงานหัตถศิลป์แขนงต่างๆ แล้วโปรดเกล้าฯ ให้จัดสร้างเครื่องแต่งกายโขนขึ้นใหม่สำหรับใช้ในการแสดงโขนพระราชทาน โดยทรงกำชับให้ยึดถือรูปแบบเครื่องแต่งกายโขนแบบโบราณ แต่มีความคงทนและสวยงามยิ่งขึ้น ได้รับการส่งเสริม สืบสานและพัฒนาการแสดงจนได้รับความนิยมจนถึงวันนี้
+            </p>
+
+            <div class="card" style="background: rgba(201, 146, 42, 0.1); border: 1px solid var(--gold); margin: 30px 0;">
+                <h3 style="color: var(--gl); margin-bottom: 10px;">UNESCO</h3>
+                <p style="font-size: 1rem;">
+                    องค์การยูเนสโกได้ประกาศขึ้นทะเบียน <strong>“โขน”</strong>ของไทย เป็นรายการตัวแทนมรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ เมื่อวันที่ ๒๙ พฤศจิกายน ๒๕๖๑ ถือเป็นการยืนยันบทบาทของประเทศไทยในเวทีโลกต่อการดำเนินงานตามอนุสัญญาว่าด้วยการสงวนรักษามรดกวัฒนธรรมที่จับต้องไม่ได้ ค.ศ. ๒๐๐๓ และภายใต้แนวปฏิบัติ การดำเนินงานตามอนุสัญญาฯ ประเทศไทยเพิ่มความตระหนักเพื่อให้เกิดความเคารพและเรียนรู้คุณค่าทั้งในระดับท้องถิ่น ระดับชาติและระดับนานาชาติ ตลอดจนสร้างการมีส่วนร่วมอย่างกว้างขวางในการส่งเสริมและรักษามรดกวัฒนธรรมโขนให้สืบสานอย่างต่อเนื่อง
+                </p>
+            </div>
+        </div>
+
+        <div class="btn-wrap">
+            <button class="btn-gold" onclick="showPage('p0')">กลับหน้าแรก</button>
+            <button class="btn-gold" onclick="showPage('p2')">ไปหน้า AI ออกแบบ →</button>
+        </div>
+    </div>
+</section>
+
+    : <section id="p2" class="page active h-screen overflow-hidden p-0 pt-[64px]">
+            <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            overflow-x: hidden;
+        }
+        h1, h2, h3 { font-family: 'Kanit', sans-serif; }
+        
+        .studio-bg {
+            background-color: #0a0a0a;
+            background-image: 
+                radial-gradient(#1a1a1a 1px, transparent 1px),
+                radial-gradient(#1a1a1a 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+
+        .canvas-area {
+            background: radial-gradient(circle, #222 0%, #000 100%);
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+            border: 1px solid #333;
+        }
+
+        .sidebar-right {
+            border-left: 1px solid #c5a05933;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .color-input-wrapper {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            overflow: hidden;
+            border-radius: 10px;
+            border: 2px solid #333;
+            transition: all 0.2s;
+        }
+        .color-input-wrapper:hover { border-color: #c5a059; transform: scale(1.05); }
+        .color-input-wrapper input {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            cursor: pointer;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0a0a0a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c5a059; border-radius: 10px; }
+
+        .active-btn { 
+            background: #c5a059 !important; 
+            color: #000 !important;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
+        }
+    </style>
+</head>
+<body class="studio-bg min-h-screen flex flex-col">
+</nav>
+
+   <main class="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden w-full">
+        
+        <!-- Left Section: Viewport / Canvas Area -->
+        <div class="flex-1 flex flex-col items-center justify-center p-6 md:p-12 relative">
+            <!--test1-->
+            <iv id="capture-area" class="canvas-area h-[70vh] lg:h-[80%] aspect-square rounded-[2.5rem] flex items-center justify-center relative shadow-2xl overflow-hidden border border-zinc-800">
+                <div class="absolute inset-0 opacity-10 pointer-events-none">
+                    <div class="absolute top-1/2 left-0 w-full h-[1px] bg-white"></div>
+                    <div class="absolute top-0 left-1/2 w-[1px] h-full bg-white"></div>
+                </div>
+
+                <svg id="main-svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-[0_35px_60px_rgba(0,0,0,0.8)]">
+                    <path d="M140 85 L260 85 L255 135 L145 135 Z" fill="rgba(0,0,0,0.4)" transform="translate(8,8)" />
+                    
+                    <!-- Crown Group -->
+                    <g id="crown-group">
+                        <path id="part-crown-top" d="M200 10 L215 85 L185 85 Z" fill="#FFD700" />
+                        <circle id="part-crown-ornament" cx="200" cy="50" r="4" fill="#FFD700" stroke="#000" stroke-width="0.5" />
+                        <path id="part-crown-base" d="M140 80 L260 80 L250 130 L150 130 Z" fill="#FFD700" stroke="#b08d4a" stroke-width="1" />
+                    </g>
+
+                    <!-- Face Base -->
+                    <path id="part-face" d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 L120 130" fill="#16a34a" />
+                    
+                    <!-- Ears -->
+                    <path id="part-ear-l" d="M100 200 C80 200 70 240 90 260 Q100 240 100 220" fill="#16a34a" />
+                    <path id="part-ear-r" d="M300 200 C320 200 330 240 310 260 Q300 240 300 220" fill="#16a34a" />
+
+                    <!-- Facial Details -->
+                    <g id="details-layer">
+                        <!-- Patterns Group -->
+                        <g id="patterns-container" fill="none" stroke-width="1.5" stroke-linecap="round">
+                            <!-- Basic Lines (Pattern 1) -->
+                            <g id="pattern-basic" class="hidden">
+                                <path d="M130 260 Q150 270 150 290" />
+                                <path d="M270 260 Q250 270 250 290" />
+                                <path d="M190 350 Q200 330 210 350" />
+                            </g>
+                            <!-- Kanok Swirls (Pattern 2) -->
+                            <g id="pattern-kanok" class="hidden">
+                                <path d="M120 240 Q140 230 150 250 T160 270" />
+                                <path d="M280 240 Q260 230 250 250 T240 270" />
+                                <path d="M180 150 Q200 140 220 150" />
+                                <path d="M195 160 Q200 155 205 160" />
+                            </g>
+                            <!-- Royal Intricate (Pattern 3) -->
+                            <g id="pattern-royal" class="hidden">
+                                <path d="M110 230 Q130 210 160 240 T180 280" />
+                                <path d="M290 230 Q270 210 240 240 T220 280" />
+                                <path d="M200 140 L200 180 M185 160 L215 160" />
+                                <circle cx="200" cy="160" r="3" fill="currentColor" />
+                                <path d="M85 220 Q75 220 80 240" />
+                                <path d="M315 220 Q325 220 320 240" />
+                            </g>
                         </g>
+
+                        <g id="eye-group">
+                            <path id="part-eye-l" d="M140 215 Q165 195 190 215" fill="white" stroke="black" stroke-width="1.5" />
+                            <path id="part-eye-r" d="M210 215 Q235 195 260 215" fill="white" stroke="black" stroke-width="1.5" />
+                            <circle id="pupil-l" cx="165" cy="212" r="6" fill="black" />
+                            <circle id="pupil-r" cx="235" cy="212" r="6" fill="black" />
+                        </g>
+                        
+                        <path id="part-eyebrow-l" d="M135 200 Q165 160 190 205" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" />
+                        <path id="part-eyebrow-r" d="M210 205 Q235 160 265 200" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" />
+
                         <path id="part-mouth" d="M170 300 Q200 330 230 300" fill="none" stroke="black" stroke-width="2.5" />
-                        <circle id="part-gem" cx="200" cy="105" r="7" fill="#dc2626" />
-                    </svg>
-                </div>
-                <div class="flex gap-3 mt-4">
-                    <button onclick="randomizeAll()" class="px-6 py-2 bg-zinc-800 rounded-xl">สุ่มสี</button>
-                    <button onclick="exportMask()" class="px-6 py-2 bg-[#c5a059] text-black rounded-xl font-bold">บันทึกรูป</button>
-                </div>
-            </div>
-            <aside class="w-full lg:w-[350px] sidebar-right p-8 overflow-y-auto">
-                <h2 class="text-[#c5a059] mb-4">สีหน้ากาก</h2>
-                <input type="color" id="c-skin" oninput="applyColors()" class="w-full h-12 rounded-lg bg-transparent border-none">
-            </aside>
-        </main>
-    </section>
+                        <path id="part-fang-l" d="M175 305 L170 325 L185 310 Z" fill="white" stroke="black" stroke-width="0.5" />
+                        <path id="part-fang-r" d="M225 305 L230 325 L215 310 Z" fill="white" stroke="black" stroke-width="0.5" />
 
-    <section id="p4" class="page">
-        <h1 class="text-3xl md:text-5xl mb-2">AR EXPERIENCE</h1>
-        <div class="relative w-full max-w-4xl aspect-[3/4] md:aspect-video rounded-[2.5rem] overflow-hidden border-2 border-[#c5a059] bg-black mx-auto">
-            <div id="ar-container" class="w-full h-full relative">
-                <a-scene mindar-face="autoStart: false" embedded color-space="sRGB" renderer="colorManagement: true, transparent: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-                    <a-camera active="false" position="0 0 0" look-controls="enabled: false"></a-camera>
-                    <a-entity mindar-face-target="anchorIndex: 168">
-                        <a-sphere id="ar-mask-base" position="0 0.5 -0.5" radius="0.4" scale="1 1.2 0.8" material="color: #16a34a; metalness: 0.6; roughness: 0.2">
-                            <a-cone position="0 0.8 0" radius-bottom="0.2" height="0.6" material="color: #FFD700"></a-cone>
-                        </a-sphere>
-                    </a-entity>
-                </a-scene>
+                        <circle id="part-gem" cx="200" cy="105" r="7" fill="#dc2626" stroke="#fff" stroke-width="1" />
+                    </g>
+                </svg>
             </div>
-            <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 flex flex-col items-center gap-4">
-                <div class="flex gap-2">
-                    <button onclick="changeARMask('giant')" class="px-4 py-2 bg-zinc-800 rounded-full border border-[#c5a059]">ยักษ์</button>
-                    <button onclick="changeARMask('monkey')" class="px-4 py-2 bg-zinc-800 rounded-full border border-white/20">ลิง</button>
-                </div>
-                <div class="flex gap-4">
-                    <button id="start-ar-btn" onclick="startAR()" class="btn-gold">เปิดกล้อง AR</button>
-                    <button id="capture-btn" onclick="captureARPhoto()" class="hidden w-16 h-16 bg-white rounded-full border-4 border-[#c5a059]"></button>
-                </div>
+            
+            <div class="flex md:hidden mt-8 gap-3 w-full max-w-sm">
+                <button onclick="randomizeAll()" class="flex-1 py-3 bg-zinc-800 rounded-xl text-xs font-bold border border-zinc-700">สุ่มสี</button>
+                <button onclick="exportMask()" class="flex-1 py-3 bg-[#c5a059] text-black rounded-xl text-xs font-bold shadow-lg">บันทึกรูป</button>
             </div>
-            <div id="flash-effect" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity"></div>
         </div>
+
+        <!-- Right Section: Tools Sidebar -->
+        <aside class="w-full lg:w-[400px] sidebar-right custom-scrollbar overflow-y-auto p-8 h-full">
+           <div class="hidden md:flex items-center gap-6 justify-end ">
+            <button onclick="randomizeAll()" class="text-sm text-zinc-400 hover:text-[#c5a059] transition-colors flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                สุ่มรูปแบบ
+            </button>
+            <button onclick="exportMask()" class="bg-[#c5a059] text-black px-6 py-2 rounded-full text-sm font-bold hover:bg-[#b08d4a] transition-all shadow-lg active:scale-95">
+                บันทึกรูปภาพ
+            </button>
+               <span></span>
+        </div>
+            <h2 class="text-[#c5a059] font-bold text-xl mb-6 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                แผงควบคุมการออกแบบ
+            </h2>
+
+            <div class="space-y-8">
+                <section>
+                    <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">หมวดหมู่ตัวละคร</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="updateState({char: 'giant'})" id="btn-giant" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ยักษ์</button>
+                        <button onclick="updateState({char: 'monkey'})" id="btn-monkey" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ลิง</button>
+                        <button onclick="updateState({char: 'human'})" id="btn-human" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">เทวดา</button>
+                        <button onclick="updateState({char: 'nang'})" id="btn-nang" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ตัวนาง</button>
+                        <button onclick="updateState({char: 'rishi'})" id="btn-rishi" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ฤๅษี</button>
+                    </div>
+                </section>
+
+                <section>
+                    <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">ลวดลายใบหน้า (Thai Patterns)</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="updateState({pattern: 'none'})" id="pat-none" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ไม่มีลาย</button>
+                        <button onclick="updateState({pattern: 'basic'})" id="pat-basic" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายเส้นพื้นฐาน</button>
+                        <button onclick="updateState({pattern: 'kanok'})" id="pat-kanok" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายกนกแก้ม</button>
+                        <button onclick="updateState({pattern: 'royal'})" id="pat-royal" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายประดับเครื่องสูง</button>
+                    </div>
+                </section>
+
+                <section>
+                    <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">รูปทรงมงกุฎและดวงตา</label>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="bg-zinc-900/40 p-3 rounded-xl border border-zinc-800">
+                            <p class="text-[10px] text-zinc-500 mb-2">มงกุฎ (Crown)</p>
+                            <div class="flex gap-2">
+                                <button onclick="updateState({crown: 'spike'})" id="crown-spike" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ยอดแหลม</button>
+                                <button onclick="updateState({crown: 'round'})" id="crown-round" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ยอดบายศรี</button>
+                                <button onclick="updateState({crown: 'none'})" id="crown-none" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ไม่มี</button>
+                            </div>
+                        </div>
+                        <div class="bg-zinc-900/40 p-3 rounded-xl border border-zinc-800">
+                            <p class="text-[10px] text-zinc-500 mb-2">ดวงตา (Eyes)</p>
+                            <div class="flex gap-2">
+                                <button onclick="updateState({eye: 'normal'})" id="eye-normal" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ตาจระเข้</button>
+                                <button onclick="updateState({eye: 'wide'})" id="eye-wide" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ตาโพลง</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-4">พาเลทสี (Color Palette)</label>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800">
+                            <span class="text-xs text-[#c5a059]">สีหน้า (Skin)</span>
+                            <div class="color-input-wrapper"><input type="color" id="c-skin" oninput="applyColors()"></div>
+                        </div>
+                        <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800">
+                            <span class="text-xs text-[#c5a059]">สีลวดลาย (Pattern)</span>
+                            <div class="color-input-wrapper"><input type="color" id="c-line" oninput="applyColors()"></div>
+                        </div>
+                        <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800">
+                            <span class="text-xs text-[#c5a059]">สีมงกุฎ (Gold)</span>
+                            <div class="color-input-wrapper"><input type="color" id="c-crown" oninput="applyColors()"></div>
+                        </div>
+                        <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800">
+                            <span class="text-xs text-[#c5a059]">อัญมณี (Gem)</span>
+                            <div class="color-input-wrapper"><input type="color" id="c-gem" oninput="applyColors()"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="modal" class="fixed inset-0 bg-black/90 flex items-center justify-center opacity-0 pointer-events-none transition-all z-50 px-4">
+        <div class="bg-zinc-900 border-2 border-[#c5a059] p-8 md:p-12 rounded-[2rem] text-center max-w-sm relative">
+            <div class="w-20 h-20 bg-[#c5a059] text-black rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(197,160,89,0.5)]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h2 class="text-2xl font-bold mb-4 text-[#c5a059]">การออกแบบสำเร็จ!</h2>
+            <button onclick="closeModal()" class="w-full py-4 bg-[#c5a059] text-black font-black rounded-2xl hover:bg-white hover:text-black transition-all shadow-xl uppercase tracking-widest text-xs">เสร็จสิ้น</button>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            char: 'giant',
+            eye: 'normal',
+            crown: 'spike',
+            pattern: 'none',
+            colors: {
+                skin: '#16a34a',
+                line: '#064e3b',
+                crown: '#FFD700',
+                gem: '#dc2626'
+            }
+        };
+
+        const presets = {
+            giant: { skin: '#16a34a', line: '#064e3b', crown: '#FFD700', gem: '#dc2626', eye: 'wide', crownStyle: 'spike', pattern: 'basic' },
+            monkey: { skin: '#ffffff', line: '#cbd5e1', crown: '#FFD700', gem: '#3b82f6', eye: 'normal', crownStyle: 'round', pattern: 'none' },
+            human: { skin: '#16a34a', line: '#052e16', crown: '#FFD700', gem: '#dc2626', eye: 'normal', crownStyle: 'spike', pattern: 'kanok' },
+            nang: { skin: '#fef3c7', line: '#d97706', crown: '#FFD700', gem: '#ec4899', eye: 'normal', crownStyle: 'spike', pattern: 'royal' },
+            rishi: { skin: '#f97316', line: '#7c2d12', crown: '#7c2d12', gem: '#ffffff', eye: 'normal', crownStyle: 'round', pattern: 'basic' }
+        };
+
+        function updateState(updates) {
+            if (updates.char) {
+                state.char = updates.char;
+                const p = presets[state.char];
+                state.colors = { skin: p.skin, line: p.line, crown: p.crown, gem: p.gem };
+                state.eye = p.eye;
+                state.crown = p.crownStyle;
+                state.pattern = p.pattern;
+                syncInputs();
+            }
+            if (updates.eye) state.eye = updates.eye;
+            if (updates.crown) state.crown = updates.crown;
+            if (updates.pattern) state.pattern = updates.pattern;
+            render();
+        }
+
+        function syncInputs() {
+            document.getElementById('c-skin').value = state.colors.skin;
+            document.getElementById('c-line').value = state.colors.line;
+            document.getElementById('c-crown').value = state.colors.crown;
+            document.getElementById('c-gem').value = state.colors.gem;
+        }
+
+        function applyColors() {
+            state.colors.skin = document.getElementById('c-skin').value;
+            state.colors.line = document.getElementById('c-line').value;
+            state.colors.crown = document.getElementById('c-crown').value;
+            state.colors.gem = document.getElementById('c-gem').value;
+            render();
+        }
+
+        function render() {
+            // UI Button states
+            document.querySelectorAll('.char-btn').forEach(b => b.classList.remove('active-btn'));
+            document.getElementById(`btn-${state.char}`).classList.add('active-btn');
+            document.querySelectorAll('.pat-btn').forEach(b => b.classList.remove('active-btn', 'bg-zinc-800'));
+            document.getElementById(`pat-${state.pattern}`).classList.add('active-btn');
+            document.querySelectorAll('[id^="eye-"]').forEach(b => b.classList.remove('active-btn', 'bg-zinc-800'));
+            document.getElementById(`eye-${state.eye}`).classList.add('active-btn');
+            document.querySelectorAll('[id^="crown-"]').forEach(b => b.classList.remove('active-btn', 'bg-zinc-800'));
+            document.getElementById(`crown-${state.crown}`).classList.add('active-btn');
+
+            // SVG Colors
+            document.getElementById('part-face').setAttribute('fill', state.colors.skin);
+            document.getElementById('part-ear-l').setAttribute('fill', state.colors.skin);
+            document.getElementById('part-ear-r').setAttribute('fill', state.colors.skin);
+            document.getElementById('part-crown-top').setAttribute('fill', state.colors.crown);
+            document.getElementById('part-crown-base').setAttribute('fill', state.colors.crown);
+            document.getElementById('part-gem').setAttribute('fill', state.colors.gem);
+            
+            const patternContainer = document.getElementById('patterns-container');
+            patternContainer.setAttribute('stroke', state.colors.line);
+            patternContainer.setAttribute('color', state.colors.line); // for circles/fill
+
+            // Pattern visibility
+            ['basic', 'kanok', 'royal'].forEach(p => {
+                document.getElementById(`pattern-${p}`).classList.toggle('hidden', state.pattern !== p);
+            });
+
+            // Eye Logic
+            const eyeL = document.getElementById('part-eye-l');
+            const eyeR = document.getElementById('part-eye-r');
+            const pupilL = document.getElementById('pupil-l');
+            const pupilR = document.getElementById('pupil-r');
+            if (state.eye === 'wide') {
+                eyeL.setAttribute('d', 'M135 210 Q165 180 190 215 L190 225 Q165 240 135 210 Z');
+                eyeR.setAttribute('d', 'M210 215 Q235 180 265 210 L265 210 Q235 240 210 225 Z');
+                pupilL.setAttribute('r', '8'); pupilR.setAttribute('r', '8');
+            } else {
+                eyeL.setAttribute('d', 'M140 215 Q165 200 190 215');
+                eyeR.setAttribute('d', 'M210 215 Q235 200 260 215');
+                pupilL.setAttribute('r', '5'); pupilR.setAttribute('r', '5');
+            }
+
+            // Crown/Fangs/Mouth logic (as before)
+            const crownGroup = document.getElementById('crown-group');
+            const crownTop = document.getElementById('part-crown-top');
+            const crownOrnament = document.getElementById('part-crown-ornament');
+            if (state.crown === 'none') {
+                crownGroup.style.display = 'none';
+                document.getElementById('part-gem').style.display = 'none';
+            } else {
+                crownGroup.style.display = 'block';
+                document.getElementById('part-gem').style.display = 'block';
+                if (state.crown === 'spike') {
+                    crownTop.setAttribute('d', 'M200 10 L220 85 L180 85 Z');
+                    crownOrnament.setAttribute('cy', '45');
+                } else {
+                    crownTop.setAttribute('d', 'M200 30 Q230 50 200 85 Q170 50 200 30');
+                    crownOrnament.setAttribute('cy', '55');
+                }
+            }
+            const fangs = [document.getElementById('part-fang-l'), document.getElementById('part-fang-r')];
+            fangs.forEach(f => f.style.display = (state.char === 'giant') ? 'block' : 'none');
+            const mouth = document.getElementById('part-mouth');
+            if (state.char === 'nang') mouth.setAttribute('d', 'M180 305 Q200 315 220 305');
+            else mouth.setAttribute('d', 'M170 300 Q200 330 230 300');
+        }
+
+        function randomizeAll() {
+            const keys = Object.keys(presets);
+            const randomHex = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+            updateState({
+                char: keys[Math.floor(Math.random() * keys.length)],
+                pattern: ['none', 'basic', 'kanok', 'royal'][Math.floor(Math.random()*4)]
+            });
+            state.colors.skin = randomHex();
+            state.colors.line = randomHex();
+            state.colors.crown = randomHex();
+            state.colors.gem = randomHex();
+            syncInputs();
+            render();
+        }
+
+        async function exportMask() {
+            const svg = document.getElementById('main-svg');
+            const serializer = new XMLSerializer();
+            const source = serializer.serializeToString(svg);
+            const canvas = document.createElement('canvas');
+            canvas.width = 1200; canvas.height = 1200;
+            const ctx = canvas.getContext('2d');
+            const grad = ctx.createRadialGradient(600, 600, 0, 600, 600, 900);
+            grad.addColorStop(0, '#1a1a1a'); grad.addColorStop(1, '#000000');
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, 1200, 1200);
+            const img = new Image();
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(source)));
+            img.onload = function() {
+                ctx.drawImage(img, 100, 100, 1000, 1000);
+                ctx.fillStyle = '#c5a059'; ctx.font = 'bold 36px Kanit'; ctx.textAlign = 'center';
+                ctx.fillText(`KHON MASK STUDIO: ${state.char.toUpperCase()}`, 600, 1120);
+                const link = document.createElement('a');
+                link.download = `khon-mask-${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                document.getElementById('modal').classList.remove('opacity-0', 'pointer-events-none');
+            };
+        }
+
+        function closeModal() { document.getElementById('modal').classList.add('opacity-0', 'pointer-events-none'); }
+        window.onload = () => updateState({char: 'giant'});
+    </script>
     </section>
 
+<section id="p4" class="page">
+    <h1 class="text-3xl md:text-5xl mb-2">AR EXPERIENCE</h1>
+    <div class="sub-t">สวมหัวโขนผ่านเทคโนโลยีจำลองใบหน้า (Face Tracking)</div>
+
+    <div class="relative w-full max-w-4xl aspect-[3/4] md:aspect-video rounded-[2.5rem] overflow-hidden border-2 border-[#c5a059] shadow-2xl bg-black mx-auto">
+        <div id="ar-container" class="w-full h-full">
+            <a-scene mindar-face="autoStart: false" embedded color-space="sRGB" renderer="colorManagement: true, transparent: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+                <a-camera active="false" position="0 0 0" look-controls="enabled: false"></a-camera>
+
+                <a-entity mindar-face-target="anchorIndex: 168">
+                    <a-sphere id="ar-mask-base" position="0 0.5 -0.5" radius="0.4" scale="1 1.2 0.8" material="color: #16a34a; metalness: 0.6; roughness: 0.2">
+                        <a-cone position="0 0.8 0" radius-bottom="0.2" height="0.6" material="color: #FFD700"></a-cone>
+                    </a-sphere>
+                </a-entity>
+            </a-scene>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent flex flex-col items-center gap-4">
+            <div class="flex gap-2 overflow-x-auto pb-2 w-full justify-center no-scrollbar">
+                <button onclick="changeARMask('giant')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-[#c5a059] whitespace-nowrap">ยักษ์</button>
+                <button onclick="changeARMask('monkey')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">ลิง</button>
+                <button onclick="changeARMask('human')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">เทวดา</button>
+                <button onclick="changeARMask('nang')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">นาง</button>
+                <button onclick="changeARMask('rishi')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">ฤๅษี</button>
+            </div>
+            
+            <div class="flex gap-4 items-center">
+                <button id="start-ar-btn" onclick="startAR()" class="btn-gold">เปิดกล้อง AR</button>
+                <button id="capture-btn" onclick="captureARPhoto()" class="hidden w-16 h-16 bg-white rounded-full border-4 border-[#c5a059] shadow-lg active:scale-95 flex items-center justify-center">
+                     <div class="w-12 h-12 rounded-full border-2 border-zinc-200"></div>
+                </button>
+            </div>
+        </div>
+
+        <div id="flash-effect" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-100"></div>
+    </div>
+</section>
+
+
+    
     <section id="p5" class="page">
         <h1>BUBBLE WALL</h1>
-        <div id="bubble-container" class="relative w-full h-[60vh] bg-zinc-950/50 rounded-[3rem] border border-zinc-800 overflow-hidden mx-auto">
-            <div id="empty-msg" class="absolute inset-0 flex items-center justify-center text-zinc-500">ยังไม่มีรูปถ่าย...</div>
+        <div class="sub-t">คลังภาพมรดกไทยดิจิทัลจากฝีมือคุณ</div>
+        
+        <div id="bubble-container" class="relative w-full h-[65vh] bg-zinc-950/50 rounded-[3rem] border border-zinc-800 overflow-hidden shadow-inner mx-auto">
+            <div id="empty-msg" class="absolute inset-0 flex items-center justify-center text-zinc-500">
+                ยังไม่มีรูปถ่าย... ลองไปถ่ายที่หน้า AR Experience สิ!
+            </div>
         </div>
+
         <div class="btn-wrap">
-            <button class="btn-gold" onclick="showPage('p4')">กลับไปถ่ายรูป</button>
-            <button class="btn-gold" onclick="clearBubbles()" style="background:#444;">ล้างรูปภาพ</button>
+            <button class="btn-gold" onclick="showPage('p4')">กลับไปหน้า AR</button>
+            <button class="btn-gold" onclick="clearBubbles()" style="background: #444; color: #ccc;">ล้างรูปภาพ</button>
         </div>
     </section>
+
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .bubble-photo {
+            position: absolute;
+            border-radius: 50%;
+            border: 4px solid #c5a059;
+            object-fit: cover;
+            animation: floatBubble var(--duration) ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(197, 160, 89, 0.4);
+        }
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+            33% { transform: translateY(-30px) translateX(15px) rotate(5deg); }
+            66% { transform: translateY(15px) translateX(-15px) rotate(-5deg); }
+        }
+    </style>
 
     <script>
         let capturedImages = [];
 
-        // ── NAVIGATION ──
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const target = document.getElementById(pageId);
-            target.classList.add('active');
-            window.scrollTo(0, 0);
-        }
-
-        // ── STUDIO LOGIC ──
-        function applyColors() {
-            const color = document.getElementById('c-skin').value;
-            document.getElementById('part-face').setAttribute('fill', color);
-        }
-        function randomizeAll() {
-            const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
-            document.getElementById('part-face').setAttribute('fill', randomColor);
-        }
-        function exportMask() { alert('บันทึกรูปจำลองสำเร็จ!'); }
-
-        // ── AR EXPERIENCE ──
         function startAR() {
-            const scene = document.querySelector('a-scene');
-            if (scene.systems['mindar-face-system']) {
-                scene.systems['mindar-face-system'].start();
-                document.getElementById('start-ar-btn').classList.add('hidden');
-                document.getElementById('capture-btn').classList.remove('hidden');
-            }
+        const scene = document.querySelector('a-scene');
+        // ตรวจสอบว่าระบบ MindAR โหลดพร้อมหรือยัง
+        if (scene && scene.systems['mindar-face-system']) {
+            scene.systems['mindar-face-system'].start(); // สั่งเปิดกล้อง
+            
+            // ซ่อนปุ่มเปิด และแสดงปุ่มถ่ายรูป
+            document.getElementById('start-ar-btn').classList.add('hidden');
+            document.getElementById('capture-btn').classList.remove('hidden');
+        } else {
+            alert("ระบบกำลังโหลด หรือ Browser ไม่รองรับกล้อง");
         }
+    }
+        
 
         function changeARMask(type) {
             const mask = document.getElementById('ar-mask-base');
-            const colors = { giant: '#16a34a', monkey: '#ffffff' };
+            const colors = {
+                giant: '#16a34a', monkey: '#ffffff', human: '#F5C842', nang: '#fef3c7', rishi: '#f97316'
+            };
             mask.setAttribute('material', 'color', colors[type]);
         }
 
@@ -216,7 +688,89 @@
             setTimeout(() => flash.style.opacity = '0', 100);
 
             const video = document.querySelector('video');
-            const aCanvas = document.querySelector('.a-canvas');
+            if (!video) return;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const imgData = canvas.toDataURL('image/png');
+            capturedImages.push(imgData);
+
+            setTimeout(() => {
+                updateBubbleWall();
+                showPage('p5');
+            }, 300);
+        }
+
+        function updateBubbleWall() {
+            const container = document.getElementById('bubble-container');
+            const emptyMsg = document.getElementById('empty-msg');
+            if (capturedImages.length > 0) emptyMsg.style.display = 'none';
+
+            const lastImgData = capturedImages[capturedImages.length - 1];
+            const bubble = document.createElement('img');
+            bubble.src = lastImgData;
+            bubble.className = 'bubble-photo';
+            
+            const size = Math.random() * (160 - 100) + 100;
+            const x = Math.random() * (container.clientWidth - size);
+            const y = Math.random() * (container.clientHeight - size);
+            const duration = Math.random() * (7 - 4) + 4;
+
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${x}px`;
+            bubble.style.top = `${y}px`;
+            bubble.style.setProperty('--duration', `${duration}s`);
+
+            container.appendChild(bubble);
+        }
+
+        function clearBubbles() {
+            if(confirm('ล้างรูปภาพทั้งหมด?')) {
+                capturedImages = [];
+                document.querySelectorAll('.bubble-photo').forEach(b => b.remove());
+                document.getElementById('empty-msg').style.display = 'flex';
+            }
+        }
+    </script>
+
+    
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(pageId);
+            target.classList.add('active');
+            window.scrollTo(0, 0);
+        }
+    </script>
+
+    <script>
+        // 1. ตัวแปรเก็บรูปภาพ
+        let capturedImages = [];
+
+        // 2. ฟังก์ชันเริ่มกล้อง AR (เปิดกล้องหน้า)
+        function startAR() {
+            const scene = document.querySelector('a-scene');
+            if (scene.systems['mindar-face-system']) {
+                scene.systems['mindar-face-system'].start(); // สั่ง MindAR เริ่มทำงาน
+                document.getElementById('start-ar-btn').classList.add('hidden');
+                document.getElementById('capture-btn').classList.remove('hidden');
+            }
+        }
+
+        // 3. ฟังก์ชันถ่ายรูป (ให้เห็นทั้งคนและหน้ากาก)
+        function captureARPhoto() {
+            // เอฟเฟกต์แฟลช
+            const flash = document.getElementById('flash-effect');
+            flash.style.opacity = '1';
+            setTimeout(() => flash.style.opacity = '0', 100);
+
+            const video = document.querySelector('video'); // ภาพจากกล้อง
+            const aCanvas = document.querySelector('.a-canvas'); // ภาพโมเดล AR
             if (!video || !aCanvas) return;
 
             const canvas = document.createElement('canvas');
@@ -224,36 +778,60 @@
             canvas.height = video.videoHeight;
             const ctx = canvas.getContext('2d');
 
-            // วาดภาพคน (วิดีโอ) + วาดโมเดล (A-Frame Canvas)
+            // วาดชั้นที่ 1: คน (Video)
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // วาดชั้นที่ 2: หน้ากาก (A-Frame Canvas)
             ctx.drawImage(aCanvas, 0, 0, canvas.width, canvas.height);
             
-            capturedImages.push(canvas.toDataURL('image/png'));
-            updateBubbleWall();
-            showPage('p5');
+            const imgData = canvas.toDataURL('image/png');
+            capturedImages.push(imgData);
+
+            // ส่งรูปไปหน้า Bubble Wall
+            setTimeout(() => {
+                updateBubbleWall();
+                showPage('p5');
+            }, 300);
         }
 
-        // ── BUBBLE WALL ──
+        // 4. ฟังก์ชันเปลี่ยนสี/แบบหน้ากาก
+        function changeARMask(type) {
+            const mask = document.getElementById('ar-mask-base');
+            const colors = {
+                giant: '#16a34a', monkey: '#ffffff', human: '#F5C842', nang: '#fef3c7', rishi: '#f97316'
+            };
+            mask.setAttribute('material', 'color', colors[type]);
+        }
+
+        // 5. ฟังก์ชันจัดการ Bubble Wall
         function updateBubbleWall() {
             const container = document.getElementById('bubble-container');
-            document.getElementById('empty-msg').style.display = 'none';
+            const emptyMsg = document.getElementById('empty-msg');
+            if (capturedImages.length > 0) emptyMsg.style.display = 'none';
+
+            const lastImgData = capturedImages[capturedImages.length - 1];
             const bubble = document.createElement('img');
-            bubble.src = capturedImages[capturedImages.length - 1];
+            bubble.src = lastImgData;
             bubble.className = 'bubble-photo';
-            const size = Math.random() * 60 + 100;
-            bubble.style.width = size + 'px';
-            bubble.style.height = size + 'px';
-            bubble.style.left = Math.random() * (container.clientWidth - size) + 'px';
-            bubble.style.top = Math.random() * (container.clientHeight - size) + 'px';
-            bubble.style.setProperty('--duration', (Math.random() * 3 + 4) + 's');
+            
+            const size = Math.random() * (160 - 100) + 100;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${Math.random() * (container.clientWidth - size)}px`;
+            bubble.style.top = `${Math.random() * (container.clientHeight - size)}px`;
+            bubble.style.setProperty('--duration', `${Math.random() * (7 - 4) + 4}s`);
+
             container.appendChild(bubble);
         }
 
-        function clearBubbles() {
-            capturedImages = [];
-            document.querySelectorAll('.bubble-photo').forEach(b => b.remove());
-            document.getElementById('empty-msg').style.display = 'flex';
+        // 6. ฟังก์ชันสลับหน้า (ShowPage)
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(pageId);
+            target.classList.add('active');
+            window.scrollTo(0, 0);
         }
     </script>
+
+    
 </body>
 </html>
