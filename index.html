@@ -660,13 +660,19 @@
         let capturedImages = [];
 
         function startAR() {
-            const scene = document.querySelector('a-scene');
-            if (scene.systems['mindar-face-system']) {
-                scene.systems['mindar-face-system'].start();
-                document.getElementById('start-ar-btn').classList.add('hidden');
-                document.getElementById('capture-btn').classList.remove('hidden');
-            }
+        const scene = document.querySelector('a-scene');
+        // ตรวจสอบว่าระบบ MindAR โหลดพร้อมหรือยัง
+        if (scene && scene.systems['mindar-face-system']) {
+            scene.systems['mindar-face-system'].start(); // สั่งเปิดกล้อง
+            
+            // ซ่อนปุ่มเปิด และแสดงปุ่มถ่ายรูป
+            document.getElementById('start-ar-btn').classList.add('hidden');
+            document.getElementById('capture-btn').classList.remove('hidden');
+        } else {
+            alert("ระบบกำลังโหลด หรือ Browser ไม่รองรับกล้อง");
         }
+    }
+        
 
         function changeARMask(type) {
             const mask = document.getElementById('ar-mask-base');
