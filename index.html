@@ -10,6 +10,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
+
+        /* บังคับให้วิดีโอกล้องอยู่ด้านหลังและเต็มจอ */
+#ar-container video {
+    position: absolute !important;
+    top: 0; left: 0;
+    width: 100% !important; height: 100% !important;
+    object-fit: cover !important;
+    z-index: -1;
+}
+/* ทำให้ฉากของ A-Frame โปร่งใส */
+.a-canvas { background-color: transparent !important; }
+
+        
         :root {
             --gold: #C9922A; --gl: #F5C842; --red: #8B1A1A;
             --blk: #0A0806; --cream: #F7F0E0; --glass: rgba(255, 255, 255, 0.05);
@@ -570,42 +583,45 @@
     </section>
 
 <section id="p4" class="page">
-        <h1 class="text-3xl md:text-5xl mb-2">AR EXPERIENCE</h1>
-        <div class="sub-t">สวมหัวโขนผ่านเทคโนโลยีจำลองใบหน้า (Face Tracking)</div>
+    <h1 class="text-3xl md:text-5xl mb-2">AR EXPERIENCE</h1>
+    <div class="sub-t">สวมหัวโขนผ่านเทคโนโลยีจำลองใบหน้า (Face Tracking)</div>
 
-        <div class="relative w-full max-w-4xl aspect-[3/4] md:aspect-video rounded-[2.5rem] overflow-hidden border-2 border-[#c5a059] shadow-2xl bg-black mx-auto">
-            <div id="ar-container" class="w-full h-full">
-                <a-scene mindar-face="autoStart: false" embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-                    <a-camera active="false" position="0 0 0" look-controls="enabled: false"></a-camera>
+    <div class="relative w-full max-w-4xl aspect-[3/4] md:aspect-video rounded-[2.5rem] overflow-hidden border-2 border-[#c5a059] shadow-2xl bg-black mx-auto">
+        <div id="ar-container" class="w-full h-full">
+            <a-scene mindar-face="autoStart: false" embedded color-space="sRGB" renderer="colorManagement: true, transparent: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+                <a-camera active="false" position="0 0 0" look-controls="enabled: false"></a-camera>
 
-                    <a-entity mindar-face-target="anchorIndex: 168">
-                        <a-sphere id="ar-mask-base" position="0 0.5 -0.5" radius="0.4" scale="1 1.2 0.8" material="color: #16a34a; metalness: 0.6; roughness: 0.2">
-                            <a-cone position="0 0.8 0" radius-bottom="0.2" height="0.6" material="color: #FFD700"></a-cone>
-                        </a-sphere>
-                    </a-entity>
-                </a-scene>
-            </div>
-
-            <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent flex flex-col items-center gap-4">
-                <div class="flex gap-2 overflow-x-auto pb-2 w-full justify-center no-scrollbar">
-                    <button onclick="changeARMask('giant')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-[#c5a059] whitespace-nowrap">ยักษ์</button>
-                    <button onclick="changeARMask('monkey')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">ลิง</button>
-                    <button onclick="changeARMask('human')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">เทวดา</button>
-                    <button onclick="changeARMask('nang')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">นาง</button>
-                    <button onclick="changeARMask('rishi')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">ฤๅษี</button>
-                </div>
-                
-                <div class="flex gap-4 items-center">
-                    <button id="start-ar-btn" onclick="startAR()" class="btn-gold">เปิดกล้อง AR</button>
-                    <button id="capture-btn" onclick="captureARPhoto()" class="hidden w-16 h-16 bg-white rounded-full border-4 border-[#c5a059] shadow-lg active:scale-95 flex items-center justify-center">
-                         <div class="w-12 h-12 rounded-full border-2 border-zinc-200"></div>
-                    </button>
-                </div>
-            </div>
-
-            <div id="flash-effect" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-100"></div>
+                <a-entity mindar-face-target="anchorIndex: 168">
+                    <a-sphere id="ar-mask-base" position="0 0.5 -0.5" radius="0.4" scale="1 1.2 0.8" material="color: #16a34a; metalness: 0.6; roughness: 0.2">
+                        <a-cone position="0 0.8 0" radius-bottom="0.2" height="0.6" material="color: #FFD700"></a-cone>
+                    </a-sphere>
+                </a-entity>
+            </a-scene>
         </div>
-    </section>
+
+        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent flex flex-col items-center gap-4">
+            <div class="flex gap-2 overflow-x-auto pb-2 w-full justify-center no-scrollbar">
+                <button onclick="changeARMask('giant')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-[#c5a059] whitespace-nowrap">ยักษ์</button>
+                <button onclick="changeARMask('monkey')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">ลิง</button>
+                <button onclick="changeARMask('human')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">เทวดา</button>
+                <button onclick="changeARMask('nang')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">นาง</button>
+                <button onclick="changeARMask('rishi')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">ฤๅษี</button>
+            </div>
+            
+            <div class="flex gap-4 items-center">
+                <button id="start-ar-btn" onclick="startAR()" class="btn-gold">เปิดกล้อง AR</button>
+                <button id="capture-btn" onclick="captureARPhoto()" class="hidden w-16 h-16 bg-white rounded-full border-4 border-[#c5a059] shadow-lg active:scale-95 flex items-center justify-center">
+                     <div class="w-12 h-12 rounded-full border-2 border-zinc-200"></div>
+                </button>
+            </div>
+        </div>
+
+        <div id="flash-effect" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-100"></div>
+    </div>
+</section>
+
+
+    
     <section id="p5" class="page">
         <h1>BUBBLE WALL</h1>
         <div class="sub-t">คลังภาพมรดกไทยดิจิทัลจากฝีมือคุณ</div>
@@ -724,5 +740,91 @@
             window.scrollTo(0, 0);
         }
     </script>
+
+    <script>
+        // 1. ตัวแปรเก็บรูปภาพ
+        let capturedImages = [];
+
+        // 2. ฟังก์ชันเริ่มกล้อง AR (เปิดกล้องหน้า)
+        function startAR() {
+            const scene = document.querySelector('a-scene');
+            if (scene.systems['mindar-face-system']) {
+                scene.systems['mindar-face-system'].start(); // สั่ง MindAR เริ่มทำงาน
+                document.getElementById('start-ar-btn').classList.add('hidden');
+                document.getElementById('capture-btn').classList.remove('hidden');
+            }
+        }
+
+        // 3. ฟังก์ชันถ่ายรูป (ให้เห็นทั้งคนและหน้ากาก)
+        function captureARPhoto() {
+            // เอฟเฟกต์แฟลช
+            const flash = document.getElementById('flash-effect');
+            flash.style.opacity = '1';
+            setTimeout(() => flash.style.opacity = '0', 100);
+
+            const video = document.querySelector('video'); // ภาพจากกล้อง
+            const aCanvas = document.querySelector('.a-canvas'); // ภาพโมเดล AR
+            if (!video || !aCanvas) return;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+
+            // วาดชั้นที่ 1: คน (Video)
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // วาดชั้นที่ 2: หน้ากาก (A-Frame Canvas)
+            ctx.drawImage(aCanvas, 0, 0, canvas.width, canvas.height);
+            
+            const imgData = canvas.toDataURL('image/png');
+            capturedImages.push(imgData);
+
+            // ส่งรูปไปหน้า Bubble Wall
+            setTimeout(() => {
+                updateBubbleWall();
+                showPage('p5');
+            }, 300);
+        }
+
+        // 4. ฟังก์ชันเปลี่ยนสี/แบบหน้ากาก
+        function changeARMask(type) {
+            const mask = document.getElementById('ar-mask-base');
+            const colors = {
+                giant: '#16a34a', monkey: '#ffffff', human: '#F5C842', nang: '#fef3c7', rishi: '#f97316'
+            };
+            mask.setAttribute('material', 'color', colors[type]);
+        }
+
+        // 5. ฟังก์ชันจัดการ Bubble Wall
+        function updateBubbleWall() {
+            const container = document.getElementById('bubble-container');
+            const emptyMsg = document.getElementById('empty-msg');
+            if (capturedImages.length > 0) emptyMsg.style.display = 'none';
+
+            const lastImgData = capturedImages[capturedImages.length - 1];
+            const bubble = document.createElement('img');
+            bubble.src = lastImgData;
+            bubble.className = 'bubble-photo';
+            
+            const size = Math.random() * (160 - 100) + 100;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${Math.random() * (container.clientWidth - size)}px`;
+            bubble.style.top = `${Math.random() * (container.clientHeight - size)}px`;
+            bubble.style.setProperty('--duration', `${Math.random() * (7 - 4) + 4}s`);
+
+            container.appendChild(bubble);
+        }
+
+        // 6. ฟังก์ชันสลับหน้า (ShowPage)
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(pageId);
+            target.classList.add('active');
+            window.scrollTo(0, 0);
+        }
+    </script>
+
+    
 </body>
 </html>
