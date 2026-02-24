@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI–AR Sustainable Khon Mask Lab | สานศิลป์ ถิ่นศึกษา</title>
-
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     :root {
@@ -19,6 +17,8 @@
       font-family:'Noto Serif Thai',serif;overflow-x:hidden;line-height:1.6;
       display:flex;flex-direction:column;align-items:center;
     }
+
+    /* ── NAV ── */
     .tnav{
       position:fixed;top:0;width:100%;padding:1rem 5%;z-index:1000;
       display:flex;justify-content:space-between;align-items:center;
@@ -29,6 +29,8 @@
     .n-links{display:flex;gap:20px;}
     .n-link{color:var(--gold);font-size:0.85rem;cursor:pointer;transition:0.3s;}
     .n-link:hover{color:var(--gl);}
+
+    /* ── PAGES ── */
     .page{
       display:none;width:100%;min-height:100vh;
       padding:120px 10% 60px;opacity:0;transition:opacity 0.5s ease;
@@ -43,50 +45,203 @@
     .btn-wrap{display:flex;width:100%;justify-content:center;margin-top:3rem;gap:20px;flex-wrap:wrap;}
     .btn-gold{padding:12px 40px;background:linear-gradient(135deg,var(--gold),#8A641A);border:none;color:#000;font-weight:900;border-radius:50px;cursor:pointer;transition:0.3s;}
     .btn-gold:hover{transform:scale(1.05);box-shadow:0 0 20px var(--gold);}
+    .hidden{display:none!important;}
 
-    /* P2 */
-    .canvas-area{background:radial-gradient(circle,#222 0%,#000 100%);box-shadow:inset 0 0 100px rgba(0,0,0,0.8);border:1px solid #333;}
-    .sidebar-right{border-left:1px solid #c5a05933;background:rgba(15,15,15,0.95);backdrop-filter:blur(10px);}
-    .color-input-wrapper{position:relative;width:38px;height:38px;overflow:hidden;border-radius:10px;border:2px solid #333;transition:all 0.2s;}
+    /* ── P2 LAYOUT ── */
+    #p2{padding:80px 0 0;overflow:hidden;}
+    .p2-main{
+      display:flex;flex-direction:column;width:100%;
+      height:calc(100vh - 80px);
+    }
+    @media(min-width:1024px){
+      .p2-main{flex-direction:row;}
+    }
+    .p2-canvas-wrap{
+      flex:1;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;padding:24px 40px;
+    }
+    .canvas-area{
+      background:radial-gradient(circle,#222 0%,#000 100%);
+      box-shadow:inset 0 0 100px rgba(0,0,0,0.8);
+      border:1px solid #333;border-radius:2.5rem;
+      aspect-ratio:1/1;width:min(70vh,100%);
+      display:flex;align-items:center;justify-content:center;
+      position:relative;overflow:hidden;
+    }
+    .canvas-area svg{width:100%;height:100%;filter:drop-shadow(0 35px 60px rgba(0,0,0,0.8));}
+    .p2-mobile-btns{
+      display:flex;margin-top:24px;gap:12px;width:100%;max-width:360px;
+    }
+    @media(min-width:768px){.p2-mobile-btns{display:none;}}
+    .p2-mobile-btn{
+      flex:1;padding:12px;background:#27272a;border-radius:12px;
+      font-size:12px;font-weight:700;border:1px solid #3f3f46;
+      color:var(--cream);cursor:pointer;
+    }
+    .p2-mobile-btn-gold{background:#c5a059;color:#000;border-color:#c5a059;}
+
+    /* ── SIDEBAR ── */
+    .sidebar-right{
+      width:100%;border-top:1px solid rgba(197,160,89,0.2);
+      background:rgba(15,15,15,0.95);backdrop-filter:blur(10px);
+      overflow-y:auto;padding:32px;
+    }
+    @media(min-width:1024px){
+      .sidebar-right{
+        width:380px;height:100%;
+        border-top:none;border-left:1px solid rgba(197,160,89,0.2);
+      }
+    }
+    .sidebar-right::-webkit-scrollbar{width:5px;}
+    .sidebar-right::-webkit-scrollbar-track{background:#0a0a0a;}
+    .sidebar-right::-webkit-scrollbar-thumb{background:#c5a059;border-radius:10px;}
+
+    .sb-top{
+      display:none;align-items:center;gap:16px;justify-content:flex-end;margin-bottom:16px;
+    }
+    @media(min-width:768px){.sb-top{display:flex;}}
+    .sb-rnd{font-size:14px;color:#a1a1aa;background:none;border:none;cursor:pointer;}
+    .sb-rnd:hover{color:#c5a059;}
+    .sb-save{
+      background:#c5a059;color:#000;padding:8px 20px;
+      border-radius:9999px;font-size:14px;font-weight:700;border:none;cursor:pointer;
+    }
+    .sb-save:hover{background:#b08d4a;}
+
+    .sb-title{color:#c5a059;font-weight:700;font-size:18px;margin-bottom:20px;}
+    .sb-section{margin-bottom:24px;}
+    .sb-label{
+      font-size:10px;color:#71717a;text-transform:uppercase;
+      letter-spacing:0.2em;font-weight:700;display:block;margin-bottom:12px;
+    }
+
+    /* char/pattern/crown/eye button grids */
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+    .grid-1{display:grid;gap:12px;}
+    .sb-btn{
+      padding:10px 8px;background:rgba(39,39,42,0.5);
+      border:1px solid #27272a;border-radius:12px;
+      font-size:11px;color:var(--cream);cursor:pointer;
+      font-family:'Noto Serif Thai',serif;transition:all 0.2s;
+    }
+    .sb-btn:hover{border-color:#c5a059;}
+    .sb-btn.active-btn{background:#c5a059!important;color:#000!important;font-weight:bold;box-shadow:0 0 15px rgba(197,160,89,0.3);}
+    .sb-btn-sm{
+      flex:1;padding:8px 4px;background:#27272a;
+      border-radius:8px;font-size:10px;color:var(--cream);
+      cursor:pointer;border:1px solid transparent;
+      font-family:'Noto Serif Thai',serif;transition:all 0.2s;
+    }
+    .sb-btn-sm.active-btn{background:#c5a059!important;color:#000!important;font-weight:bold;}
+    .sb-box{
+      background:rgba(9,9,11,0.4);padding:12px;
+      border-radius:12px;border:1px solid #27272a;
+    }
+    .sb-box-label{font-size:10px;color:#71717a;margin-bottom:8px;}
+    .sb-flex{display:flex;gap:8px;}
+
+    /* color pickers */
+    .color-row{
+      display:flex;align-items:center;justify-content:space-between;
+      background:rgba(39,39,42,0.3);padding:12px;
+      border-radius:12px;border:1px solid #27272a;margin-bottom:8px;
+    }
+    .color-label{font-size:12px;color:#c5a059;}
+    .color-input-wrapper{
+      position:relative;width:38px;height:38px;overflow:hidden;
+      border-radius:10px;border:2px solid #333;transition:all 0.2s;
+    }
     .color-input-wrapper:hover{border-color:#c5a059;transform:scale(1.05);}
-    .color-input-wrapper input{position:absolute;top:-50%;left:-50%;width:200%;height:200%;cursor:pointer;}
-    .custom-scrollbar::-webkit-scrollbar{width:5px;}
-    .custom-scrollbar::-webkit-scrollbar-track{background:#0a0a0a;}
-    .custom-scrollbar::-webkit-scrollbar-thumb{background:#c5a059;border-radius:10px;}
-    .active-btn{background:#c5a059!important;color:#000!important;font-weight:bold;box-shadow:0 0 15px rgba(197,160,89,0.3);}
+    .color-input-wrapper input{
+      position:absolute;top:-50%;left:-50%;width:200%;height:200%;cursor:pointer;
+    }
 
-    /* P4 */
-    #ar-viewport{position:relative;width:100%;max-width:480px;aspect-ratio:3/4;border-radius:28px;overflow:hidden;border:2px solid var(--gold);box-shadow:0 0 60px rgba(201,146,42,0.25);background:#000;margin:0 auto;}
+    /* apply to AR button */
+    .btn-apply-ar{
+      width:100%;padding:12px;border-radius:12px;font-size:14px;font-weight:700;
+      background:linear-gradient(135deg,var(--gold),#8A641A);color:#000;
+      border:none;cursor:pointer;margin-top:8px;
+      font-family:'Noto Serif Thai',serif;transition:0.2s;
+    }
+    .btn-apply-ar:hover{transform:scale(1.02);box-shadow:0 0 20px var(--gold);}
+
+    /* ── MODAL ── */
+    #modal{
+      position:fixed;inset:0;background:rgba(0,0,0,0.9);
+      display:flex;align-items:center;justify-content:center;
+      opacity:0;pointer-events:none;transition:all 0.3s;z-index:50;padding:16px;
+    }
+    #modal.open{opacity:1;pointer-events:all;}
+    .modal-box{
+      background:#18181b;border:2px solid #c5a059;padding:40px;
+      border-radius:2rem;text-align:center;max-width:360px;width:100%;
+    }
+    .modal-icon{
+      width:80px;height:80px;background:#c5a059;color:#000;
+      border-radius:50%;display:flex;align-items:center;justify-content:center;
+      margin:0 auto 24px;
+    }
+    .modal-title{font-size:24px;font-weight:700;margin-bottom:16px;color:#c5a059;}
+    .modal-close{
+      width:100%;padding:16px;background:#c5a059;color:#000;
+      font-weight:900;border-radius:16px;border:none;cursor:pointer;font-size:16px;
+      font-family:'Noto Serif Thai',serif;
+    }
+
+    /* ── P4 AR ── */
+    #ar-viewport{
+      position:relative;width:100%;max-width:480px;aspect-ratio:3/4;
+      border-radius:28px;overflow:hidden;border:2px solid var(--gold);
+      box-shadow:0 0 60px rgba(201,146,42,0.25);background:#000;margin:0 auto;
+    }
     #ar-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;transform:scaleX(-1);}
     #ar-overlay-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;}
     #face-guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;}
-    #ar-status{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);border:1px solid var(--gold);color:var(--gold);font-size:0.7rem;letter-spacing:0.1em;padding:5px 16px;border-radius:20px;white-space:nowrap;backdrop-filter:blur(6px);z-index:10;}
+    #ar-status{
+      position:absolute;top:14px;left:50%;transform:translateX(-50%);
+      background:rgba(0,0,0,0.8);border:1px solid var(--gold);color:var(--gold);
+      font-size:0.7rem;letter-spacing:0.1em;padding:5px 16px;border-radius:20px;
+      white-space:nowrap;backdrop-filter:blur(6px);z-index:10;
+    }
     #flash-effect{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity 0.08s;z-index:9;}
 
-    /* ป้ายแสดงหน้ากากที่เลือกจาก P2 */
+    /* mask preview bar */
     #ar-mask-preview-bar{
-      display:flex;align-items:center;gap:12px;padding:10px 18px;
+      display:none;align-items:center;gap:12px;padding:10px 18px;
       background:rgba(201,146,42,0.1);border:1px solid rgba(201,146,42,0.3);
       border-radius:12px;margin-top:12px;max-width:500px;width:100%;
     }
-    #ar-mask-preview-bar canvas{border-radius:8px;border:1px solid var(--gold);}
-    #ar-mask-preview-label{font-size:0.78rem;color:var(--gl);}
+    #ar-mask-thumb{border-radius:8px;border:1px solid var(--gold);}
+    #ar-mask-preview-label{color:var(--gl);font-size:0.78rem;}
+    #ar-mask-preview-name{color:var(--cream);font-size:0.7rem;opacity:0.7;}
 
-    .mask-sel-btn{padding:8px 18px;background:rgba(255,255,255,0.05);border:1px solid rgba(201,146,42,0.3);color:var(--cream);border-radius:50px;cursor:pointer;font-size:0.8rem;font-family:'Noto Serif Thai',serif;transition:all 0.25s;}
-    .mask-sel-btn:hover{border-color:var(--gold);color:var(--gold);}
-    .mask-sel-btn.active-sel{background:linear-gradient(135deg,var(--gold),#8A641A);border-color:var(--gold);color:#000;font-weight:700;box-shadow:0 0 16px rgba(201,146,42,0.4);}
-
-    /* Bubble */
-    .bubble-photo{position:absolute;border-radius:50%;border:4px solid #c5a059;object-fit:cover;animation:floatBubble var(--dur) ease-in-out infinite;box-shadow:0 10px 30px rgba(197,160,89,0.4);}
-    @keyframes floatBubble{0%,100%{transform:translateY(0) translateX(0);}33%{transform:translateY(-25px) translateX(12px);}66%{transform:translateY(12px) translateX(-12px);}}
-
-    /* badge custom mask */
-    .custom-mask-badge{
-      display:inline-flex;align-items:center;gap:6px;padding:4px 12px 4px 6px;
-      background:rgba(201,146,42,0.2);border:1px solid rgba(201,146,42,0.5);
-      border-radius:20px;font-size:0.72rem;color:var(--gl);
+    /* AR sliders panel */
+    .ar-sliders{
+      max-width:500px;width:100%;
+      background:rgba(255,255,255,0.03);border:1px solid rgba(201,146,42,0.2);
+      border-radius:16px;padding:16px 20px;margin-top:14px;
     }
-    .custom-mask-badge canvas{border-radius:50%;border:1px solid var(--gold);}
+    .ar-sliders-title{color:var(--gl);font-size:0.75rem;margin-bottom:12px;}
+    .sl-row{
+      display:flex;align-items:center;gap:8px;
+      font-size:0.75rem;color:var(--cream);margin-bottom:8px;
+    }
+    .sl-row span.lbl{width:55px;color:var(--gold);}
+    .sl-row input[type=range]{flex:1;accent-color:var(--gold);}
+    .sl-row span.val{width:35px;text-align:right;}
+
+    /* ── P5 BUBBLE ── */
+    .bubble-photo{
+      position:absolute;border-radius:50%;border:4px solid #c5a059;
+      object-fit:cover;animation:floatBubble var(--dur) ease-in-out infinite;
+      box-shadow:0 10px 30px rgba(197,160,89,0.4);
+    }
+    @keyframes floatBubble{
+      0%,100%{transform:translateY(0) translateX(0);}
+      33%{transform:translateY(-25px) translateX(12px);}
+      66%{transform:translateY(12px) translateX(-12px);}
+    }
   </style>
 </head>
 <body>
@@ -110,7 +265,9 @@
   <div class="card" style="max-width:800px;">
     <p>สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง<br>ทรงเป็นผู้อุปถัมภ์และฟื้นฟูศิลปะการแสดงโขนให้กลับมารุ่งเรือง</p>
   </div>
-  <div class="btn-wrap"><button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button></div>
+  <div class="btn-wrap">
+    <button class="btn-gold" onclick="showPage('p1')">เริ่มเรียนรู้มรดกไทย</button>
+  </div>
 </section>
 
 <!-- P1 -->
@@ -134,18 +291,20 @@
 </section>
 
 <!-- P2 -->
-<section id="p2" class="page" style="padding:80px 0 0;overflow:hidden;">
-  <main class="flex-1 flex flex-col lg:flex-row w-full" style="height:calc(100vh - 80px);">
-    <div class="flex-1 flex flex-col items-center justify-center p-6 md:p-10">
-      <div class="canvas-area h-[70vh] lg:h-[80%] aspect-square rounded-[2.5rem] flex items-center justify-center relative shadow-2xl overflow-hidden border border-zinc-800">
-        <svg id="main-svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-[0_35px_60px_rgba(0,0,0,0.8)]">
+<section id="p2" class="page">
+  <div class="p2-main">
+
+    <!-- Canvas side -->
+    <div class="p2-canvas-wrap">
+      <div class="canvas-area">
+        <svg id="main-svg" viewBox="0 0 400 400">
           <path d="M140 85 L260 85 L255 135 L145 135 Z" fill="rgba(0,0,0,0.4)" transform="translate(8,8)"/>
           <g id="crown-group">
             <path id="part-crown-top" d="M200 10 L215 85 L185 85 Z" fill="#FFD700"/>
             <circle id="part-crown-ornament" cx="200" cy="50" r="4" fill="#FFD700" stroke="#000" stroke-width="0.5"/>
             <path id="part-crown-base" d="M140 80 L260 80 L250 130 L150 130 Z" fill="#FFD700" stroke="#b08d4a" stroke-width="1"/>
           </g>
-          <path id="part-face"  d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 Z" fill="#16a34a"/>
+          <path id="part-face" d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 Z" fill="#16a34a"/>
           <path id="part-ear-l" d="M100 200 C80 200 70 240 90 260 Q100 240 100 220" fill="#16a34a"/>
           <path id="part-ear-r" d="M300 200 C320 200 330 240 310 260 Q300 240 300 220" fill="#16a34a"/>
           <g id="details-layer">
@@ -162,104 +321,114 @@
             </g>
             <path id="part-eyebrow-l" d="M135 200 Q165 160 190 205" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
             <path id="part-eyebrow-r" d="M210 205 Q235 160 265 200" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
-            <path id="part-mouth"  d="M170 300 Q200 330 230 300" fill="none" stroke="black" stroke-width="2.5"/>
+            <path id="part-mouth" d="M170 300 Q200 330 230 300" fill="none" stroke="black" stroke-width="2.5"/>
             <path id="part-fang-l" d="M175 305 L170 325 L185 310 Z" fill="white" stroke="black" stroke-width="0.5"/>
             <path id="part-fang-r" d="M225 305 L230 325 L215 310 Z" fill="white" stroke="black" stroke-width="0.5"/>
             <circle id="part-gem" cx="200" cy="105" r="7" fill="#dc2626" stroke="#fff" stroke-width="1"/>
           </g>
         </svg>
       </div>
-      <div class="flex md:hidden mt-6 gap-3 w-full max-w-sm">
-        <button onclick="randomizeAll()" class="flex-1 py-3 bg-zinc-800 rounded-xl text-xs font-bold border border-zinc-700">🎲 สุ่มสี</button>
-        <button onclick="exportMask()"   class="flex-1 py-3 bg-[#c5a059] text-black rounded-xl text-xs font-bold">💾 บันทึก</button>
+      <!-- mobile buttons -->
+      <div class="p2-mobile-btns">
+        <button class="p2-mobile-btn" onclick="randomizeAll()">🎲 สุ่มสี</button>
+        <button class="p2-mobile-btn p2-mobile-btn-gold" onclick="exportMask()">💾 บันทึก</button>
       </div>
     </div>
 
-    <aside class="w-full lg:w-[380px] sidebar-right custom-scrollbar overflow-y-auto p-8" style="height:100%;">
-      <div class="hidden md:flex items-center gap-4 justify-end mb-4">
-        <button onclick="randomizeAll()" class="text-sm text-zinc-400 hover:text-[#c5a059]">🎲 สุ่มรูปแบบ</button>
-        <button onclick="exportMask()" class="bg-[#c5a059] text-black px-5 py-2 rounded-full text-sm font-bold hover:bg-[#b08d4a]">💾 บันทึกรูปภาพ</button>
+    <!-- Sidebar -->
+    <aside class="sidebar-right">
+      <div class="sb-top">
+        <button class="sb-rnd" onclick="randomizeAll()">🎲 สุ่มรูปแบบ</button>
+        <button class="sb-save" onclick="exportMask()">💾 บันทึกรูปภาพ</button>
       </div>
-      <h2 class="text-[#c5a059] font-bold text-lg mb-5">✏️ แผงควบคุมการออกแบบ</h2>
-      <div class="space-y-6">
-        <div>
-          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-3">หมวดหมู่ตัวละคร</label>
-          <div class="grid grid-cols-3 gap-2">
-            <button onclick="updateState({char:'giant'})"  id="btn-giant"  class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ยักษ์</button>
-            <button onclick="updateState({char:'monkey'})" id="btn-monkey" class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ลิง</button>
-            <button onclick="updateState({char:'human'})"  id="btn-human"  class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">เทวดา</button>
-            <button onclick="updateState({char:'nang'})"   id="btn-nang"   class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ตัวนาง</button>
-            <button onclick="updateState({char:'rishi'})"  id="btn-rishi"  class="char-btn p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl text-xs hover:border-[#c5a059] transition-all">ฤๅษี</button>
-          </div>
-        </div>
-        <div>
-          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-3">ลวดลายใบหน้า</label>
-          <div class="grid grid-cols-2 gap-2">
-            <button onclick="updateState({pattern:'none'})"  id="pat-none"  class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ไม่มีลาย</button>
-            <button onclick="updateState({pattern:'basic'})" id="pat-basic" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายเส้นพื้นฐาน</button>
-            <button onclick="updateState({pattern:'kanok'})" id="pat-kanok" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายกนกแก้ม</button>
-            <button onclick="updateState({pattern:'royal'})" id="pat-royal" class="pat-btn p-2 bg-zinc-800 rounded-lg text-[10px]">ลายประดับเครื่องสูง</button>
-          </div>
-        </div>
-        <div>
-          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-3">มงกุฎ & ดวงตา</label>
-          <div class="grid gap-3">
-            <div class="bg-zinc-900/40 p-3 rounded-xl border border-zinc-800">
-              <p class="text-[10px] text-zinc-500 mb-2">มงกุฎ</p>
-              <div class="flex gap-2">
-                <button onclick="updateState({crown:'spike'})" id="crown-spike" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ยอดแหลม</button>
-                <button onclick="updateState({crown:'round'})" id="crown-round" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ยอดบายศรี</button>
-                <button onclick="updateState({crown:'none'})"  id="crown-none"  class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ไม่มี</button>
-              </div>
-            </div>
-            <div class="bg-zinc-900/40 p-3 rounded-xl border border-zinc-800">
-              <p class="text-[10px] text-zinc-500 mb-2">ดวงตา</p>
-              <div class="flex gap-2">
-                <button onclick="updateState({eye:'normal'})" id="eye-normal" class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ตาจระเข้</button>
-                <button onclick="updateState({eye:'wide'})"   id="eye-wide"   class="flex-1 py-2 bg-zinc-800 rounded-lg text-[10px]">ตาโพลง</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <label class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold block mb-3">พาเลทสี</label>
-          <div class="grid gap-3">
-            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800"><span class="text-xs text-[#c5a059]">สีหน้า</span><div class="color-input-wrapper"><input type="color" id="c-skin" oninput="applyColors()"></div></div>
-            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800"><span class="text-xs text-[#c5a059]">สีลวดลาย</span><div class="color-input-wrapper"><input type="color" id="c-line" oninput="applyColors()"></div></div>
-            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800"><span class="text-xs text-[#c5a059]">สีมงกุฎ</span><div class="color-input-wrapper"><input type="color" id="c-crown" oninput="applyColors()"></div></div>
-            <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded-xl border border-zinc-800"><span class="text-xs text-[#c5a059]">อัญมณี</span><div class="color-input-wrapper"><input type="color" id="c-gem" oninput="applyColors()"></div></div>
-          </div>
-        </div>
-        <button onclick="applyToAR()" class="w-full py-3 rounded-xl text-sm font-bold" style="background:linear-gradient(135deg,var(--gold),#8A641A);color:#000;">
-          🎭 นำหน้ากากนี้ไปใช้ใน AR →
-        </button>
-      </div>
-    </aside>
-  </main>
 
-  <div id="modal" class="fixed inset-0 bg-black/90 flex items-center justify-center opacity-0 pointer-events-none transition-all z-50 px-4">
-    <div class="bg-zinc-900 border-2 border-[#c5a059] p-10 rounded-[2rem] text-center max-w-sm">
-      <div class="w-20 h-20 bg-[#c5a059] text-black rounded-full flex items-center justify-center mx-auto mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-      <h2 class="text-2xl font-bold mb-4 text-[#c5a059]">บันทึกสำเร็จ!</h2>
-      <button onclick="closeModal()" class="w-full py-4 bg-[#c5a059] text-black font-black rounded-2xl">เสร็จสิ้น</button>
+      <div class="sb-title">✏️ แผงควบคุมการออกแบบ</div>
+
+      <!-- หมวดหมู่ -->
+      <div class="sb-section">
+        <span class="sb-label">หมวดหมู่ตัวละคร</span>
+        <div class="grid-3">
+          <button onclick="updateState({char:'giant'})"  id="btn-giant"  class="sb-btn">ยักษ์</button>
+          <button onclick="updateState({char:'monkey'})" id="btn-monkey" class="sb-btn">ลิง</button>
+          <button onclick="updateState({char:'human'})"  id="btn-human"  class="sb-btn">เทวดา</button>
+          <button onclick="updateState({char:'nang'})"   id="btn-nang"   class="sb-btn">ตัวนาง</button>
+          <button onclick="updateState({char:'rishi'})"  id="btn-rishi"  class="sb-btn">ฤๅษี</button>
+        </div>
+      </div>
+
+      <!-- ลวดลาย -->
+      <div class="sb-section">
+        <span class="sb-label">ลวดลายใบหน้า</span>
+        <div class="grid-2">
+          <button onclick="updateState({pattern:'none'})"  id="pat-none"  class="sb-btn">ไม่มีลาย</button>
+          <button onclick="updateState({pattern:'basic'})" id="pat-basic" class="sb-btn">ลายเส้นพื้นฐาน</button>
+          <button onclick="updateState({pattern:'kanok'})" id="pat-kanok" class="sb-btn">ลายกนกแก้ม</button>
+          <button onclick="updateState({pattern:'royal'})" id="pat-royal" class="sb-btn">ลายประดับเครื่องสูง</button>
+        </div>
+      </div>
+
+      <!-- มงกุฎ & ตา -->
+      <div class="sb-section">
+        <span class="sb-label">มงกุฎ & ดวงตา</span>
+        <div class="grid-1">
+          <div class="sb-box">
+            <div class="sb-box-label">มงกุฎ</div>
+            <div class="sb-flex">
+              <button onclick="updateState({crown:'spike'})" id="crown-spike" class="sb-btn-sm">ยอดแหลม</button>
+              <button onclick="updateState({crown:'round'})" id="crown-round" class="sb-btn-sm">ยอดบายศรี</button>
+              <button onclick="updateState({crown:'none'})"  id="crown-none"  class="sb-btn-sm">ไม่มี</button>
+            </div>
+          </div>
+          <div class="sb-box">
+            <div class="sb-box-label">ดวงตา</div>
+            <div class="sb-flex">
+              <button onclick="updateState({eye:'normal'})" id="eye-normal" class="sb-btn-sm">ตาจระเข้</button>
+              <button onclick="updateState({eye:'wide'})"   id="eye-wide"   class="sb-btn-sm">ตาโพลง</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- สี -->
+      <div class="sb-section">
+        <span class="sb-label">พาเลทสี</span>
+        <div class="color-row"><span class="color-label">สีหน้า</span><div class="color-input-wrapper"><input type="color" id="c-skin" oninput="applyColors()"></div></div>
+        <div class="color-row"><span class="color-label">สีลวดลาย</span><div class="color-input-wrapper"><input type="color" id="c-line" oninput="applyColors()"></div></div>
+        <div class="color-row"><span class="color-label">สีมงกุฎ</span><div class="color-input-wrapper"><input type="color" id="c-crown" oninput="applyColors()"></div></div>
+        <div class="color-row" style="margin-bottom:0;"><span class="color-label">อัญมณี</span><div class="color-input-wrapper"><input type="color" id="c-gem" oninput="applyColors()"></div></div>
+      </div>
+
+      <button onclick="applyToAR()" class="btn-apply-ar">🎭 นำหน้ากากนี้ไปใช้ใน AR →</button>
+    </aside>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal">
+    <div class="modal-box">
+      <div class="modal-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div class="modal-title">บันทึกสำเร็จ!</div>
+      <button class="modal-close" onclick="closeModal()">เสร็จสิ้น</button>
     </div>
   </div>
 </section>
 
-<!-- P4 -->
+<!-- P4 AR Experience -->
 <section id="p4" class="page">
   <h1 style="font-size:2.2rem;">AR EXPERIENCE</h1>
   <div class="sub-t">สวมหน้ากากโขนผ่านกล้องหน้า · Face Tracking</div>
 
-  <!-- แถบแสดงหน้ากากที่โหลดอยู่ -->
-  <div id="ar-mask-preview-bar" style="display:none;">
-    <canvas id="ar-mask-thumb" width="44" height="44" style="border-radius:8px;border:1px solid var(--gold);"></canvas>
+  <!-- preview bar จาก P2 -->
+  <div id="ar-mask-preview-bar">
+    <canvas id="ar-mask-thumb" width="44" height="44"></canvas>
     <div>
-      <div id="ar-mask-preview-label" style="color:var(--gl);font-size:0.78rem;">🎨 หน้ากากจาก AI Designer</div>
-      <div id="ar-mask-preview-name" style="color:var(--cream);font-size:0.7rem;opacity:0.7;"></div>
+      <div id="ar-mask-preview-label">🎨 หน้ากากจาก AI Designer</div>
+      <div id="ar-mask-preview-name"></div>
     </div>
   </div>
 
+  <!-- viewport -->
   <div id="ar-viewport">
     <video id="ar-video" autoplay playsinline muted></video>
     <canvas id="ar-overlay-canvas"></canvas>
@@ -277,42 +446,31 @@
     <div id="flash-effect"></div>
   </div>
 
-  <!-- ปุ่ม preset — ซ่อนถ้าใช้ custom mask จาก P2 -->
-  <div id="preset-btns" style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;justify-content:center;max-width:500px;">
-    <button onclick="selectPreset('giant')"  id="sel-giant"  class="mask-sel-btn active-sel">👺 ยักษ์</button>
-    <button onclick="selectPreset('monkey')" id="sel-monkey" class="mask-sel-btn">🐒 ลิง</button>
-    <button onclick="selectPreset('human')"  id="sel-human"  class="mask-sel-btn">🌟 เทวดา</button>
-    <button onclick="selectPreset('nang')"   id="sel-nang"   class="mask-sel-btn">🌸 นาง</button>
-    <button onclick="selectPreset('rishi')"  id="sel-rishi"  class="mask-sel-btn">🔱 ฤๅษี</button>
-    <!-- ปุ่ม custom — แสดงเมื่อมาจาก P2 -->
-    <button onclick="revertToPreset()" id="sel-clear-custom" class="mask-sel-btn" style="display:none;border-color:rgba(255,100,100,0.4);color:#fcc;">✕ ยกเลิก custom</button>
+  <!-- sliders -->
+  <div class="ar-sliders">
+    <div class="ar-sliders-title">🔧 ปรับหน้ากาก</div>
+    <label class="sl-row">
+      <span class="lbl">ขนาด</span>
+      <input type="range" id="sl-size" min="0.5" max="2.5" step="0.05" value="1.2">
+      <span class="val" id="lbl-size">1.20</span>
+    </label>
+    <label class="sl-row">
+      <span class="lbl">ขึ้น/ลง</span>
+      <input type="range" id="sl-oy" min="-200" max="200" step="2" value="-30">
+      <span class="val" id="lbl-oy">-30</span>
+    </label>
   </div>
 
-  <div style="max-width:500px;width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(201,146,42,0.2);border-radius:16px;padding:16px 20px;margin-top:14px;">
-    <p style="color:var(--gl);font-size:0.75rem;margin-bottom:12px;">🔧 ปรับหน้ากาก</p>
-    <div style="display:grid;gap:8px;">
-      <label style="font-size:0.75rem;color:var(--cream);display:flex;align-items:center;gap:8px;">
-        <span style="width:55px;color:var(--gold);">ขนาด</span>
-        <input type="range" id="sl-size" min="0.5" max="2.5" step="0.05" value="1.2" style="flex:1;accent-color:var(--gold);">
-        <span id="lbl-size" style="width:35px;text-align:right;">1.20</span>
-      </label>
-      <label style="font-size:0.75rem;color:var(--cream);display:flex;align-items:center;gap:8px;">
-        <span style="width:55px;color:var(--gold);">ขึ้น/ลง</span>
-        <input type="range" id="sl-oy" min="-200" max="200" step="2" value="-30" style="flex:1;accent-color:var(--gold);">
-        <span id="lbl-oy" style="width:35px;text-align:right;">-30</span>
-      </label>
-    </div>
-  </div>
-
+  <!-- ปุ่ม — เปิดกล้อง / ถ่ายรูป / ปิดกล้อง เท่านั้น -->
   <div class="btn-wrap" style="margin-top:20px;gap:14px;">
-    <button id="start-ar-btn"   onclick="startAR()"       class="btn-gold">📷 เปิดกล้อง AR</button>
-    <button id="capture-ar-btn" onclick="capturePhoto()"   class="btn-gold" style="display:none;background:linear-gradient(135deg,#fff,#ddd);color:#000;">⬤ ถ่ายรูป</button>
-    <button id="stop-ar-btn"    onclick="stopAR()"         class="btn-gold" style="display:none;background:rgba(80,20,20,0.8);color:#fcc;">✕ ปิดกล้อง</button>
+    <button id="start-ar-btn"   onclick="startAR()"     class="btn-gold">📷 เปิดกล้อง AR</button>
+    <button id="capture-ar-btn" onclick="capturePhoto()" class="btn-gold" style="display:none;background:linear-gradient(135deg,#fff,#ddd);color:#000;">⬤ ถ่ายรูป</button>
+    <button id="stop-ar-btn"    onclick="stopAR()"       class="btn-gold" style="display:none;background:rgba(80,20,20,0.8);color:#fcc;">✕ ปิดกล้อง</button>
   </div>
   <p style="color:rgba(255,255,255,0.2);font-size:0.7rem;margin-top:12px;">* Chrome / Safari · อนุญาตการใช้กล้อง</p>
 </section>
 
-<!-- P5 -->
+<!-- P5 Bubble Wall -->
 <section id="p5" class="page">
   <h1>BUBBLE WALL</h1>
   <div class="sub-t">คลังภาพมรดกไทยดิจิทัลจากฝีมือคุณ</div>
@@ -327,19 +485,22 @@
 
 
 <script>
-/* ═══════════════════════════════════════
+/* ═══════════════════════
    PAGE NAV
-═══════════════════════════════════════ */
+═══════════════════════ */
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
 
-/* ═══════════════════════════════════════
+/* ═══════════════════════
    P2 — SVG DESIGNER
-═══════════════════════════════════════ */
-const maskState = { char:'giant', eye:'wide', crown:'spike', pattern:'basic', colors:{ skin:'#16a34a', line:'#064e3b', crown:'#FFD700', gem:'#dc2626' } };
+═══════════════════════ */
+const maskState = {
+  char:'giant', eye:'wide', crown:'spike', pattern:'basic',
+  colors:{ skin:'#16a34a', line:'#064e3b', crown:'#FFD700', gem:'#dc2626' }
+};
 const presets = {
   giant:  { skin:'#16a34a', line:'#064e3b', crown:'#FFD700', gem:'#dc2626', eye:'wide',   crownStyle:'spike', pattern:'basic'  },
   monkey: { skin:'#ffffff', line:'#94a3b8', crown:'#FFD700', gem:'#3b82f6', eye:'normal', crownStyle:'round', pattern:'none'   },
@@ -352,146 +513,181 @@ function updateState(u) {
   if (u.char) {
     maskState.char = u.char;
     const p = presets[u.char];
-    maskState.colors = {...p}; maskState.eye = p.eye; maskState.crown = p.crownStyle; maskState.pattern = p.pattern;
-    document.getElementById('c-skin').value = p.skin; document.getElementById('c-line').value = p.line;
-    document.getElementById('c-crown').value = p.crown; document.getElementById('c-gem').value = p.gem;
+    maskState.colors = { skin:p.skin, line:p.line, crown:p.crown, gem:p.gem };
+    maskState.eye = p.eye; maskState.crown = p.crownStyle; maskState.pattern = p.pattern;
+    document.getElementById('c-skin').value  = p.skin;
+    document.getElementById('c-line').value  = p.line;
+    document.getElementById('c-crown').value = p.crown;
+    document.getElementById('c-gem').value   = p.gem;
   }
-  if (u.eye)     maskState.eye = u.eye;
-  if (u.crown)   maskState.crown = u.crown;
+  if (u.eye)     maskState.eye     = u.eye;
+  if (u.crown)   maskState.crown   = u.crown;
   if (u.pattern) maskState.pattern = u.pattern;
   renderSVG();
 }
 
 function applyColors() {
-  maskState.colors.skin=document.getElementById('c-skin').value; maskState.colors.line=document.getElementById('c-line').value;
-  maskState.colors.crown=document.getElementById('c-crown').value; maskState.colors.gem=document.getElementById('c-gem').value;
+  maskState.colors.skin  = document.getElementById('c-skin').value;
+  maskState.colors.line  = document.getElementById('c-line').value;
+  maskState.colors.crown = document.getElementById('c-crown').value;
+  maskState.colors.gem   = document.getElementById('c-gem').value;
   renderSVG();
 }
 
 function renderSVG() {
-  document.querySelectorAll('.char-btn').forEach(b=>b.classList.remove('active-btn'));
-  document.getElementById(`btn-${maskState.char}`)?.classList.add('active-btn');
-  document.querySelectorAll('.pat-btn').forEach(b=>b.classList.remove('active-btn'));
-  document.getElementById(`pat-${maskState.pattern}`)?.classList.add('active-btn');
-  document.querySelectorAll('[id^="eye-"]').forEach(b=>b.classList.remove('active-btn'));
-  document.getElementById(`eye-${maskState.eye}`)?.classList.add('active-btn');
-  document.querySelectorAll('[id^="crown-"]').forEach(b=>b.classList.remove('active-btn'));
-  document.getElementById(`crown-${maskState.crown}`)?.classList.add('active-btn');
+  // highlight buttons
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active-btn'));
+  document.getElementById('btn-'+maskState.char)?.classList.add('active-btn');
+  document.getElementById('pat-'+maskState.pattern)?.classList.add('active-btn');
+  document.querySelectorAll('.sb-btn-sm').forEach(b => b.classList.remove('active-btn'));
+  document.getElementById('eye-'+maskState.eye)?.classList.add('active-btn');
+  document.getElementById('crown-'+maskState.crown)?.classList.add('active-btn');
 
-  document.getElementById('part-face').setAttribute('fill',maskState.colors.skin);
-  document.getElementById('part-ear-l').setAttribute('fill',maskState.colors.skin);
-  document.getElementById('part-ear-r').setAttribute('fill',maskState.colors.skin);
-  document.getElementById('part-crown-top').setAttribute('fill',maskState.colors.crown);
-  document.getElementById('part-crown-base').setAttribute('fill',maskState.colors.crown);
-  document.getElementById('part-gem').setAttribute('fill',maskState.colors.gem);
-  const pc=document.getElementById('patterns-container');
-  pc.setAttribute('stroke',maskState.colors.line); pc.setAttribute('color',maskState.colors.line);
-  ['basic','kanok','royal'].forEach(p=>document.getElementById(`pattern-${p}`)?.classList.toggle('hidden',maskState.pattern!==p));
+  // colors
+  document.getElementById('part-face').setAttribute('fill',   maskState.colors.skin);
+  document.getElementById('part-ear-l').setAttribute('fill',  maskState.colors.skin);
+  document.getElementById('part-ear-r').setAttribute('fill',  maskState.colors.skin);
+  document.getElementById('part-crown-top').setAttribute('fill',  maskState.colors.crown);
+  document.getElementById('part-crown-base').setAttribute('fill', maskState.colors.crown);
+  document.getElementById('part-gem').setAttribute('fill',    maskState.colors.gem);
+  const pc = document.getElementById('patterns-container');
+  pc.setAttribute('stroke', maskState.colors.line);
+  pc.setAttribute('color',  maskState.colors.line);
 
-  const eL=document.getElementById('part-eye-l'),eR=document.getElementById('part-eye-r');
-  const pL=document.getElementById('pupil-l'),pR=document.getElementById('pupil-r');
-  if (maskState.eye==='wide') { eL.setAttribute('d','M135 210 Q165 180 190 215 L190 225 Q165 240 135 210 Z'); eR.setAttribute('d','M210 215 Q235 180 265 210 L265 210 Q235 240 210 225 Z'); pL.setAttribute('r','8');pR.setAttribute('r','8'); }
-  else { eL.setAttribute('d','M140 215 Q165 200 190 215'); eR.setAttribute('d','M210 215 Q235 200 260 215'); pL.setAttribute('r','5');pR.setAttribute('r','5'); }
+  // patterns
+  ['basic','kanok','royal'].forEach(p => {
+    document.getElementById('pattern-'+p)?.classList.toggle('hidden', maskState.pattern !== p);
+  });
 
-  const cg=document.getElementById('crown-group'),ct=document.getElementById('part-crown-top'),co=document.getElementById('part-crown-ornament'),gem=document.getElementById('part-gem');
-  if (maskState.crown==='none') { cg.style.display='none'; gem.style.display='none'; }
-  else { cg.style.display=''; gem.style.display=''; ct.setAttribute('d', maskState.crown==='spike'?'M200 10 L220 85 L180 85 Z':'M200 30 Q230 50 200 85 Q170 50 200 30'); co.setAttribute('cy', maskState.crown==='spike'?'45':'55'); }
-  ['part-fang-l','part-fang-r'].forEach(id=>document.getElementById(id).style.display=maskState.char==='giant'?'':'none');
-  document.getElementById('part-mouth').setAttribute('d',maskState.char==='nang'?'M180 305 Q200 315 220 305':'M170 300 Q200 330 230 300');
+  // eyes
+  const eL=document.getElementById('part-eye-l'), eR=document.getElementById('part-eye-r');
+  const pL=document.getElementById('pupil-l'),    pR=document.getElementById('pupil-r');
+  if (maskState.eye === 'wide') {
+    eL.setAttribute('d','M135 210 Q165 180 190 215 L190 225 Q165 240 135 210 Z');
+    eR.setAttribute('d','M210 215 Q235 180 265 210 L265 210 Q235 240 210 225 Z');
+    pL.setAttribute('r','8'); pR.setAttribute('r','8');
+  } else {
+    eL.setAttribute('d','M140 215 Q165 200 190 215');
+    eR.setAttribute('d','M210 215 Q235 200 260 215');
+    pL.setAttribute('r','5'); pR.setAttribute('r','5');
+  }
+
+  // crown
+  const cg=document.getElementById('crown-group');
+  const ct=document.getElementById('part-crown-top');
+  const co=document.getElementById('part-crown-ornament');
+  const gem=document.getElementById('part-gem');
+  if (maskState.crown === 'none') {
+    cg.style.display='none'; gem.style.display='none';
+  } else {
+    cg.style.display=''; gem.style.display='';
+    ct.setAttribute('d', maskState.crown==='spike'
+      ? 'M200 10 L220 85 L180 85 Z'
+      : 'M200 30 Q230 50 200 85 Q170 50 200 30');
+    co.setAttribute('cy', maskState.crown==='spike' ? '45' : '55');
+  }
+
+  // fangs
+  ['part-fang-l','part-fang-r'].forEach(id =>
+    document.getElementById(id).style.display = maskState.char==='giant' ? '' : 'none'
+  );
+
+  // mouth
+  document.getElementById('part-mouth').setAttribute('d',
+    maskState.char==='nang' ? 'M180 305 Q200 315 220 305' : 'M170 300 Q200 330 230 300'
+  );
 }
 
 function randomizeAll() {
-  const keys=Object.keys(presets), rnd=()=>'#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
-  updateState({char:keys[Math.floor(Math.random()*keys.length)],pattern:['none','basic','kanok','royal'][Math.floor(Math.random()*4)]});
-  maskState.colors={skin:rnd(),line:rnd(),crown:rnd(),gem:rnd()};
-  document.getElementById('c-skin').value=maskState.colors.skin; document.getElementById('c-line').value=maskState.colors.line;
-  document.getElementById('c-crown').value=maskState.colors.crown; document.getElementById('c-gem').value=maskState.colors.gem;
+  const keys = Object.keys(presets);
+  const patterns = ['none','basic','kanok','royal'];
+  const rnd = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
+  updateState({
+    char: keys[Math.floor(Math.random()*keys.length)],
+    pattern: patterns[Math.floor(Math.random()*patterns.length)]
+  });
+  maskState.colors = { skin:rnd(), line:rnd(), crown:rnd(), gem:rnd() };
+  document.getElementById('c-skin').value  = maskState.colors.skin;
+  document.getElementById('c-line').value  = maskState.colors.line;
+  document.getElementById('c-crown').value = maskState.colors.crown;
+  document.getElementById('c-gem').value   = maskState.colors.gem;
   renderSVG();
 }
 
 async function exportMask() {
-  const svg=document.getElementById('main-svg'), src=new XMLSerializer().serializeToString(svg);
-  const cvs=document.createElement('canvas'); cvs.width=cvs.height=1200;
-  const ctx=cvs.getContext('2d'), g=ctx.createRadialGradient(600,600,0,600,600,900);
-  g.addColorStop(0,'#1a1a1a'); g.addColorStop(1,'#000'); ctx.fillStyle=g; ctx.fillRect(0,0,1200,1200);
-  const img=new Image(); img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(src)));
-  img.onload=()=>{ ctx.drawImage(img,100,100,1000,1000); ctx.fillStyle='#c5a059'; ctx.font='bold 32px serif'; ctx.textAlign='center'; ctx.fillText(`KHON MASK · ${maskState.char.toUpperCase()}`,600,1140); const a=document.createElement('a'); a.download=`khon-mask-${Date.now()}.png`; a.href=cvs.toDataURL('image/png'); a.click(); document.getElementById('modal').classList.remove('opacity-0','pointer-events-none'); };
+  const svg = document.getElementById('main-svg');
+  const src = new XMLSerializer().serializeToString(svg);
+  const cvs = document.createElement('canvas'); cvs.width = cvs.height = 1200;
+  const ctx = cvs.getContext('2d');
+  const g = ctx.createRadialGradient(600,600,0,600,600,900);
+  g.addColorStop(0,'#1a1a1a'); g.addColorStop(1,'#000');
+  ctx.fillStyle=g; ctx.fillRect(0,0,1200,1200);
+  const img = new Image();
+  img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(src)));
+  img.onload = () => {
+    ctx.drawImage(img,100,100,1000,1000);
+    ctx.fillStyle='#c5a059'; ctx.font='bold 32px serif'; ctx.textAlign='center';
+    ctx.fillText('KHON MASK · '+maskState.char.toUpperCase(), 600, 1140);
+    const a = document.createElement('a');
+    a.download = 'khon-mask-'+Date.now()+'.png';
+    a.href = cvs.toDataURL('image/png');
+    a.click();
+    document.getElementById('modal').classList.add('open');
+  };
 }
-function closeModal() { document.getElementById('modal').classList.add('opacity-0','pointer-events-none'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
-/* ═══════════════════════════════════════
-   SVG → Image สำหรับ AR
-   ใช้ SVG element ปัจจุบันเสมอ (ไม่ clone)
-═══════════════════════════════════════ */
+/* ═══════════════════════
+   SVG → Image (snapshot)
+═══════════════════════ */
 function svgToImage(size=600) {
   return new Promise(resolve => {
     const svg = document.getElementById('main-svg');
-    // serialize ณ ปัจจุบัน (รับทั้ง style inline + attribute)
     const src = new XMLSerializer().serializeToString(svg);
-    // ต้อง encode ให้ถูกต้อง (รองรับ Unicode / Thai)
     const b64 = btoa(unescape(encodeURIComponent(src)));
-    const dataURL = 'data:image/svg+xml;base64,' + b64;
-
     const img = new Image();
     img.onload = () => {
       const c = document.createElement('canvas');
       c.width = c.height = size;
-      const ctx = c.getContext('2d');
-      ctx.clearRect(0, 0, size, size);
-      ctx.drawImage(img, 0, 0, size, size);
+      c.getContext('2d').drawImage(img, 0, 0, size, size);
       const out = new Image();
       out.onload = () => resolve(out);
       out.onerror = () => resolve(null);
       out.src = c.toDataURL('image/png');
     };
     img.onerror = () => resolve(null);
-    img.src = dataURL;
+    img.src = 'data:image/svg+xml;base64,' + b64;
   });
 }
 
-/* ═══════════════════════════════════════
-   custom mask flag — เพื่อแยก P2 vs P4 preset
-═══════════════════════════════════════ */
-let usingCustomMask = false;   // true = ใช้หน้ากากจาก P2
-let customMaskLabel = '';
+/* ═══════════════════════
+   applyToAR — ส่งหน้ากาก P2 → P4
+═══════════════════════ */
+async function applyToAR() {
+  // snapshot SVG ก่อนเปลี่ยนหน้า
+  maskImg = await svgToImage(600);
 
-function setCustomMaskUI(charName) {
-  usingCustomMask = true;
-  customMaskLabel = charName;
-  // แสดงปุ่มยกเลิก
-  document.getElementById('sel-clear-custom').style.display = '';
-  // ปิด highlight preset ทั้งหมด
-  document.querySelectorAll('.mask-sel-btn').forEach(b => b.classList.remove('active-sel'));
+  showPage('p4');
+
   // อัปเดต preview bar
-  updatePreviewBar();
-}
+  const charNames = { giant:'ยักษ์', monkey:'ลิง', human:'เทวดา', nang:'ตัวนาง', rishi:'ฤๅษี' };
+  const label = charNames[maskState.char] || maskState.char;
+  document.getElementById('ar-mask-preview-bar').style.display = 'flex';
+  document.getElementById('ar-mask-preview-name').textContent = 'ตัวละคร: '+label+'  |  สีหน้า: '+maskState.colors.skin;
 
-function revertToPreset() {
-  usingCustomMask = false;
-  document.getElementById('sel-clear-custom').style.display = 'none';
-  document.getElementById('ar-mask-preview-bar').style.display = 'none';
-  // คืน preset default
-  selectPreset('giant');
-}
-
-async function updatePreviewBar() {
-  const bar = document.getElementById('ar-mask-preview-bar');
-  bar.style.display = 'flex';
-  document.getElementById('ar-mask-preview-name').textContent = `ตัวละคร: ${customMaskLabel}  |  สีหน้า: ${maskState.colors.skin}`;
   // วาด thumbnail
-  const thumb = document.getElementById('ar-mask-thumb');
-  const img = await svgToImage(88);
-  if (img) {
+  if (maskImg) {
+    const thumb = document.getElementById('ar-mask-thumb');
     const ctx = thumb.getContext('2d');
-    ctx.clearRect(0, 0, 44, 44);
-    ctx.drawImage(img, 0, 0, 44, 44);
+    ctx.clearRect(0,0,44,44);
+    ctx.drawImage(maskImg, 0,0,44,44);
   }
 }
 
-/* ═══════════════════════════════════════
-   P4 — AR (face-api.js + getUserMedia)
-═══════════════════════════════════════ */
-let arRunning = false, stream = null, rafId = null, maskImg = null, faceApiReady = false;
+/* ═══════════════════════
+   P4 — AR
+═══════════════════════ */
+let arRunning=false, stream=null, rafId=null, maskImg=null, faceApiReady=false;
 
 async function loadFaceApi() {
   if (faceApiReady) return true;
@@ -512,8 +708,7 @@ async function initModels() {
       faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
       faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL_URL)
     ]);
-    faceApiReady = true;
-    return true;
+    faceApiReady = true; return true;
   } catch(e) { console.warn('model load failed',e); return false; }
 }
 
@@ -522,7 +717,9 @@ async function startAR() {
   document.getElementById('start-ar-btn').disabled = true;
 
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user', width:{ideal:640}, height:{ideal:480} }, audio:false });
+    stream = await navigator.mediaDevices.getUserMedia({
+      video:{ facingMode:'user', width:{ideal:640}, height:{ideal:480} }, audio:false
+    });
   } catch(e) {
     setStatus('❌ กรุณาอนุญาตการใช้กล้อง');
     document.getElementById('start-ar-btn').disabled = false;
@@ -535,61 +732,55 @@ async function startAR() {
   await video.play();
 
   const overlay = document.getElementById('ar-overlay-canvas');
-  overlay.width = video.videoWidth || 640;
+  overlay.width  = video.videoWidth  || 640;
   overlay.height = video.videoHeight || 480;
 
-  // ══ KEY FIX: สร้าง maskImg จาก SVG ณ ขณะนี้ (ไม่ว่าจะเป็น custom หรือ preset) ══
-  setStatus('🎨 สร้างหน้ากาก...');
-  maskImg = await svgToImage(600);
-  if (!maskImg) { setStatus('❌ สร้างหน้ากากไม่สำเร็จ'); }
+  // สร้าง maskImg จาก SVG ณ ปัจจุบัน (ใช้หน้ากากที่ส่งมาจาก P2 หรือสร้างใหม่)
+  if (!maskImg) {
+    setStatus('🎨 สร้างหน้ากาก...');
+    maskImg = await svgToImage(600);
+  }
 
-  setStatus('⏳ โหลด Face Detection model...');
+  setStatus('⏳ โหลด Face Detection...');
   const ok = await loadFaceApi();
 
   arRunning = true;
   document.getElementById('guide-svg').style.opacity = '0';
-  document.getElementById('start-ar-btn').style.display = 'none';
+  document.getElementById('start-ar-btn').style.display  = 'none';
   document.getElementById('start-ar-btn').disabled = false;
   document.getElementById('capture-ar-btn').style.display = '';
-  document.getElementById('stop-ar-btn').style.display = '';
+  document.getElementById('stop-ar-btn').style.display    = '';
 
   if (ok) { setStatus('🟢 Face Tracking Active'); runTrackingLoop(); }
-  else    { setStatus('⚠️ ไม่มี Face Tracking — กลางจอ'); runFallbackLoop(); }
+  else    { setStatus('⚠️ Fallback mode — กลางจอ'); runFallbackLoop(); }
 }
 
-/* Loop พร้อม face tracking */
 function runTrackingLoop() {
   const video   = document.getElementById('ar-video');
   const overlay = document.getElementById('ar-overlay-canvas');
   const ctx     = overlay.getContext('2d');
-
   async function loop() {
     if (!arRunning) return;
     ctx.clearRect(0, 0, overlay.width, overlay.height);
-
     try {
       const det = await faceapi
         .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ scoreThreshold:0.35, inputSize:224 }))
         .withFaceLandmarks(true);
-
       if (det && maskImg) {
-        const box  = det.detection.box;
-        const lms  = det.landmarks;
-
-        const eyeL  = lms.getLeftEye(),  eyeR = lms.getRightEye();
-        const lCx   = eyeL.reduce((s,p)=>s+p.x,0)/eyeL.length;
-        const rCx   = eyeR.reduce((s,p)=>s+p.x,0)/eyeR.length;
-        const lCy   = eyeL.reduce((s,p)=>s+p.y,0)/eyeL.length;
-        const rCy   = eyeR.reduce((s,p)=>s+p.y,0)/eyeR.length;
+        const box = det.detection.box;
+        const lms = det.landmarks;
+        const eyeL = lms.getLeftEye(),  eyeR = lms.getRightEye();
+        const lCx  = eyeL.reduce((s,p)=>s+p.x,0)/eyeL.length;
+        const rCx  = eyeR.reduce((s,p)=>s+p.x,0)/eyeR.length;
+        const lCy  = eyeL.reduce((s,p)=>s+p.y,0)/eyeL.length;
+        const rCy  = eyeR.reduce((s,p)=>s+p.y,0)/eyeR.length;
         const angle = Math.atan2(rCy-lCy, rCx-lCx);
-
         const scale = parseFloat(document.getElementById('sl-size').value);
         const offY  = parseFloat(document.getElementById('sl-oy').value);
         const mW = box.width  * 1.8 * scale;
         const mH = box.height * 2.0 * scale;
         const cX = box.x + box.width  / 2;
         const cY = box.y + box.height / 2 + offY;
-
         ctx.save();
         ctx.translate(cX, cY);
         ctx.rotate(angle);
@@ -597,13 +788,11 @@ function runTrackingLoop() {
         ctx.restore();
       }
     } catch(e) {}
-
     rafId = requestAnimationFrame(loop);
   }
   loop();
 }
 
-/* Loop fallback */
 function runFallbackLoop() {
   const overlay = document.getElementById('ar-overlay-canvas');
   const ctx     = overlay.getContext('2d');
@@ -624,109 +813,84 @@ function runFallbackLoop() {
 
 function stopAR() {
   arRunning = false;
-  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  if (rafId)  { cancelAnimationFrame(rafId); rafId = null; }
   if (stream) { stream.getTracks().forEach(t=>t.stop()); stream = null; }
-  const video = document.getElementById('ar-video'); video.srcObject = null;
+  document.getElementById('ar-video').srcObject = null;
   document.getElementById('ar-overlay-canvas').getContext('2d').clearRect(0,0,9999,9999);
   document.getElementById('guide-svg').style.opacity = '0.4';
   setStatus('⏸ หยุดแล้ว — กด "เปิดกล้อง AR" อีกครั้ง');
-  document.getElementById('start-ar-btn').style.display = '';
+  document.getElementById('start-ar-btn').style.display   = '';
   document.getElementById('capture-ar-btn').style.display = 'none';
-  document.getElementById('stop-ar-btn').style.display = 'none';
+  document.getElementById('stop-ar-btn').style.display    = 'none';
+  // reset maskImg เพื่อให้ startAR ดึงใหม่จาก SVG ปัจจุบัน
+  maskImg = null;
 }
 
-/* ══ KEY FIX: selectPreset ใน P4 ต้องไม่ทำงานถ้าใช้ custom mask จาก P2
-      และต้อง rebuild maskImg หลัง updateState ══ */
-function selectPreset(type) {
-  usingCustomMask = false;
-  document.getElementById('sel-clear-custom').style.display = 'none';
-  document.getElementById('ar-mask-preview-bar').style.display = 'none';
-
-  // อัปเดต SVG ด้วย preset
-  updateState({ char: type });
-
-  // highlight ปุ่มที่เลือก
-  document.querySelectorAll('.mask-sel-btn').forEach(b=>b.classList.remove('active-sel'));
-  document.getElementById('sel-'+type)?.classList.add('active-sel');
-
-  // ══ rebuild maskImg ด้วย SVG ที่ update แล้ว ══
-  svgToImage(600).then(img => { maskImg = img; });
-}
-
-/* ══ KEY FIX: applyToAR — ส่งหน้ากากจาก P2 พร้อม snapshot SVG ══ */
-async function applyToAR() {
-  // 1. snapshot SVG ก่อนเปลี่ยนหน้า (สำคัญมาก!)
-  const snapshot = await svgToImage(600);
-  maskImg = snapshot;
-
-  // 2. ตั้ง flag custom
-  const charNames = { giant:'ยักษ์', monkey:'ลิง', human:'เทวดา', nang:'ตัวนาง', rishi:'ฤๅษี' };
-  const label = charNames[maskState.char] || maskState.char;
-
-  // 3. ไปหน้า AR
-  showPage('p4');
-
-  // 4. อัปเดต UI ใน P4 ว่ากำลังใช้ custom mask
-  setCustomMaskUI(label);
-  await updatePreviewBar();
-
-  // 5. ถ้า AR กำลังรันอยู่ — maskImg ถูกอัปเดตแล้ว (step 1)
-  // ไม่ต้องทำอะไรเพิ่ม เพราะ loop อ่าน maskImg ตรงๆ
-}
-
-/* อัปเดต maskImg เมื่อ slider เปลี่ยน (ไม่จำเป็นแต่ไว้ในกรณี custom) */
+// sync slider labels
 document.addEventListener('input', e => {
   if (e.target.id === 'sl-size') document.getElementById('lbl-size').textContent = parseFloat(e.target.value).toFixed(2);
   if (e.target.id === 'sl-oy')   document.getElementById('lbl-oy').textContent   = e.target.value;
 });
 
-function setStatus(msg) { const el=document.getElementById('ar-status'); if(el) el.textContent=msg; }
-
-/* ═══════════════════════════════════════
-   ถ่ายรูป
-═══════════════════════════════════════ */
-const capturedImages = [];
-function capturePhoto() {
-  const flash=document.getElementById('flash-effect'); flash.style.opacity='1'; setTimeout(()=>flash.style.opacity='0',120);
-  const video=document.getElementById('ar-video'), overlay=document.getElementById('ar-overlay-canvas');
-  const c=document.createElement('canvas'); c.width=overlay.width||640; c.height=overlay.height||480;
-  const ctx=c.getContext('2d');
-  if (video.readyState>=2) ctx.drawImage(video,0,0,c.width,c.height);
-  ctx.drawImage(overlay,0,0,c.width,c.height);
-  ctx.fillStyle='rgba(201,146,42,0.8)'; ctx.font='bold 14px serif'; ctx.textAlign='right';
-  ctx.fillText('KHON LAB · AR',c.width-8,c.height-8);
-  capturedImages.push(c.toDataURL('image/png'));
-  setTimeout(()=>{ addBubble(); showPage('p5'); },350);
+function setStatus(msg) {
+  const el = document.getElementById('ar-status');
+  if (el) el.textContent = msg;
 }
 
-/* ═══════════════════════════════════════
-   P5 — BUBBLE WALL
-═══════════════════════════════════════ */
+/* ═══════════════════════
+   ถ่ายรูป
+═══════════════════════ */
+const capturedImages = [];
+function capturePhoto() {
+  const flash   = document.getElementById('flash-effect');
+  flash.style.opacity = '1';
+  setTimeout(() => flash.style.opacity = '0', 120);
+
+  const video   = document.getElementById('ar-video');
+  const overlay = document.getElementById('ar-overlay-canvas');
+  const c = document.createElement('canvas');
+  c.width  = overlay.width  || 640;
+  c.height = overlay.height || 480;
+  const ctx = c.getContext('2d');
+  if (video.readyState >= 2) ctx.drawImage(video, 0, 0, c.width, c.height);
+  ctx.drawImage(overlay, 0, 0, c.width, c.height);
+  ctx.fillStyle = 'rgba(201,146,42,0.8)';
+  ctx.font = 'bold 14px serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('KHON LAB · AR', c.width-8, c.height-8);
+  capturedImages.push(c.toDataURL('image/png'));
+  setTimeout(() => { addBubble(); showPage('p5'); }, 350);
+}
+
+/* ═══════════════════════
+   P5 BUBBLE WALL
+═══════════════════════ */
 function addBubble() {
-  const container=document.getElementById('bubble-container');
-  document.getElementById('empty-msg').style.display='none';
-  const img=document.createElement('img');
-  img.src=capturedImages[capturedImages.length-1]; img.className='bubble-photo';
-  const sz=Math.random()*60+100;
-  img.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*(container.clientWidth-sz)}px;top:${Math.random()*(container.clientHeight-sz)}px;--dur:${Math.random()*3+4}s`;
+  const container = document.getElementById('bubble-container');
+  document.getElementById('empty-msg').style.display = 'none';
+  const img = document.createElement('img');
+  img.src = capturedImages[capturedImages.length-1];
+  img.className = 'bubble-photo';
+  const sz = Math.random()*60+100;
+  img.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*(container.clientWidth-sz)}px;top:${Math.random()*(container.clientHeight-sz)}px;--dur:${Math.random()*3+4}s`;
   container.appendChild(img);
 }
 function clearBubbles() {
   if (!confirm('ล้างรูปภาพทั้งหมด?')) return;
-  capturedImages.length=0;
-  document.querySelectorAll('.bubble-photo').forEach(b=>b.remove());
-  document.getElementById('empty-msg').style.display='flex';
+  capturedImages.length = 0;
+  document.querySelectorAll('.bubble-photo').forEach(b => b.remove());
+  document.getElementById('empty-msg').style.display = 'flex';
 }
 
-/* ═══════════════════════════════════════
+/* ═══════════════════════
    INIT
-═══════════════════════════════════════ */
+═══════════════════════ */
 window.onload = () => {
   updateState({ char:'giant' });
-  // preload face-api เงียบๆ
-  loadFaceApi().then(ok => setStatus(ok ? '✅ พร้อมใช้งาน — กด "เปิดกล้อง AR"' : '⚠️ โหลด Face Model ไม่สำเร็จ (จะใช้ fallback)'));
+  loadFaceApi().then(ok =>
+    setStatus(ok ? '✅ พร้อมใช้งาน — กด "เปิดกล้อง AR"' : '⚠️ โหลด Face Model ไม่สำเร็จ (จะใช้ fallback)')
+  );
 };
 </script>
-
 </body>
 </html>
