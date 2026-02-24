@@ -232,15 +232,24 @@
     .sl-row span.val{width:35px;text-align:right;}
 
     /* ── P5 BUBBLE ── */
+    #bubble-container{
+      position:relative;width:100%;height:65vh;
+      background:rgba(9,9,11,0.5);border-radius:3rem;
+      border:1px solid #27272a;overflow:hidden;
+    }
     .bubble-photo{
       position:absolute;border-radius:50%;border:4px solid #c5a059;
-      object-fit:cover;animation:floatBubble var(--dur) ease-in-out infinite;
+      object-fit:cover;
       box-shadow:0 10px 30px rgba(197,160,89,0.4);
+      animation:floatBubble var(--dur,5s) ease-in-out infinite;
+      /* ใช้ transform เท่านั้น ไม่ขยับ left/top */
     }
     @keyframes floatBubble{
-      0%,100%{transform:translateY(0) translateX(0);}
-      33%{transform:translateY(-25px) translateX(12px);}
-      66%{transform:translateY(12px) translateX(-12px);}
+      0%  { transform: translate(0,    0   ); }
+      25% { transform: translate(12px, -18px); }
+      50% { transform: translate(-8px, -28px); }
+      75% { transform: translate(-14px,-10px); }
+      100%{ transform: translate(0,    0   ); }
     }
   </style>
 </head>
@@ -474,7 +483,7 @@
 <section id="p5" class="page">
   <h1>BUBBLE WALL</h1>
   <div class="sub-t">คลังภาพมรดกไทยดิจิทัลจากฝีมือคุณ</div>
-  <div id="bubble-container" style="position:relative;width:100%;height:65vh;background:rgba(9,9,11,0.5);border-radius:3rem;border:1px solid #27272a;overflow:hidden;">
+  <div id="bubble-container">
     <div id="empty-msg" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#71717a;">ยังไม่มีรูปถ่าย... ไปถ่ายที่หน้า AR Experience ก่อนนะครับ!</div>
   </div>
   <div class="btn-wrap">
@@ -875,8 +884,21 @@ function addBubble() {
   const img = document.createElement('img');
   img.src = capturedImages[capturedImages.length-1];
   img.className = 'bubble-photo';
-  const sz = Math.random()*60+100;
-  img.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*(container.clientWidth-sz)}px;top:${Math.random()*(container.clientHeight-sz)}px;--dur:${Math.random()*3+4}s`;
+
+  const sz = Math.random()*60+90; // 90–150px
+  const pad = 30; // margin จากขอบ รองรับ animation float ±28px
+
+  const cW = container.clientWidth  || 500;
+  const cH = container.clientHeight || 400;
+
+  // clamp ให้ฟองสบู่ + padding อยู่ในกรอบ
+  const maxLeft = Math.max(0, cW - sz - pad);
+  const maxTop  = Math.max(0, cH - sz - pad);
+  const left = pad/2 + Math.random() * maxLeft;
+  const top  = pad/2 + Math.random() * maxTop;
+  const dur  = (Math.random()*3+4).toFixed(1);
+
+  img.style.cssText = `width:${sz}px;height:${sz}px;left:${left}px;top:${top}px;--dur:${dur}s`;
   container.appendChild(img);
 }
 function clearBubbles() {
