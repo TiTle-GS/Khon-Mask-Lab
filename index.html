@@ -622,21 +622,6 @@
 
 
     
-    <section id="p5" class="page">
-        <h1>BUBBLE WALL</h1>
-        <div class="sub-t">คลังภาพมรดกไทยดิจิทัลจากฝีมือคุณ</div>
-        
-        <div id="bubble-container" class="relative w-full h-[65vh] bg-zinc-950/50 rounded-[3rem] border border-zinc-800 overflow-hidden shadow-inner mx-auto">
-            <div id="empty-msg" class="absolute inset-0 flex items-center justify-center text-zinc-500">
-                ยังไม่มีรูปถ่าย... ลองไปถ่ายที่หน้า AR Experience สิ!
-            </div>
-        </div>
-
-        <div class="btn-wrap">
-            <button class="btn-gold" onclick="showPage('p4')">กลับไปหน้า AR</button>
-            <button class="btn-gold" onclick="clearBubbles()" style="background: #444; color: #ccc;">ล้างรูปภาพ</button>
-        </div>
-    </section>
 
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -830,7 +815,9 @@
             window.scrollTo(0, 0);
         }
 
-        // รายชื่อลิงก์โมเดล 5 แบบจาก GitHub
+   
+    </script>
+<script>  // รายชื่อลิงก์โมเดล 5 แบบจาก GitHub
 const modelLinks = {
     1: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/1-v1.glb",
     2: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/2-v5.glb",
@@ -851,9 +838,7 @@ function changeKhon(id) {
         if (activeBtn) activeBtn.classList.add('active');
     }
 }
-        
-    </script>
-
+</script>
     
 </body>
 </html>
