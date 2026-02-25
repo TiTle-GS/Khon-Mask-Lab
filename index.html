@@ -7,6 +7,7 @@
     
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.1/dist/mindar-face-aframe.prod.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+Thai:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -584,41 +585,39 @@
     </section>
 
 <section id="p4" class="page">
-    <h1 class="text-3xl md:text-5xl mb-2">AR EXPERIENCE</h1>
-    <div class="sub-t">สวมหัวโขนผ่านเทคโนโลยีจำลองใบหน้า (Face Tracking)</div>
+    <h1>AR EXHIBITION</h1>
+    <div class="sub-t">นิทรรศการหัวโขนไทยในรูปแบบ 3D & AR</div>
 
-    <div class="relative w-full max-w-4xl aspect-[3/4] md:aspect-video rounded-[2.5rem] overflow-hidden border-2 border-[#c5a059] shadow-2xl bg-black mx-auto">
-        <div id="ar-container" class="w-full h-full">
-            <a-scene mindar-face="autoStart: false" embedded color-space="sRGB" renderer="colorManagement: true, transparent: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-                <a-camera active="false" position="0 0 0" look-controls="enabled: false"></a-camera>
-
-                <a-entity mindar-face-target="anchorIndex: 168">
-                    <a-sphere id="ar-mask-base" position="0 0.5 -0.5" radius="0.4" scale="1 1.2 0.8" material="color: #16a34a; metalness: 0.6; roughness: 0.2">
-                        <a-cone position="0 0.8 0" radius-bottom="0.2" height="0.6" material="color: #FFD700"></a-cone>
-                    </a-sphere>
-                </a-entity>
-            </a-scene>
-        </div>
-
-        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent flex flex-col items-center gap-4">
-            <div class="flex gap-2 overflow-x-auto pb-2 w-full justify-center no-scrollbar">
-                <button onclick="changeARMask('giant')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-[#c5a059] whitespace-nowrap">ยักษ์</button>
-                <button onclick="changeARMask('monkey')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">ลิง</button>
-                <button onclick="changeARMask('human')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">เทวดา</button>
-                <button onclick="changeARMask('nang')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">นาง</button>
-                <button onclick="changeARMask('rishi')" class="px-4 py-2 bg-zinc-800 rounded-full text-xs border border-white/20 whitespace-nowrap">ฤๅษี</button>
-            </div>
+    <div id="ar-wrapper" style="position: relative; width: 100%; max-width: 600px; aspect-ratio: 1/1; border-radius: 28px; overflow: hidden; border: 2px solid var(--gold); background: radial-gradient(circle, #222 0%, #000 100%); margin: 0 auto;">
+        
+        <model-viewer 
+            id="khonViewer" 
+            src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/1-v1.glb" 
+            ar ar-modes="webxr scene-viewer quick-look" 
+            camera-controls shadow-intensity="1" auto-rotate 
+            style="width: 100%; height: 100%; background-color: transparent;">
             
-            <div class="flex gap-4 items-center">
-                <button id="start-ar-btn" onclick="startAR()" class="btn-gold">เปิดกล้อง AR</button>
-                <button id="capture-btn" onclick="captureARPhoto()" class="hidden w-16 h-16 bg-white rounded-full border-4 border-[#c5a059] shadow-lg active:scale-95 flex items-center justify-center">
-                     <div class="w-12 h-12 rounded-full border-2 border-zinc-200"></div>
-                </button>
-            </div>
-        </div>
-
-        <div id="flash-effect" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-100"></div>
+            <button slot="ar-button" style="background-color: var(--gold); border-radius: 10px; border: none; position: absolute; bottom: 16px; right: 16px; padding: 10px 20px; font-family: 'Noto Serif Thai'; font-weight: bold; color: #000;">
+                📸 ส่อง AR ในพื้นที่จริง
+            </button>
+        </model-viewer>
     </div>
+
+    <div style="display: flex; gap: 8px; margin-top: 25px; flex-wrap: wrap; justify-content: center; width: 100%; padding: 0 20px;">
+        <button onclick="changeKhon(1)" class="khon-btn active" id="kb-1">แบบที่ 1</button>
+        <button onclick="changeKhon(2)" class="khon-btn" id="kb-2">แบบที่ 2</button>
+        <button onclick="changeKhon(3)" class="khon-btn" id="kb-3">แบบที่ 3</button>
+        <button onclick="changeKhon(4)" class="khon-btn" id="kb-4">แบบที่ 4</button>
+        <button onclick="changeKhon(5)" class="khon-btn" id="kb-5">แบบที่ 5</button>
+    </div>
+
+    <style>
+        .khon-btn { 
+            padding: 10px 18px; background: #1a1a1a; border: 1px solid var(--gold); 
+            color: #fff; border-radius: 12px; cursor: pointer; font-size: 13px; transition: 0.3s;
+        }
+        .khon-btn.active { background: var(--gold); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--gold); }
+    </style>
 </section>
 
 
@@ -830,6 +829,29 @@
             target.classList.add('active');
             window.scrollTo(0, 0);
         }
+
+        // รายชื่อลิงก์โมเดล 5 แบบจาก GitHub
+const modelLinks = {
+    1: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/1-v1.glb",
+    2: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/2-v5.glb",
+    3: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/3-v1.glb",
+    4: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/4-v1.glb",
+    5: "https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/5-v1.glb"
+};
+
+// ฟังก์ชันสำหรับสลับโมเดลในหน้า Exhibition
+function changeKhon(id) {
+    const viewer = document.getElementById('khonViewer');
+    if (viewer) {
+        viewer.src = modelLinks[id];
+        
+        // จัดการสถานะปุ่ม (Active Class)
+        document.querySelectorAll('.khon-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.getElementById('kb-' + id);
+        if (activeBtn) activeBtn.classList.add('active');
+    }
+}
+        
     </script>
 
     
