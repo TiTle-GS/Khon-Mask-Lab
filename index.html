@@ -95,48 +95,148 @@
     </div>
 </section>
 
+<!-- P1 -->
 <section id="p1" class="page">
-    <h1>KNOWLEDGE HUB</h1>
-    <div class="sub-t">มรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ (UNESCO)</div>
-    <div style="max-width:900px;text-align:left;background:rgba(255,255,255,0.03);padding:40px;border-radius:20px;border:1px solid rgba(201,146,42,0.2);">
-        <h2 style="text-align:left;color:var(--gl);font-family:'Noto Serif Thai';font-weight:700;border-left:5px solid var(--gold);padding-left:15px;margin-bottom:20px;">โขนพระราชทาน</h2>
-        <img src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/khon-3.jpg" alt="โขน" style="width:100%;border-radius:10px;margin-bottom:20px;">
-        <p style="margin-bottom: 20px;">"โขน" เป็นศาสตร์และศิลปะการแสดงชั้นสูงของไทยที่หลอมรวมหัตถศิลป์เข้ากับนาฏศิลป์อย่างงดงาม</p>
-        <div class="btn-wrap">
-            <button class="btn-gold" onclick="showPage('p0')">กลับหน้าแรก</button>
-            <button class="btn-gold" onclick="showPage('p2')">ไปหน้า AI ออกแบบ →</button>
-        </div>
+  <h1 style="font-size:2.5rem;">KNOWLEDGE HUB</h1>
+  <div class="sub-t">มรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ (UNESCO)</div>
+  <div style="max-width:900px;text-align:left;background:rgba(255,255,255,0.03);padding:40px;border-radius:20px;border:1px solid rgba(201,146,42,0.2);">
+    <h2 style="text-align:left;color:var(--gl);font-family:'Noto Serif Thai';font-weight:700;border-left:5px solid var(--gold);padding-left:15px;margin-bottom:20px;">โขนพระราชทาน</h2>
+    <img src="https://raw.githubusercontent.com/TiTle-GS/Khon-Mask-Lab/main/khon-3.jpg" alt="โขน" style="width:100%;border-radius:10px;margin-bottom:20px;">
+    <p style="margin-bottom:20px;text-indent:2em;font-size:1.05rem;line-height:2;"><strong>"โขน"</strong> เป็นศาสตร์และศิลปะการแสดงชั้นสูงของไทย หลอมรวมนาฏศิลป์ คีตศิลป์ หัตถศิลป์ และพัสตราภรณ์อันงดงาม</p>
+    <p style="margin-bottom:20px;text-indent:2em;font-size:1.05rem;line-height:2;">โขนพระราชทานเริ่มขึ้นในปี พ.ศ. ๒๕๕๐ สมเด็จพระนางเจ้าสิริกิติ์ฯ ทรงพระกรุณาโปรดเกล้าให้จัดสร้างเครื่องแต่งกายโขนขึ้นใหม่</p>
+    <div class="card" style="background:rgba(201,146,42,0.1);border:1px solid var(--gold);margin:20px 0;">
+      <h3 style="color:var(--gl);margin-bottom:10px;">UNESCO</h3>
+      <p>ประกาศขึ้นทะเบียน <strong>"โขน"</strong> เป็นมรดกวัฒนธรรมที่จับต้องไม่ได้ของมนุษยชาติ วันที่ ๒๙ พฤศจิกายน ๒๕๖๑</p>
     </div>
+    <div class="btn-wrap" style="margin-top:1rem;">
+      <button class="btn-gold" onclick="showPage('p0')">กลับหน้าแรก</button>
+      <button class="btn-gold" onclick="showPage('p2')">ไปหน้า AI ออกแบบ →</button>
+    </div>
+  </div>
 </section>
 
-<section id="p2" class="page studio-bg !p-0 !pt-[64px]">
-    <main class="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden w-full h-[calc(100vh-64px)]">
-        <div class="flex-1 flex flex-col items-center justify-center p-6 relative">
-            <div class="canvas-area h-[70vh] lg:h-[80%] aspect-square rounded-[2.5rem] border border-zinc-800">
-                <svg id="main-svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-2xl">
-                    <path d="M140 85 L260 85 L255 135 L145 135 Z" fill="rgba(0,0,0,0.4)" transform="translate(8,8)" />
-                    <g id="crown-group">
-                        <path id="part-crown-top" d="M200 10 L215 85 L185 85 Z" fill="#FFD700" />
-                        <circle id="part-crown-ornament" cx="200" cy="50" r="4" fill="#FFD700" stroke="#000" stroke-width="0.5" />
-                        <path id="part-crown-base" d="M140 80 L260 80 L250 130 L150 130 Z" fill="#FFD700" stroke="#b08d4a" stroke-width="1" />
-                    </g>
-                    <path id="part-face" d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 L120 130" fill="#16a34a" />
-                    <path id="part-ear-l" d="M100 200 C80 200 70 240 90 260 Q100 240 100 220" fill="#16a34a" />
-                    <path id="part-ear-r" d="M300 200 C320 200 330 240 310 260 Q300 240 300 220" fill="#16a34a" />
-                    <path id="part-mouth" d="M170 300 Q200 330 230 300" fill="none" stroke="black" stroke-width="2.5" />
-                    <circle cx="165" cy="212" r="6" fill="black"/><circle cx="235" cy="212" r="6" fill="black"/>
-                </svg>
-            </div>
-            <button class="btn-gold mt-4" onclick="randomizeAll()">🎲 สุ่มสี</button>
+<!-- P2 -->
+<section id="p2" class="page">
+  <div class="p2-main">
+
+    <!-- Canvas side -->
+    <div class="p2-canvas-wrap">
+      <div class="canvas-area">
+        <svg id="main-svg" viewBox="0 0 400 400">
+          <path d="M140 85 L260 85 L255 135 L145 135 Z" fill="rgba(0,0,0,0.4)" transform="translate(8,8)"/>
+          <g id="crown-group">
+            <path id="part-crown-top" d="M200 10 L215 85 L185 85 Z" fill="#FFD700"/>
+            <circle id="part-crown-ornament" cx="200" cy="50" r="4" fill="#FFD700" stroke="#000" stroke-width="0.5"/>
+            <path id="part-crown-base" d="M140 80 L260 80 L250 130 L150 130 Z" fill="#FFD700" stroke="#b08d4a" stroke-width="1"/>
+          </g>
+          <path id="part-face" d="M120 130 C120 130 100 180 100 240 C100 320 160 360 200 360 C240 360 300 320 300 240 C300 180 280 130 280 130 Z" fill="#16a34a"/>
+          <path id="part-ear-l" d="M100 200 C80 200 70 240 90 260 Q100 240 100 220" fill="#16a34a"/>
+          <path id="part-ear-r" d="M300 200 C320 200 330 240 310 260 Q300 240 300 220" fill="#16a34a"/>
+          <g id="details-layer">
+            <g id="patterns-container" fill="none" stroke-width="1.5" stroke-linecap="round">
+              <g id="pattern-basic" class="hidden"><path d="M130 260 Q150 270 150 290"/><path d="M270 260 Q250 270 250 290"/><path d="M190 350 Q200 330 210 350"/></g>
+              <g id="pattern-kanok" class="hidden"><path d="M120 240 Q140 230 150 250 T160 270"/><path d="M280 240 Q260 230 250 250 T240 270"/><path d="M180 150 Q200 140 220 150"/><path d="M195 160 Q200 155 205 160"/></g>
+              <g id="pattern-royal" class="hidden"><path d="M110 230 Q130 210 160 240 T180 280"/><path d="M290 230 Q270 210 240 240 T220 280"/><path d="M200 140 L200 180 M185 160 L215 160"/><circle cx="200" cy="160" r="3" fill="currentColor"/><path d="M85 220 Q75 220 80 240"/><path d="M315 220 Q325 220 320 240"/></g>
+            </g>
+            <g id="eye-group">
+              <path id="part-eye-l" d="M140 215 Q165 195 190 215" fill="white" stroke="black" stroke-width="1.5"/>
+              <path id="part-eye-r" d="M210 215 Q235 195 260 215" fill="white" stroke="black" stroke-width="1.5"/>
+              <circle id="pupil-l" cx="165" cy="212" r="6" fill="black"/>
+              <circle id="pupil-r" cx="235" cy="212" r="6" fill="black"/>
+            </g>
+            <path id="part-eyebrow-l" d="M135 200 Q165 160 190 205" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+            <path id="part-eyebrow-r" d="M210 205 Q235 160 265 200" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+            <path id="part-mouth" d="M170 300 Q200 330 230 300" fill="none" stroke="black" stroke-width="2.5"/>
+            <path id="part-fang-l" d="M175 305 L170 325 L185 310 Z" fill="white" stroke="black" stroke-width="0.5"/>
+            <path id="part-fang-r" d="M225 305 L230 325 L215 310 Z" fill="white" stroke="black" stroke-width="0.5"/>
+            <circle id="part-gem" cx="200" cy="105" r="7" fill="#dc2626" stroke="#fff" stroke-width="1"/>
+          </g>
+        </svg>
+      </div>
+      <!-- mobile buttons -->
+      <div class="p2-mobile-btns">
+        <button class="p2-mobile-btn" onclick="randomizeAll()">🎲 สุ่มสี</button>
+        <button class="p2-mobile-btn p2-mobile-btn-gold" onclick="exportMask()">💾 บันทึก</button>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar-right">
+      <div class="sb-top">
+        <button class="sb-rnd" onclick="randomizeAll()">🎲 สุ่มรูปแบบ</button>
+        <button class="sb-save" onclick="exportMask()">💾 บันทึกรูปภาพ</button>
+      </div>
+
+      <div class="sb-title">✏️ แผงควบคุมการออกแบบ</div>
+
+      <!-- หมวดหมู่ -->
+      <div class="sb-section">
+        <span class="sb-label">หมวดหมู่ตัวละคร</span>
+        <div class="grid-3">
+          <button onclick="updateState({char:'giant'})"  id="btn-giant"  class="sb-btn">ยักษ์</button>
+          <button onclick="updateState({char:'monkey'})" id="btn-monkey" class="sb-btn">ลิง</button>
+          <button onclick="updateState({char:'human'})"  id="btn-human"  class="sb-btn">เทวดา</button>
+          <button onclick="updateState({char:'nang'})"   id="btn-nang"   class="sb-btn">ตัวนาง</button>
+          <button onclick="updateState({char:'rishi'})"  id="btn-rishi"  class="sb-btn">ฤๅษี</button>
         </div>
-        <aside class="sidebar-right w-full lg:w-[380px] p-8 overflow-y-auto h-full">
-            <h2 class="text-[#c5a059] font-bold text-xl mb-6">แผงควบคุมการออกแบบ</h2>
-            <div class="space-y-6 text-left">
-                <span class="text-xs text-zinc-500 uppercase block mb-2">สีใบหน้า (Skin Color)</span>
-                <div class="color-input-wrapper"><input type="color" id="c-skin" value="#16a34a" oninput="applyColors()"></div>
+      </div>
+
+      <!-- ลวดลาย -->
+      <div class="sb-section">
+        <span class="sb-label">ลวดลายใบหน้า</span>
+        <div class="grid-2">
+          <button onclick="updateState({pattern:'none'})"  id="pat-none"  class="sb-btn">ไม่มีลาย</button>
+          <button onclick="updateState({pattern:'basic'})" id="pat-basic" class="sb-btn">ลายเส้นพื้นฐาน</button>
+          <button onclick="updateState({pattern:'kanok'})" id="pat-kanok" class="sb-btn">ลายกนกแก้ม</button>
+          <button onclick="updateState({pattern:'royal'})" id="pat-royal" class="sb-btn">ลายประดับเครื่องสูง</button>
+        </div>
+      </div>
+
+      <!-- มงกุฎ & ตา -->
+      <div class="sb-section">
+        <span class="sb-label">มงกุฎ & ดวงตา</span>
+        <div class="grid-1">
+          <div class="sb-box">
+            <div class="sb-box-label">มงกุฎ</div>
+            <div class="sb-flex">
+              <button onclick="updateState({crown:'spike'})" id="crown-spike" class="sb-btn-sm">ยอดแหลม</button>
+              <button onclick="updateState({crown:'round'})" id="crown-round" class="sb-btn-sm">ยอดบายศรี</button>
+              <button onclick="updateState({crown:'none'})"  id="crown-none"  class="sb-btn-sm">ไม่มี</button>
             </div>
-        </aside>
-    </main>
+          </div>
+          <div class="sb-box">
+            <div class="sb-box-label">ดวงตา</div>
+            <div class="sb-flex">
+              <button onclick="updateState({eye:'normal'})" id="eye-normal" class="sb-btn-sm">ตาจระเข้</button>
+              <button onclick="updateState({eye:'wide'})"   id="eye-wide"   class="sb-btn-sm">ตาโพลง</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- สี -->
+      <div class="sb-section">
+        <span class="sb-label">พาเลทสี</span>
+        <div class="color-row"><span class="color-label">สีหน้า</span><div class="color-input-wrapper"><input type="color" id="c-skin" oninput="applyColors()"></div></div>
+        <div class="color-row"><span class="color-label">สีลวดลาย</span><div class="color-input-wrapper"><input type="color" id="c-line" oninput="applyColors()"></div></div>
+        <div class="color-row"><span class="color-label">สีมงกุฎ</span><div class="color-input-wrapper"><input type="color" id="c-crown" oninput="applyColors()"></div></div>
+        <div class="color-row" style="margin-bottom:0;"><span class="color-label">อัญมณี</span><div class="color-input-wrapper"><input type="color" id="c-gem" oninput="applyColors()"></div></div>
+      </div>
+
+      <button onclick="applyToAR()" class="btn-apply-ar">🎭 นำหน้ากากนี้ไปใช้ใน AR →</button>
+    </aside>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal">
+    <div class="modal-box">
+      <div class="modal-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div class="modal-title">บันทึกสำเร็จ!</div>
+      <button class="modal-close" onclick="closeModal()">เสร็จสิ้น</button>
+    </div>
+  </div>
 </section>
 
 <section id="p4" class="page">
